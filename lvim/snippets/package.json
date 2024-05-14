@@ -1,0 +1,30 @@
+{
+  "name": "nvim-snippets",
+  "author": "authorname",
+  "engines": {
+    "vscode": "^1.11.0"
+  },
+  "contributes": {
+    "grammars": [
+      {
+        "language": "htmlhugo",
+        "scopeName": "text.html.hugo",
+        "path": "./hugo.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "htmlhugo",
+        "path": "./hugo.code-snippets.json"
+      },
+            {
+        "language": "markdown",
+        "path": "./md.snippets.json"
+      },
+      {
+        "language": "toml",
+        "path": "./md.snippets.json"
+      }
+    ]
+  }
+}
