@@ -1,0 +1,42 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+
+format = """
+$username\
+$directory\
+$nix_shell\
+$go\
+$java\
+$nodejs\
+$rust\
+$terraform\
+$character
+"""
+
+right_format = """
+$status\
+$cmd_duration\
+$git_status\
+$git_branch\
+$time
+"""
+
+[time]
+disabled = false
+format = '[$time]($style)'
+
+[status]
+disabled = false
+#symbol = "[x](bold red) "
+#not_executable_symbol = "NE "
+
+[nodejs]
+#symbol = "node "
+
+[rust]
+#symbol = "rs "
+
+[nix_shell]
+disabled = true
+#symbol = "nix "

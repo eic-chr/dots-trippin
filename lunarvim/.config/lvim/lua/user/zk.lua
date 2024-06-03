@@ -1,4 +1,4 @@
-local home_root = vim.fn.expand("~/Nextcloud/Eickhoff/christian/vaults/vim-zettelkasten")
+local home_root = vim.fn.expand("~/projects/ceickhoff/zettelkasten/vaults/")
 local home_ewo = home_root .. '/ewo'
 local home_huk = home_root .. '/huk'
 local home_personal = home_root .. '/personal'
@@ -42,6 +42,7 @@ require('telekasten').setup({
       monthlies     = home_personal .. '/journal/monthly-notes',
       template_new_weekly = home_personal .. 'journal/weekly-notes.md',
       templates    = home_root .. '/templates',
+      extension    = ".md",
     }
   },
 
