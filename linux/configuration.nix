@@ -7,13 +7,10 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-    <home-manager/nixos>
+    ./home-manager.nix
       ./hardware-configuration.nix
     ];
 
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-  home-manager.users.christian = import ./home.nix;
 
   security.doas.enable = true;
   security.sudo.enable = false;
@@ -53,20 +50,43 @@
   };
 
 # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-# Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-  services.xrdp.enable = true;
-  services.xrdp.defaultWindowManager = "gnome-remote-desktop";
-  services.xrdp.openFirewall = true;
-
-# Configure keymap in X11
   services.xserver = {
+    enable = true;  
     layout = "us";
     xkbVariant = "alt-intl";
+    displayManager = {
+      sessionCommands = ''
+        ${pkgs.x11vnc}/bin/x11vnc -rfbauth $HOME/.vnc/passwd &
+        '';
+      autoLogin = {
+        enable = false;
+        user = "christian";
+      };
+# gdm = {
+#   enable = false;  
+#   wayland = true; 
+# };
+      sddm = {
+        enable = true;
+      };
+    };
+    # desktopManager.gnome.enable = true; 
+    desktopManager.plasma5.enable = true;
   };
+
+  services.xrdp = {
+    enable = true;
+    defaultWindowManager = "startplasma-x11"; #/run/current-system/sw/bin/gnome-session";
+  };
+
+
+# Enable the GNOME Desktop Environment.
+# services.xserver.desktopManager.xfce.enable = true;
+# services.xrdp.enable = true;
+# services.xrdp.defaultWindowManager = "gnome-remote-desktop";
+# services.xrdp.extraConfDirCommands = "# some fun";
+# services.xrdp.openFirewall = true;
+# Configure keymap in X11
 
 # Configure console keymap
   console.keyMap = "dvorak";
@@ -99,7 +119,6 @@
     description = "Christian Eickhoff";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      thunderbird
     ];
     shell = pkgs.zsh;
   };
@@ -118,18 +137,20 @@
 # $ nix search wget
   environment.systemPackages = with pkgs; [
     git
+    vscode
+      stow
+      x11vnc
       fzf
       pavucontrol
       gnumake
       lunarvim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       nil
-      nix-repo-updater
-      list2choice
-      list-executables
-      factorio
-      jnv
-      simple-formatter
-      nix-deepclean
+# list2choice
+# list-executables
+# factorio
+# jnv
+# simple-formatter
+# nix-deepclean
   ];
 # 23.11 change
   fonts.packages = with pkgs; [
@@ -157,7 +178,7 @@
   networking.firewall.allowedTCPPorts = [ 3389 3390 ];
 # networking.firewall.allowedUDPPorts = [ ... ];
 # Or disable the firewall altogether.
-# networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
 # This value determines the NixOS release from which the default
 # settings for stateful data, like file locations and database versions
