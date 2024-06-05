@@ -34,7 +34,7 @@
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "devnix"; # Define your hostname.
 # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
 # Configure network proxy if necessary
@@ -66,7 +66,7 @@
   services.xserver = {
     enable = true;  
     layout = "us";
-    xkbVariant = "alt-intl";
+    xkbVariant = "intl";
     displayManager = {
       sessionCommands = ''
         ${pkgs.x11vnc}/bin/x11vnc -rfbauth $HOME/.vnc/passwd &
@@ -188,7 +188,7 @@
   services.openssh.enable = true;
 
 # Open ports in the firewall.
-# networking.firewall.allowedTCPPorts = [ 3389 3390 ];
+networking.firewall.allowedTCPPorts = [ 3389 ];
 # networking.firewall.allowedUDPPorts = [ ... ];
 # Or disable the firewall altogether.
 # networking.firewall.enable = false;

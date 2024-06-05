@@ -1,10 +1,9 @@
-{ programs, lib, pkgs, ... }: {
-  programs.thunderbird = {
+{
     enable = true;
-    profile = {
+    profiles = {
       "my-thunderbird-profile" = {
         isDefault = true;
-        prefs = {
+        settings = {
           "mail.server.server1.check_new_mail" = true;
           "mail.server.server1.directory-rel" = "[ProfD]ImapMail/imap.mailbox.org";
           "mail.server.server1.hostname" = "imap.mailbox.org";
@@ -74,8 +73,46 @@
           "mail.smtpserver.smtp2.try_ssl" = 2;
           "mail.smtpserver.smtp2.username" = "christian@ewolutions.de";
           "mail.smtpservers" = "smtp1,smtp2";
+          "mail.account.account1.identities" = "id1";
+          "mail.account.account1.server" = "server1";
+          "mail.account.account2.server" = "server2";
+          "mail.account.account3.identities" = "id2";
+          "mail.account.account3.server" = "server3";
+          "mail.account.lastKey" = 3;
+          "mail.accountmanager.accounts" = "account1,account3,account2";
+          "mail.accountmanager.defaultaccount" = "account1";
+          "mail.accountmanager.localfoldersserver" = "server2";
+          "mail.displayname.version" = 1;
+          "mail.folder.views.version" = 1;
+          "mail.identity.id1.archive_folder" = "imap://christian.eickhoff%40mailbox.org@imap.mailbox.org/Archives";
+          "mail.identity.id1.doBcc" = false;
+          "mail.identity.id1.draft_folder" = "imap://christian.eickhoff%40mailbox.org@imap.mailbox.org/Drafts";
+          "mail.identity.id1.drafts_folder_picker_mode" = "0";
+          "mail.identity.id1.fcc_folder" = "imap://christian.eickhoff%40mailbox.org@imap.mailbox.org/Sent";
+          "mail.identity.id1.fcc_folder_picker_mode" = "0";
+          "mail.identity.id1.fullName" = "Christian Eickhoff";
+          "mail.identity.id1.is_gnupg_key_id" = true;
+          "mail.identity.id1.reply_on_top" = 1;
+          "mail.identity.id1.smtpServer" = "smtp1";
+          "mail.identity.id1.stationery_folder" = "imap://christian.eickhoff%40mailbox.org@imap.mailbox.org/Templates";
+          "mail.identity.id1.tmpl_folder_picker_mode" = "0";
+          "mail.identity.id1.useremail" = "christian.eickhoff@mailbox.org";
+          "mail.identity.id1.valid" = true;
+          "mail.identity.id2.archive_folder" = "imap://christian%40ewolutions.de@mail.ewolutions.de/Archives";
+          "mail.identity.id2.doBcc" = false;
+          "mail.identity.id2.draft_folder" = "imap://christian%40ewolutions.de@mail.ewolutions.de/Drafts";
+          "mail.identity.id2.drafts_folder_picker_mode" = "0";
+          "mail.identity.id2.fcc_folder" = "imap://christian%40ewolutions.de@mail.ewolutions.de/Sent";
+          "mail.identity.id2.fcc_folder_picker_mode" = "0";
+          "mail.identity.id2.fullName" = "Christian Eickhoff";
+          "mail.identity.id2.reply_on_top" = 1;
+          "mail.identity.id2.sig_bottom" = true;
+          "mail.identity.id2.smtpServer" = "smtp2";
+          "mail.identity.id2.stationery_folder" = "imap://christian%40ewolutions.de@mail.ewolutions.de/Templates";
+          "mail.identity.id2.tmpl_folder_picker_mode" = "0";
+          "mail.identity.id2.useremail" = "christian@ewolutions.de";
+          "mail.identity.id2.valid" = true;
         };
       };
     };
-  };
-                              }
+}
