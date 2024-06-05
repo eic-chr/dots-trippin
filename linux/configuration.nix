@@ -5,10 +5,23 @@
 { config, pkgs, ... }:
 
 {
+  nix = {
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      trusted-users = [ "root" "christian" ];
+    };
+    gc = {
+      automatic = true;
+      persistent = true;
+      # options = "-d";
+    };
+  };
+
+
   imports =
     [ # Include the results of the hardware scan.
-    ./home-manager.nix
-      ./hardware-configuration.nix
+    ./hardware-configuration.nix
+      ./home-manager.nix
     ];
 
 
@@ -70,8 +83,8 @@
         enable = true;
       };
     };
-    # desktopManager.gnome.enable = true; 
-    desktopManager.plasma5.enable = true;
+# desktopManager.gnome.enable = true; 
+    desktopManager.plasma6.enable = true;
   };
 
   services.xrdp = {
@@ -118,8 +131,6 @@
     isNormalUser = true;
     description = "Christian Eickhoff";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-    ];
     shell = pkgs.zsh;
   };
 
@@ -137,13 +148,15 @@
 # $ nix search wget
   environment.systemPackages = with pkgs; [
     git
-    vscode
+      gnupg
+      vscode
       stow
       x11vnc
       fzf
       pavucontrol
       gnumake
-      lunarvim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      lunarvim 
+      partition-manager
       nil
 # list2choice
 # list-executables
@@ -152,9 +165,9 @@
 # simple-formatter
 # nix-deepclean
   ];
-# 23.11 change
   fonts.packages = with pkgs; [
-    hack-font
+    (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Meslo" ]; })
+      hack-font
       roboto
       dejavu_fonts
       noto-fonts-color-emoji
@@ -164,10 +177,10 @@
 # Some programs need SUID wrappers, can be configured further or are
 # started in user sessions.
 # programs.mtr.enable = true;
-# programs.gnupg.agent = {
-#   enable = true;
-#   enableSSHSupport = true;
-# };
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
 # List services that you want to enable:
 
@@ -175,10 +188,10 @@
   services.openssh.enable = true;
 
 # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 3389 3390 ];
+# networking.firewall.allowedTCPPorts = [ 3389 3390 ];
 # networking.firewall.allowedUDPPorts = [ ... ];
 # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+# networking.firewall.enable = false;
 
 # This value determines the NixOS release from which the default
 # settings for stateful data, like file locations and database versions

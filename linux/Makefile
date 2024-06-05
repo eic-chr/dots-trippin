@@ -6,6 +6,7 @@ NIXPKGS := /nix/var/nix/profiles/per-user/root/channels/nixos
 
 NIX_CHANNELS=-I nixpkgs=$(CHANNELS_ROOT)nixos
 NIX_CHANNELS+=-I home-manager=$(CHANNELS_ROOT)home-manager
+NIX_CHANNELS+=-I plasma-manager=$(CHANNELS_ROOT)plasma-manager
 
 PHONY+=apply
 apply: configuration.nix

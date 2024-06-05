@@ -7,7 +7,7 @@ in
     ./zsh.nix
 # ./thunderbird.nix
       (import "${home-manager}/nixos")
-      <plasma-manager/modules>
+      # ./plasma.nix
   ];
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
@@ -25,9 +25,11 @@ in
         pkgs.zsh-syntax-highlighting
         pkgs.zsh-history-substring-search
         pkgs.thunderbird
+        pkgs.signal-desktop
     ];
 
-/* Here goes the rest of your home-manager config, e.g. home.packages = [ pkgs.foo ]; */
+
+    /* Here goes the rest of your home-manager config, e.g. home.packages = [ pkgs.foo ]; */
     programs.home-manager.enable = true;
     programs.fzf.enable = true;
     programs.direnv.enable = true;
@@ -152,14 +154,15 @@ in
     };
 # programs.zoxide.enable = true;
 # programs.atuin.enable = true;
-# programs.starship = {
-#   enable = true;
-#   settings = builtins.fromTOML (lib.readFile ../starship/starship.toml);
-# };
-# programs.wezterm = {
-#   enable = true;
-#   extraConfig = lib.readFile ../wezterm.lua;
-# };
+programs.starship = {
+  enable = true;
+  settings = builtins.fromTOML (lib.readFile ../starship/starship.toml);
+};
+# programs.partition-manager.enable = true;
+programs.wezterm = {
+  enable = true;
+  extraConfig = lib.readFile ../wezterm.lua;
+};
 # home.file.".p10k.zsh".source = ../p10k-config/.p10k.zsh;
   };
 }
