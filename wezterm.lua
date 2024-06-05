@@ -14,7 +14,7 @@ config.font_size = 10
 
 config.hide_tab_bar_if_only_one_tab = true
 
-config.font = wezterm.font('Berkeley Mono')
+-- config.font = wezterm.font('Berkeley Mono')
 
 -- and finally, return the configuration to wezterm
 return config
