@@ -3,7 +3,14 @@
     profiles = {
       "my-thunderbird-profile" = {
         isDefault = true;
+        extraConfig = ''
+              user_pref("mail.identity.default.compose_html", false);
+              user_pref("mail.default_html_action", 1);
+              user_pref("mailnews.send_plaintext_flowed", false);
+            '';
         settings = {
+          "mailnews.default_news_sort_order" = 2;
+          "mailnews.default_sort_order" = 2;
           "mail.server.server1.check_new_mail" = true;
           "mail.server.server1.directory-rel" = "[ProfD]ImapMail/imap.mailbox.org";
           "mail.server.server1.hostname" = "imap.mailbox.org";

@@ -67,6 +67,7 @@
     enable = true;  
     layout = "us";
     xkbVariant = "intl";
+    xkbOptions = "compose:dblquote";
     displayManager = {
       sessionCommands = ''
         ${pkgs.x11vnc}/bin/x11vnc -rfbauth $HOME/.vnc/passwd &
@@ -92,6 +93,14 @@
     defaultWindowManager = "startplasma-x11"; #/run/current-system/sw/bin/gnome-session";
   };
 
+  # Optionally, add a custom polkit rule
+  environment.etc."polkit-1/rules.d/49-wheel.rules".text = ''
+    polkit.addRule(function(action, subject) {
+      if (subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
 
 # Enable the GNOME Desktop Environment.
 # services.xserver.desktopManager.xfce.enable = true;
@@ -147,24 +156,33 @@
 # List packages installed in system profile. To search, run:
 # $ nix search wget
   environment.systemPackages = with pkgs; [
-    git
-      gnupg
-      vscode
-      stow
-      x11vnc
-      fzf
-      pavucontrol
+    fzf
+      git-crypt
+      jq
+      polkit
+      polkit-kde-agent
       gnumake
+      gnupg
+      htop
       lunarvim 
-      partition-manager
       nil
+      partition-manager
+      pavucontrol
+      stow
+      showmethekey
+      simplescreenrecorder
+      vscode
+      x11vnc
+      xclip
+      vlc
+      git
 # list2choice
 # list-executables
 # factorio
 # jnv
 # simple-formatter
 # nix-deepclean
-  ];
+      ];
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Meslo" ]; })
       hack-font
@@ -188,7 +206,7 @@
   services.openssh.enable = true;
 
 # Open ports in the firewall.
-networking.firewall.allowedTCPPorts = [ 3389 ];
+  networking.firewall.allowedTCPPorts = [ 3389 ];
 # networking.firewall.allowedUDPPorts = [ ... ];
 # Or disable the firewall altogether.
 # networking.firewall.enable = false;

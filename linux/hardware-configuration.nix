@@ -18,6 +18,12 @@
       fsType = "ext4";
     };
 
+  fileSystems."/home/christian/thinclient_drives" =
+    { device = "xrdp-chansrv";
+      fsType = "fuse.xrdp-chansrv";
+    };
+
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

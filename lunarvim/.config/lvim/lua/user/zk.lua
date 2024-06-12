@@ -1,4 +1,4 @@
-local home_root = vim.fn.expand("~/projects/ceickhoff/zettelkasten/vaults/")
+local home_root = vim.fn.expand("~/projects/ceickhoff/zettelkasten/vaults")
 local home_ewo = home_root .. '/ewo'
 local home_huk = home_root .. '/huk'
 local home_personal = home_root .. '/personal'
