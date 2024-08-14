@@ -1,0 +1,16 @@
+#+title: Was müsste ein onboarding script tun?
+
+- nix installieren
+- homebrew installieren
+- user & hostname auslesen
+- =/etc/nix/nix.conf= nach =~/.config/nix/nix.conf= verschieben
+- echo -e "run\tprivate/var/run" | sudo tee -a /etc/synthetic.conf
+- /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -B
+- /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
+- Projekt aus scaffold generieren (user & hostname einsetzen) -> ~nix-shell --command~?
+  - sollte Java enthalten
+  - und hack für ~JAVA_HOME~
+- einmal ausführen
+- =~/.config/nix/nix.conf= löschen
+- Umgebung neu laden (TODO: Wie geht das?)
+- HUK Zertifikate importieren
