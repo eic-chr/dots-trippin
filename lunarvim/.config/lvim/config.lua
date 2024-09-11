@@ -128,3 +128,5 @@ vim.opt.linebreak = true
 vim.opt.list = false
 vim.opt.breakindent = true
 vim.opt.breakindentopt = 'shift:2'
+
+

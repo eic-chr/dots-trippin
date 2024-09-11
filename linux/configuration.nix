@@ -2,11 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   nix = {
     settings = {
+      auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ "root" "christian" ];
     };
@@ -61,7 +62,6 @@
     LC_TELEPHONE = "de_DE.UTF-8";
     LC_TIME = "de_DE.UTF-8";
   };
-
 # Enable the X11 windowing system.
   services.xserver = {
     enable = true;  
@@ -158,9 +158,13 @@
   environment.systemPackages = with pkgs; [
     fzf
       git-crypt
+      ansible
+      ripgrep
       jq
       polkit
       polkit-kde-agent
+      pciutils
+      clinfo
       gnumake
       gnupg
       htop
@@ -176,6 +180,7 @@
       xclip
       vlc
       git
+      tmux
 # list2choice
 # list-executables
 # factorio
@@ -198,6 +203,7 @@
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
+    pinentryPackage = lib.mkForce pkgs.pinentry-gtk2;
   };
 
 # List services that you want to enable:
@@ -210,6 +216,12 @@
 # networking.firewall.allowedUDPPorts = [ ... ];
 # Or disable the firewall altogether.
 # networking.firewall.enable = false;
+networking.extraHosts = ''
+127.0.0.1 whoami.eickhoff-it.net       # Example
+ 
+....
+
+'';
 
 # This value determines the NixOS release from which the default
 # settings for stateful data, like file locations and database versions
