@@ -52,7 +52,7 @@
     "make"
     "pinentry-mac"
     "python-lsp-server"
-    #"terraform"
+    "terraform"
     "terraform-docs"
     "terraform-ls"
     "typescript-language-server"
@@ -94,13 +94,13 @@
     ripgrep
 #    starship
     tealdeer
-    lunarvim
     yq
     zoxide
 
     # emacs29-macport
     # most likely available in brew but no idea how to access it
     python3
+    python3Packages.pip
     # not available in brew
     sshpass
     # available in brew but no idea what options this is built with

@@ -28,6 +28,8 @@
     enable = true;
   };
 
+  home.sessionVariables.GIT_EDITOR = "${pkgs.lunarvim}/bin/lvim";
+
   #home.file.".p10k.zsh".source = ../p10k-config/.p10k.zsh;
   #home.file.".zshrc".source = ../zsh-zgenom/.zshrc;
 }

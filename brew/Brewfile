@@ -9,154 +9,340 @@ tap "homebrew/services"
 tap "sass/sass"
 tap "warrensbox/tap"
 tap "zegervdv/zathura"
+tap "zix99/rare"
+# Search tool like grep, but optimized for programmers
 brew "ack"
+# Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
+# Framework for layout and rendering of i18n text
+brew "pango"
+# Library to render SVG files using Cairo
 brew "librsvg"
+# Automate deployment, configuration, and upgrading
 brew "ansible"
+# Checks ansible playbooks for practices and behaviour
 brew "ansible-lint"
+# Image format providing lossless and lossy compression for web images
 brew "webp"
+# Tools and libraries to work with AppStream metadata
 brew "appstream"
+# Text processor and publishing toolchain for AsciiDoc
 brew "asciidoctor"
+# Toolkit for creating graphical user interfaces
 brew "gtk4"
+# Gnome disk usage analyzer
 brew "baobab"
-brew "black"
-brew "broot"
-brew "coreutils"
-brew "unbound"
-brew "gnutls"
-brew "cask"
-brew "certbot"
-brew "cmake"
-brew "cocoapods"
-brew "lima"
-# brew "colima"
-brew "php"
-brew "composer"
-brew "dagger"
-brew "dhcping"
-brew "direnv"
-# brew "docker"
-# brew "docker-compose"
-brew "fd"
-brew "libass"
-brew "ffmpeg"
-brew "fluent-bit"
-brew "fzf"
-brew "ghostscript"
-brew "git"
-brew "git-crypt"
-brew "git-remote-gcrypt"
-brew "glow"
-brew "gnu-sed"
-brew "libgcrypt"
-brew "gnupg"
-brew "go"
-brew "golangci-lint"
-brew "openjdk"
-brew "gradle"
-brew "netpbm"
-brew "graphviz"
-brew "handbrake", link: false
-brew "hashcat"
-brew "htop"
-brew "hugo"
-brew "hydra"
-brew "libheif"
-brew "libraw"
-brew "imagemagick"
-brew "ios-deploy"
-brew "jq"
-brew "p7zip"
-brew "julia"
-brew "latexindent"
-brew "pkg-config"
-brew "llvm"
-brew "luarocks"
-# brew "macvim", link: false
-brew "make"
-brew "maven"
-brew "mkcert"
+# Platform built on V8 to build network applications
 brew "node"
+# Language Server for Bash
+brew "bash-language-server"
+# Python code formatter
+brew "black"
+# New way to see and navigate directory trees
+brew "broot"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
+# Validating, recursive, caching DNS resolver
+brew "unbound"
+# GNU Transport Layer Security (TLS) Library
+brew "gnutls"
+# Emacs dependency management
+brew "cask"
+# Tool to obtain certs from Let's Encrypt and autoenable HTTPS
+brew "certbot"
+# Cross-platform make
+brew "cmake"
+# Dependency manager for Cocoa projects
+brew "cocoapods"
+# Generic machine emulator and virtualizer
+brew "qemu"
+# Linux virtual machines
+brew "lima"
+# Container runtimes on MacOS (and Linux) with minimal setup
+brew "colima"
+# General-purpose scripting language
+brew "php"
+# Dependency Manager for PHP
+brew "composer"
+# Portable devkit for CI/CD pipelines
+brew "dagger"
+# Perform a dhcp-request to check whether a dhcp-server is running
+brew "dhcping"
+# Load/unload environment variables based on $PWD
+brew "direnv"
+# Pack, ship and run any application as a lightweight container
+brew "docker"
+# Isolated development environments using Docker
+brew "docker-compose"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
+# Subtitle renderer for the ASS/SSA subtitle format
+brew "libass"
+# OCR (Optical Character Recognition) engine
+brew "tesseract"
+# Play, record, convert, and stream audio and video
+brew "ffmpeg"
+# Fast and Lightweight Logs and Metrics processor
+brew "fluent-bit"
+# Command-line fuzzy finder written in Go
+brew "fzf"
+# Interpreter for PostScript and PDF
+brew "ghostscript"
+# Distributed revision control system
+brew "git"
+# Enable transparent encryption/decryption of files in a git repo
+brew "git-crypt"
+# GPG-encrypted git remotes
+brew "git-remote-gcrypt"
+# Render markdown on the CLI
+brew "glow"
+# GNU implementation of the famous stream editor
+brew "gnu-sed"
+# Cryptographic library based on the code from GnuPG
+brew "libgcrypt"
+# GNU Pretty Good Privacy (PGP) package
+brew "gnupg"
+# Open source programming language to build simple/reliable/efficient software
+brew "go"
+# Fast linters runner for Go
+brew "golangci-lint"
+# Open-source build automation tool based on the Groovy and Kotlin DSL
+brew "gradle"
+# Image manipulation
+brew "netpbm"
+# Graph visualization software from AT&T and Bell Labs
+brew "graphviz"
+# Open-source video transcoder available for Linux, Mac, and Windows
+brew "handbrake", link: false
+# World's fastest and most advanced password recovery utility
+brew "hashcat"
+# Command-line tools for OpenPGP-related operations
+brew "hopenpgp-tools"
+# Improved top (interactive process viewer)
+brew "htop"
+# Configurable static site generator
+brew "hugo"
+# Network logon cracker which supports many services
+brew "hydra"
+# ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
+brew "libheif"
+# Library for reading RAW files from digital photo cameras
+brew "libraw"
+# Tools and libraries to manipulate images in many formats
+brew "imagemagick"
+# Install and debug iPhone apps from the command-line
+brew "ios-deploy"
+# Java language specific implementation of the Language Server Protocol
+brew "jdtls"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# 7-Zip (high compression file archiver) implementation
+brew "p7zip"
+# Fast, Dynamic Programming Language
+brew "julia"
+# Add indentation to LaTeX files
+brew "latexindent"
+# Manage compile and link flags for libraries
+brew "pkg-config"
+# Package manager for the Lua programming language
+brew "luarocks"
+# GUI for vim, made for macOS
+brew "macvim", link: false
+# Utility for directing compilation
+brew "make"
+# Java-based project management
+brew "maven"
+# Fast and user friendly build system
+brew "meson"
+# Simple tool to make locally trusted development certificates
+brew "mkcert"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Command-line collection runner for Postman
 brew "newman"
+# Port scanning utility for large networks
 brew "nmap"
+# Libraries for security-enabled client and server applications
 brew "nss"
+# Manage multiple Node.js versions
 brew "nvm"
+# OpenBSD freely-licensed SSH connectivity tools
 brew "openssh"
+# Swiss-army knife of markup format conversion
 brew "pandoc"
+# Steel Bank Common Lisp system
 brew "sbcl"
+# Data loading tool for PostgreSQL
 brew "pgloader"
+# Pinentry for GPG on Mac
 brew "pinentry-mac"
+# Draw UML diagrams
 brew "plantuml"
-# brew "postgresql@14"
+# Object-relational database system
+brew "postgresql@14"
+# Python Language Server for the Language Server Protocol
+brew "python-lsp-server"
+# Cross-platform application and UI framework
 brew "qt@5"
+# Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Safe, concurrent, practical language
 brew "rust"
+# Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
+# Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
+# User interface to the TELNET protocol
 brew "telnet"
+# Tool to build, change, and version infrastructure
 brew "terraform", link: false
+# Tool to generate documentation from Terraform modules
+brew "terraform-docs"
+# Terraform Language Server
+brew "terraform-ls"
+# Terraform version manager inspired by rbenv
 brew "tfenv", link: false
+# Code-search similar to ack
 brew "the_silver_searcher"
+# Terminal multiplexer
 brew "tmux"
+# Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Language Server Protocol implementation for TypeScript wrapping tsserver
+brew "typescript-language-server"
+# Extraction utility for .zip compressed archives
 brew "unzip"
+# Secures, stores, and tightly controls access to secrets
 brew "vault"
-# brew "vim"
+# Vi 'workalike' with many additional features
+brew "vim"
+# Language servers for HTML, CSS, JavaScript, and JSON extracted from vscode
+brew "vscode-langservers-extracted"
+# Internet file retriever
 brew "wget"
+# Language Server for Yaml Files
+brew "yaml-language-server"
+# Linter for YAML files
 brew "yamllint"
+# JavaScript package manager
 brew "yarn"
-# brew "zsh"
+# Tool for managing your YubiKey configuration
+brew "ykman"
+# YubiKey personalization library and tool
+brew "ykpers"
+# Pluggable terminal workspace, with terminal multiplexer as the base feature
+brew "zellij"
+# UNIX shell (command interpreter)
+brew "zsh"
+# A Commandline interface for Apache Kafka which provides useful features adapted from kubectl for Kubernetes.
+# Multiple kafka brokers can be configured in a config file and the active broker is also persisted within the config.
+# In addition kafkactl supports auto-completion for its commands as well as topic names.
 brew "deviceinsight/packages/kafkactl"
+# DDEV
 brew "drud/ddev/ddev"
+# Stylesheet Preprocessor
 brew "sass/sass/sass"
+# The tfswitch command lets you switch between terraform versions.
 brew "warrensbox/tap/tfswitch"
+# PDF viewer
 brew "zegervdv/zathura/zathura", args: ["with-synctex"]
+# Fast, realtime regex-extraction, and aggregation into common formats such as histograms, numerical summaries, tables, and more!
+brew "zix99/rare/rare"
+# Automatic tiling window manager similar to xmonad
 cask "amethyst"
+# Android SDK component
 cask "android-platform-tools"
-# cask "android-studio"
+# Tools for building Android applications
+cask "android-studio"
+# Tool to flash OS images to SD cards & USB drives
 cask "balenaetcher"
+# Downloads videos and audio from websites
 cask "clipgrab"
+# Server and cloud storage browser
 cask "cyberduck"
+# Online diagram software
+cask "drawio"
+# Multi-platform multi-messaging app
 cask "ferdium"
+# Collaborative team software
 cask "figma"
+# Web browser
 cask "firefox"
 cask "font-hack-nerd-font"
 cask "font-microsoft-office"
+# Free and open-source image editor
 cask "gimp"
+# Web browser
+cask "google-chrome"
+# Open-source video transcoder
 cask "handbrake"
+# Utility to hide menu bar items
 cask "hiddenbar"
+# Vector graphics editor
 cask "inkscape"
+# Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
+# Password manager app
 cask "keepassxc"
+# Open-source keystroke visualiser
 cask "keycastr"
+# ZSA keyboard firmware flasher
+cask "keymapp"
+# GUI replacement for the Java command-line utilities keytool and jarsigner
 cask "keystore-explorer"
+# Free cross-platform office suite, fresh version
 cask "libreoffice"
+# Collection of alternate languages for LibreOffice
 cask "libreoffice-language-pack"
+# Full TeX Live distribution with GUI applications
 cask "mactex"
+# Remote desktop client
 cask "microsoft-remote-desktop"
+# Developer IDE or Management Environment for Neo4j instances
+cask "neo4j"
+# Desktop sync client for Nextcloud software products
 cask "nextcloud"
+# Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Administration and development platform for PostgreSQL
 cask "pgadmin4"
+# Control your tools with a few keystrokes
 cask "raycast"
+# Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
+# View, Screen Share, organise, import, and download files to a reMarkable device
+cask "remarkable"
+# Centralises all remote connections on a single platform
 cask "remote-desktop-manager-free"
+# Free and open-source page layout program
 cask "scribus"
+# Screenshot measurement and annotation tool
 cask "shottr"
+# Move and resize windows with ease
 cask "spectacle"
+# Music streaming service
 cask "spotify"
+# Break time reminder app
 cask "stretchly"
+# Remote access and connectivity software focused on security
 cask "teamviewer"
-cask "temurin17"
+# JDK from the Eclipse Foundation (Adoptium)
+cask "temurin@17"
+# Web browser focusing on security
 cask "tor-browser"
+# Free and open-source OpenVPN client
 cask "tunnelblick"
+# Open-source code editor
 cask "visual-studio-code"
+# Network protocol analyzer
 cask "wireshark"
+# Application for configuring any YubiKey
 cask "yubico-yubikey-manager"
 vscode "4ops.terraform"
 vscode "alexcvzz.vscode-sqlite"
 vscode "asciidoctor.asciidoctor-vscode"
 vscode "ckolkman.vscode-postgres"
-# vscode "dagger.dagger"
+vscode "dagger.dagger"
 vscode "eamodio.gitlens"
 vscode "editorconfig.editorconfig"
 vscode "esbenp.prettier-vscode"
