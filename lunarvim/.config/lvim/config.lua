@@ -1,5 +1,5 @@
 lvim.leader = ','
-lvim.format_on_save = false
+lvim.format_on_save = true
 vim.opt.relativenumber = true -- relative line numbers
 vim.diagnostic.config({ virtual_text = true })
 -- Language Specific

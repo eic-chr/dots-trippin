@@ -5,6 +5,8 @@ local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
   { command = "goimports", filetypes = { "go" } },
   { command = "gofumpt", filetypes = { "go" } },
+  -- { command = "gofmt", filetypes = { "go" }, args = { "-w", "-s" } },
+  -- { command = "gofmt", filetypes = { "go" } },
 }
 
 lvim.format_on_save = {
@@ -78,3 +80,16 @@ gopher.setup {
     iferr = "iferr",
   },
 }
+
+local wk = require("which-key")
+
+wk.register({
+    G = {
+        name = "Go",
+        i = { ":GoInfo<CR>", "Go Info" },
+        d = { ":GoDoc<CR>", "Go Doc" },
+        r = { ":GoRun<CR>", "Run" },
+        t = { ":GoTest<CR>", "Test" },
+        -- Weitere Go-Befehle hinzufügen ...
+    },
+}, { prefix = "<leader>" })
