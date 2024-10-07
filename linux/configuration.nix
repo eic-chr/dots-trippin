@@ -2,19 +2,20 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   nix = {
     settings = {
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
+      substituters = [ "https://cache.nixos.org/" ];
+      trusted-substituters = [ "https://cache.nixos.org/" ];
       trusted-users = [ "root" "christian" ];
     };
     gc = {
       automatic = true;
       persistent = true;
-      # options = "-d";
     };
   };
 
@@ -76,15 +77,10 @@
         enable = false;
         user = "christian";
       };
-# gdm = {
-#   enable = false;  
-#   wayland = true; 
-# };
       sddm = {
         enable = true;
       };
     };
-# desktopManager.gnome.enable = true; 
     desktopManager.plasma6.enable = true;
   };
 
@@ -93,25 +89,14 @@
     defaultWindowManager = "startplasma-x11"; #/run/current-system/sw/bin/gnome-session";
   };
 
-  # Optionally, add a custom polkit rule
+# Optionally, add a custom polkit rule
   environment.etc."polkit-1/rules.d/49-wheel.rules".text = ''
     polkit.addRule(function(action, subject) {
-      if (subject.isInGroup("wheel")) {
+        if (subject.isInGroup("wheel")) {
         return polkit.Result.YES;
-      }
-    });
+        }
+        });
   '';
-
-# Enable the GNOME Desktop Environment.
-# services.xserver.desktopManager.xfce.enable = true;
-# services.xrdp.enable = true;
-# services.xrdp.defaultWindowManager = "gnome-remote-desktop";
-# services.xrdp.extraConfDirCommands = "# some fun";
-# services.xrdp.openFirewall = true;
-# Configure keymap in X11
-
-# Configure console keymap
-  console.keyMap = "dvorak";
 
 # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -156,31 +141,42 @@
 # List packages installed in system profile. To search, run:
 # $ nix search wget
   environment.systemPackages = with pkgs; [
-    fzf
-      git-crypt
-      ansible
-      ripgrep
-      jq
-      polkit
-      polkit-kde-agent
-      pciutils
+    ansible
       clinfo
+      direnv
+      git
+      git-crypt
       gnumake
       gnupg
       htop
+      jq
       lunarvim 
+      golangci-lint
+      gopls
+      gofumpt
+      gotools
+      gomodifytags
+      impl
+      iferr
+      gotests
+      delve
       nil
       partition-manager
       pavucontrol
-      stow
+      pciutils
+      polkit
+      polkit-kde-agent
+      ripgrep
       showmethekey
       simplescreenrecorder
+      stow
+      teamviewer
+      tmux
+      vlc
       vscode
       x11vnc
       xclip
-      vlc
-      git
-      tmux
+      fzf
 # list2choice
 # list-executables
 # factorio
@@ -211,17 +207,19 @@
 # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  services.teamviewer.enable = false;
+
 # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 3389 ];
 # networking.firewall.allowedUDPPorts = [ ... ];
 # Or disable the firewall altogether.
 # networking.firewall.enable = false;
-networking.extraHosts = ''
-127.0.0.1 whoami.eickhoff-it.net       # Example
- 
-....
+  networking.extraHosts = ''
+    127.0.0.1 whoami.eickhoff-it.net       # Example
 
-'';
+    ....
+
+    '';
 
 # This value determines the NixOS release from which the default
 # settings for stateful data, like file locations and database versions

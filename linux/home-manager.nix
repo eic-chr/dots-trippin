@@ -1,10 +1,9 @@
-{ config, lib, pkgs, ... }:
+{ lib, pkgs, ... }:
 let
 home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz";
 in
 {
   imports = [
-    ./zsh.nix
       (import "${home-manager}/nixos")
 # ./plasma.nix
   ];
@@ -35,27 +34,27 @@ in
     home.stateVersion = "24.05";
 
     home.packages = [
-      pkgs.oh-my-zsh
-        pkgs.zsh
-        pkgs.fzf
-        pkgs.zsh-completions
-        pkgs.zsh-powerlevel10k
-        pkgs.zsh-syntax-highlighting
-        pkgs.zsh-history-substring-search
-        pkgs.thunderbird
-        pkgs.signal-desktop
-        pkgs.signal-cli
-        pkgs.scli
+      pkgs.cifs-utils
         pkgs.ferdium
-        pkgs.xorg.xset
+        pkgs.fzf
+        pkgs.kdePackages.kolourpaint
+        pkgs.keepassxc
+        pkgs.libreoffice
+        pkgs.nextcloud-client
+        pkgs.pgadmin4
         pkgs.python3
         pkgs.python311Packages.pip
-        pkgs.libreoffice
-        pkgs.keepassxc
-        pkgs.nextcloud-client
-        pkgs.cifs-utils
-        pkgs.pgadmin4
-        pkgs.kdePackages.kolourpaint
+        pkgs.scli
+        pkgs.signal-cli
+        pkgs.signal-desktop
+        pkgs.thunderbird
+        pkgs.xorg.xset
+        pkgs.zsh
+        pkgs.zsh-completions
+        pkgs.zsh-history-substring-search
+        pkgs.zsh-powerlevel10k
+        pkgs.zsh-syntax-highlighting
+        pkgs.oh-my-zsh
         ];
 
 
@@ -65,12 +64,38 @@ in
     programs.direnv.enable = true;
 
     programs.thunderbird = import ./thunderbird.nix; 
+    programs.zsh = {
+      enable = true;
+      initExtra = lib.readFile ./initExtra.sh;
+      enableAutosuggestions = false;
+      shellAliases = {
+        ls = "${pkgs.eza}/bin/exa";
+        l = "${pkgs.eza}/bin/exa -la";
+        tree = "${pkgs.eza}/bin/exa --tree";
+        cat = "${pkgs.bat}/bin/bat";
+        vi = "${pkgs.lunarvim}/bin/lvim";
+        mmake = "${pkgs.gnumake}/bin/make -j$(${pkgs.coreutils}/bin/nproc)";
+        garbage = "nix-collect-garbage -d && doas nix-collect-garbage -d";
+      };
+      oh-my-zsh = {
+        enable = true;
+        plugins = [ "git" ];
+        theme = "robbyrussell";
+      };
+    };
+
 # programs.zoxide.enable = true;
 # programs.atuin.enable = true;
     programs.starship = {
       enable = true;
       settings = builtins.fromTOML (lib.readFile ../starship/starship.toml);
     };
+# programs.zsh = {
+#   enable = true;
+#   initExtra = ''
+#     eval "$(direnv hook zsh)"
+#   '';
+#   };
 # programs.partition-manager.enable = true;
     programs.wezterm = {
       enable = true;
