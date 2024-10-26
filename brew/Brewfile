@@ -24,8 +24,6 @@ brew "ansible"
 brew "ansible-lint"
 # Image format providing lossless and lossy compression for web images
 brew "webp"
-# Tools and libraries to work with AppStream metadata
-brew "appstream"
 # Text processor and publishing toolchain for AsciiDoc
 brew "asciidoctor"
 # Toolkit for creating graphical user interfaces
@@ -52,20 +50,6 @@ brew "cask"
 brew "certbot"
 # Cross-platform make
 brew "cmake"
-# Dependency manager for Cocoa projects
-brew "cocoapods"
-# Generic machine emulator and virtualizer
-brew "qemu"
-# Linux virtual machines
-brew "lima"
-# Container runtimes on MacOS (and Linux) with minimal setup
-brew "colima"
-# General-purpose scripting language
-brew "php"
-# Dependency Manager for PHP
-brew "composer"
-# Portable devkit for CI/CD pipelines
-brew "dagger"
 # Perform a dhcp-request to check whether a dhcp-server is running
 brew "dhcping"
 # Load/unload environment variables based on $PWD
@@ -74,12 +58,12 @@ brew "direnv"
 brew "docker"
 # Isolated development environments using Docker
 brew "docker-compose"
+# Perl lib for reading and writing EXIF metadata
+brew "exiftool"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
 # Subtitle renderer for the ASS/SSA subtitle format
 brew "libass"
-# OCR (Optical Character Recognition) engine
-brew "tesseract"
 # Play, record, convert, and stream audio and video
 brew "ffmpeg"
 # Fast and Lightweight Logs and Metrics processor
@@ -146,8 +130,6 @@ brew "latexindent"
 brew "pkg-config"
 # Package manager for the Lua programming language
 brew "luarocks"
-# GUI for vim, made for macOS
-brew "macvim", link: false
 # Utility for directing compilation
 brew "make"
 # Java-based project management
@@ -248,8 +230,6 @@ brew "warrensbox/tap/tfswitch"
 brew "zegervdv/zathura/zathura", args: ["with-synctex"]
 # Fast, realtime regex-extraction, and aggregation into common formats such as histograms, numerical summaries, tables, and more!
 brew "zix99/rare/rare"
-# Automatic tiling window manager similar to xmonad
-cask "amethyst"
 # Android SDK component
 cask "android-platform-tools"
 # Tools for building Android applications
@@ -262,8 +242,6 @@ cask "clipgrab"
 cask "cyberduck"
 # Online diagram software
 cask "drawio"
-# Multi-platform multi-messaging app
-cask "ferdium"
 # Collaborative team software
 cask "figma"
 # Web browser
@@ -282,6 +260,8 @@ cask "hiddenbar"
 cask "inkscape"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
+# Note taking and to-do application with synchronisation capabilities
+cask "joplin"
 # Password manager app
 cask "keepassxc"
 # Open-source keystroke visualiser
@@ -302,24 +282,18 @@ cask "microsoft-remote-desktop"
 cask "neo4j"
 # Desktop sync client for Nextcloud software products
 cask "nextcloud"
-# Knowledge base that works on top of a local folder of plain text Markdown files
-cask "obsidian"
 # Administration and development platform for PostgreSQL
 cask "pgadmin4"
 # Control your tools with a few keystrokes
 cask "raycast"
 # Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
-# View, Screen Share, organise, import, and download files to a reMarkable device
-cask "remarkable"
 # Centralises all remote connections on a single platform
 cask "remote-desktop-manager-free"
 # Free and open-source page layout program
 cask "scribus"
 # Screenshot measurement and annotation tool
 cask "shottr"
-# Move and resize windows with ease
-cask "spectacle"
 # Music streaming service
 cask "spotify"
 # Break time reminder app
@@ -342,7 +316,6 @@ vscode "4ops.terraform"
 vscode "alexcvzz.vscode-sqlite"
 vscode "asciidoctor.asciidoctor-vscode"
 vscode "ckolkman.vscode-postgres"
-vscode "dagger.dagger"
 vscode "eamodio.gitlens"
 vscode "editorconfig.editorconfig"
 vscode "esbenp.prettier-vscode"
@@ -369,6 +342,7 @@ vscode "tamasfe.even-better-toml"
 vscode "valentjn.vscode-ltex"
 vscode "visualstudioexptteam.intellicode-api-usage-examples"
 vscode "visualstudioexptteam.vscodeintellicode"
+vscode "vscjava.vscode-gradle"
 vscode "vscjava.vscode-java-debug"
 vscode "vscjava.vscode-java-dependency"
 vscode "vscjava.vscode-java-pack"

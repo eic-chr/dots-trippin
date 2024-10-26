@@ -4,6 +4,7 @@ pkgs.mkShell {
   buildInputs = [
     pkgs.stow  # Example: Python 3.9
     pkgs.git       # Example: Git
+    pkgs.zsh
   ];
 }
 
