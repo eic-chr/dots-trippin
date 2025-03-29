@@ -63,15 +63,23 @@
     LC_TELEPHONE = "de_DE.UTF-8";
     LC_TIME = "de_DE.UTF-8";
   };
+  services.avahi = {
+    enable = true;
+    nssmdns = true;  # Ermöglicht .local-Namensauflösung
+      openFirewall = true;  # Öffnet Ports für mDNS (UDP 5353)
+  };
+
 # Enable the X11 windowing system.
   services.xserver = {
     enable = true;  
     layout = "us";
     xkbVariant = "intl";
     xkbOptions = "compose:dblquote";
+    exportConfiguration = true; 
     displayManager = {
       sessionCommands = ''
         ${pkgs.x11vnc}/bin/x11vnc -rfbauth $HOME/.vnc/passwd &
+        ${pkgs.xorg.setxkbmap}/bin/setxkbmap us intl
         '';
       autoLogin = {
         enable = false;
@@ -124,7 +132,7 @@
   users.users.christian = {
     isNormalUser = true;
     description = "Christian Eickhoff";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
   };
 
@@ -142,8 +150,10 @@
 # $ nix search wget
   environment.systemPackages = with pkgs; [
     ansible
+      avahi
       clinfo
       direnv
+      docker
       git
       git-crypt
       gnumake
@@ -208,7 +218,7 @@
   services.openssh.enable = true;
 
   services.teamviewer.enable = false;
-
+  virtualisation.docker.enable = true;
 # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 3389 ];
 # networking.firewall.allowedUDPPorts = [ ... ];
@@ -227,6 +237,6 @@
 # this value at the release version of the first install of this system.
 # Before changing this value read the documentation for this option
 # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 
 }
