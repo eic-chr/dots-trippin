@@ -3,9 +3,11 @@ let
 home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
 in
 {
+
+
   imports = [
-      (import "${home-manager}/nixos")
-      # ./git.nix
+    (import "${home-manager}/nixos")
+# ./git.nix
 # ./plasma.nix
   ];
   home-manager.useGlobalPkgs = true;
@@ -15,7 +17,7 @@ in
   home-manager.users.christian = {
     home.file.".config/autostart-scripts/setxkbmap.sh" = {
       text = ''
-        #!/bin/bash
+#!/bin/bash
         setxkbmap us intl
         '';
       executable = true;
@@ -55,6 +57,7 @@ in
         pkgs.python311Packages.pip
         pkgs.scli
         pkgs.signal-cli
+        pkgs.gpt4all
         pkgs.signal-desktop
         pkgs.thunderbird
         pkgs.xorg.xset

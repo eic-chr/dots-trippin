@@ -12,5 +12,4 @@ if string.find(filename, "ansible") then
   print(filename .. " in ansible is it")
 else
   -- require("lvim.lsp.manager").setup("yamlls", {})
-  print("and so on")
 end

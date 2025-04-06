@@ -1,9 +1,10 @@
 -- Additional Plugins
 
 lvim.plugins = {
+  { "lvimuser/lsp-inlayhints.nvim" },
   {
     "Groveer/plantuml.nvim",
-    config = function ()
+    config = function()
       require("plantuml").setup({ renderer = 'text' })
     end,
   },
@@ -14,8 +15,8 @@ lvim.plugins = {
       require("spectre").setup()
     end,
   },
-  {"ellisonleao/glow.nvim", config = true, cmd = "Glow"},
-  { "mfussenegger/nvim-jdtls", ft = "java" },
+  { "ellisonleao/glow.nvim",       config = true, cmd = "Glow" },
+  { "mfussenegger/nvim-jdtls",     ft = "java" },
   {
     "ggandor/leap.nvim",
     name = "leap",
@@ -36,7 +37,7 @@ lvim.plugins = {
   },
   {
     'renerocksai/telekasten.nvim',
-    dependencies = {'nvim-telescope/telescope.nvim'}
+    dependencies = { 'nvim-telescope/telescope.nvim' }
   },
   {
     "jinh0/eyeliner.nvim",
@@ -49,11 +50,13 @@ lvim.plugins = {
   -- "theNewDynamic/language-hugo-vscode",
   {
     'Exafunction/codeium.vim',
-    config = function ()
+    config = function()
       -- Change '<C-g>' here to any keycode you like.
-      vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
-      vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
-      vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
+      vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+      vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end,
+        { expr = true, silent = true })
+      vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end,
+        { expr = true, silent = true })
       vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
     end
   },
@@ -64,8 +67,8 @@ lvim.plugins = {
     cmd = { "MarkmapOpen", "MarkmapSave", "MarkmapWatch", "MarkmapWatchStop" },
     opts = {
       html_output = "/tmp/markmap.html", -- (default) Setting a empty string "" here means: [Current buffer path].html
-      hide_toolbar = false, -- (default)
-      grace_period = 3600000 -- (default) Stops markmap watch after 60 minutes. Set it to 0 to disable the grace_period.
+      hide_toolbar = false,              -- (default)
+      grace_period = 3600000             -- (default) Stops markmap watch after 60 minutes. Set it to 0 to disable the grace_period.
     },
     config = function(_, opts) require("markmap").setup(opts) end
   },
@@ -101,4 +104,3 @@ lvim.plugins = {
     end
   }
 }
-

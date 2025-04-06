@@ -17,6 +17,10 @@ lvim.builtin.terminal.open_mapping = "<c-t>"
 --   --       { vim.o.shell, "<C-3>", "Float Terminal", "float", nil },
 -- }
 
-keymap('t', '<Esc>', '<C-\\><C-n>', {noremap = true})
+keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true })
 keymap("n", "<C-z>", "<cmd>ZenMode<cr>", opts)
-
+-- Insert-Mode Navigation mit Ctrl + h/j/k/l
+vim.keymap.set("i", "<C-h>", "<Left>", { noremap = true })
+vim.keymap.set("i", "<C-j>", "<Down>", { noremap = true })
+vim.keymap.set("i", "<C-k>", "<Up>", { noremap = true })
+vim.keymap.set("i", "<C-l>", "<Right>", { noremap = true })

@@ -74,7 +74,12 @@
     enable = true;  
     layout = "us";
     xkbVariant = "intl";
-    xkbOptions = "compose:dblquote";
+    xkbOptions = lib.concatStringsSep "," [
+      "altwin:swap_lalt_lwin"
+      "ctrl:nocaps"
+      "compose:dblquote"
+      "caps:escape"
+    ];
     exportConfiguration = true; 
     displayManager = {
       sessionCommands = ''

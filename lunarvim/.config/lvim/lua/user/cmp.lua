@@ -48,7 +48,7 @@ local function jumpable(dir)
       local n_next = node.next
       local next_pos = n_next and n_next.mark:pos_begin()
       local candidate = n_next ~= snippet and next_pos and (pos[1] < next_pos[1])
-      or (pos[1] == next_pos[1] and pos[2] < next_pos[2])
+          or (pos[1] == next_pos[1] and pos[2] < next_pos[2])
 
       -- Past unmarked exit node, exit early
       if n_next == nil or n_next == snippet.next then
@@ -159,8 +159,8 @@ local setup = {
     { name = "tmux" },
   },
   mapping = cmp.mapping.preset.insert {
-    ["<C-k>"] = cmp.mapping.select_prev_item(),
-    ["<C-j>"] = cmp.mapping.select_next_item(),
+    ["<M-n>"] = cmp.mapping.select_prev_item(),
+    ["<M-p>"] = cmp.mapping.select_next_item(),
     ["<Down>"] = cmp.mapping(cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Select }, { "i" }),
     ["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Select }, { "i" }),
     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -212,7 +212,7 @@ local setup = {
       end
 
       if jumpable(1) and luasnip.jump(1) then
-        return -- success, exit early
+        return   -- success, exit early
       end
       fallback() -- if not exited early, always fallback
     end),

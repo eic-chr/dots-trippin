@@ -5,10 +5,10 @@ end
 
 zen_mode.setup {
   window = {
-    backdrop = 1,
+    backdrop = 0.95,
     height = 0.9,
     -- width = 0.5,
-    width = 80,
+    width = 0.8,
     options = {
       signcolumn = "no",
       number = false,
@@ -22,7 +22,7 @@ zen_mode.setup {
   plugins = {
     gitsigns = { enabled = false },
     tmux = { enabled = false },
-    twilight = { enabled = false },
+    twilight = { enabled = true },
   },
   on_open = function()
     require("lsp-inlayhints").toggle()
