@@ -14,7 +14,8 @@
     };
     gc.automatic = true;
   };
-
+system.stateVersion = 5;
+ids.gids.nixbld = 30000;
   nix.configureBuildUsers = true;
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.zsh.enable = true;
@@ -34,6 +35,7 @@
     "homebrew/cask"
     # kafkactl
     "deviceinsight/packages"
+    "quarkusio/tap/quarkus"
     # tfswitch
     "warrensbox/tap"
     "brew/overrides"
@@ -42,9 +44,10 @@
   homebrew.brews = [
     # yubikey
     "bash-language-server"
+    "quarkus"
     #"colima"
-    #"docker"
-    #"docker-compose"
+    # "docker"
+    # "docker-compose"
     "gnupg"
     "graphviz"
     "hopenpgp-tools"
@@ -72,6 +75,7 @@
 #    "firefox"
 #    "google-chrome"
     "remarkable"
+    "gpt4all"
     "neo4j"
     "drawio"
 #    "docker"

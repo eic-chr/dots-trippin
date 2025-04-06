@@ -1,6 +1,7 @@
 local neogit = require "neogit"
 
 neogit.setup {
+
   disable_signs = false,
   disable_hint = true,
   disable_context_highlighting = false,
@@ -95,3 +96,12 @@ neogit.setup {
   --   },
   -- },
 }
+vim.api.nvim_set_hl(0, "NeogitDiffAdd", { fg = "#A3BE8C", bg = "NONE" })                    -- Grün für Additions
+vim.api.nvim_set_hl(0, "NeogitDiffDelete", { fg = "#BF616A", bg = "NONE" })                 -- Rot für Deletions
+vim.api.nvim_set_hl(0, "NeogitDiffContext", { fg = "#D8DEE9", bg = "#2E3440" })             -- Normaler Diff-Kontext
+vim.api.nvim_set_hl(0, "NeogitHunkHeader", { fg = "#88C0D0", bg = "#3B4252", bold = true }) -- Hunk-Header
+
+vim.api.nvim_set_hl(0, "NeogitCommitViewHeader", { fg = "#88C0D0", bold = true })           -- Titel des Commit-Fensters
+vim.api.nvim_set_hl(0, "NeogitCommitViewDescription", { fg = "#EBCB8B" })                   -- Commit-Beschreibung
+vim.api.nvim_set_hl(0, "NeogitCommitViewFooter", { fg = "#A3BE8C", bold = true })           -- Footer mit Infos
+vim.api.nvim_set_hl(0, "NeogitCommitViewText", { fg = "#D8DEE9" })                          -- Allgemeiner Text

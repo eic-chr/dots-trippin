@@ -1,15 +1,18 @@
 { pkgs ? import <nixpkgs>, home-manager ? import <home-manager>, ... }:
 let
-  username = "christianeickhoff";
-  system = "aarch64-darwinn";
-  lombok-version = "1.18.28";
+username = "christianeickhoff";
+system = "aarch64-darwinn";
+lombok-version = "1.18.28";
 in {
 
-  # Allow unfree packages
+# Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
 
-  imports = [ <home-manager/nix-darwin> ./configuration.nix ];
+  imports = [ <home-manager/nix-darwin> 
+    ./configuration.nix
+    (import ../modules/lix.nix)
+  ];
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;

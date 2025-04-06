@@ -1,4 +1,5 @@
 lvim.leader = ','
+lvim.colorscheme = "tokyonight-night"
 lvim.format_on_save = true
 vim.opt.relativenumber = true -- relative line numbers
 vim.diagnostic.config({ virtual_text = true })
@@ -107,16 +108,16 @@ end
 
 -- Define a Lua function to call a system command
 function EXEC_SYS_CMD(command)
-    -- Call the system command and capture its output
-    print("gpg -e -a -r christian@ewolutions.de m -o %:p.gpg -'")
+  -- Call the system command and capture its output
+  print("gpg -e -a -r christian@ewolutions.de m -o %:p.gpg -'")
   vim.cmd('!gpg --default-recipient-self -ae 2>/dev/null')
-    -- vim.cmd(':write !gpg -e -a -r christian@ewolutions.de m -o %:p.gpg -')
-    -- local output = vim.fn.system(command)
+  -- vim.cmd(':write !gpg -e -a -r christian@ewolutions.de m -o %:p.gpg -')
+  -- local output = vim.fn.system(command)
 
-    -- -- Print the output (optional)
-    -- if output ~= nil and output ~= "" then
-    --     print(output)
-    -- end
+  -- -- Print the output (optional)
+  -- if output ~= nil and output ~= "" then
+  --     print(output)
+  -- end
 end
 
 -- Example: Call a system command to list files in the current directory
@@ -130,3 +131,31 @@ vim.opt.breakindent = true
 vim.opt.breakindentopt = 'shift:2'
 
 
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    -- Standard Diff Highlights
+    vim.cmd [[
+      highlight DiffAdd    guibg=#144212 guifg=NONE
+      highlight DiffChange guibg=#3b3f26 guifg=NONE
+      highlight DiffDelete guibg=#4a1a1a guifg=NONE
+      highlight DiffText   guibg=#1f4a7a guifg=NONE
+    ]]
+    -- Neogit Diff Highlights
+    vim.cmd [[
+      highlight NeogitDiffAdd      guifg=#88cc88 guibg=NONE
+      highlight NeogitDiffDelete   guifg=#ff8888 guibg=NONE
+      highlight NeogitDiffContext  guifg=#aaaaaa guibg=NONE
+      highlight NeogitHunkHeader   guifg=#ffffff guibg=#444444 gui=bold
+      highlight NeogitCursorLine   guibg=#333333
+    ]]
+    -- Diffview spezifisch
+    vim.cmd [[
+      highlight DiffviewDiffAdd         guibg=#1e3f2f guifg=NONE
+      highlight DiffviewDiffAddAsDelete guibg=#442222 guifg=NONE
+      highlight DiffviewDiffDelete      guibg=#4a1a1a guifg=NONE
+      highlight DiffviewDiffChange      guibg=#3b3f26 guifg=NONE
+      highlight DiffviewDiffText        guibg=#1f4a7a guifg=NONE
+    ]]
+  end,
+})

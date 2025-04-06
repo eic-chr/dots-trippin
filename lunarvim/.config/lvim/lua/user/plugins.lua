@@ -1,6 +1,19 @@
 -- Additional Plugins
 
 lvim.plugins = {
+  {
+    "samoshkin/vim-mergetool",
+    config = function()
+      vim.g.mergetool_layout = 'mr' -- (merge in the middle, remote right, local left)
+      vim.g.mergetool_prefer_revision = 'local'
+    end,
+  },
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
   { "lvimuser/lsp-inlayhints.nvim" },
   {
     "Groveer/plantuml.nvim",
