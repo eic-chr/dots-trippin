@@ -164,6 +164,7 @@
       gnumake
       gnupg
       htop
+      joplin
       jq
       lunarvim 
       golangci-lint
