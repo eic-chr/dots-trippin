@@ -4,7 +4,7 @@ if not status then
 end
 
 local home = os.getenv "HOME"
-local workspace_path = home .. "/.local/share/lunarvim/jdtls-workspace/"
+local workspace_path = home .. "/.local/share/lvim/jdtls-workspace/"
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 local workspace_dir = workspace_path .. project_name
 
@@ -97,8 +97,8 @@ local config = {
 
 config["on_attach"] = function(client, bufnr)
   local _, _ = pcall(vim.lsp.codelens.refresh)
- require("jdtls").setup_dap({ hotcodereplace = "auto" })
- require("lvim.lsp").on_attach(client, bufnr)
+  require("jdtls").setup_dap({ hotcodereplace = "auto" })
+  require("lvim.lsp").on_attach(client, bufnr)
   local status_ok, jdtls_dap = pcall(require, "jdtls.dap")
   if status_ok then
     jdtls_dap.setup_dap_main_class_configs()

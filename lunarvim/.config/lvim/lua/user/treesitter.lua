@@ -50,8 +50,8 @@ lvim.builtin.treesitter.textobjects = {
       -- You can use the capture groups defined in textobjects.scm
       ["af"] = "@function.outer",
       ["if"] = "@function.inner",
-      ["at"] = "@class.outer",
-      ["it"] = "@class.inner",
+      -- ["at"] = "@class.outer",
+      -- ["it"] = "@class.inner",
       ["ac"] = "@call.outer",
       ["ic"] = "@call.inner",
       ["aa"] = "@parameter.outer",
@@ -70,6 +70,8 @@ lvim.builtin.treesitter.textobjects = {
       ["iA"] = "@attribute.inner",
       ["aF"] = "@frame.outer",
       ["iF"] = "@frame.inner",
+      ["at"] = "@tag.outer",      -- a tag (z. B. <div>...</div>)
+      ["it"] = "@tag.inner",
     },
   },
 }

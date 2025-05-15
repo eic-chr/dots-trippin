@@ -13,7 +13,6 @@ vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, {
   "tsserver",
   "yamlls",
 })
-print("config loaded")
 
 -- Define a key mapping to call the function
 lvim.builtin.treesitter.highlight.enable = true
@@ -23,7 +22,7 @@ lvim.builtin.treesitter.ensure_installed = { "latex", "javascript", "typescript"
 require "user.plugins"
 require "user.cmp"
 require "user.java"
-require "user.jsts"
+reload "user.jsts"
 require "user.keymappings"
 require "user.neogit"
 require "user.snippets"
@@ -35,7 +34,6 @@ require "user.codeium"
 require "user.markdown"
 -- require "user.surround"
 -- vim.cmd(":RltvNmbr")
-print("config loaded")
 
 -- lvim.builtin.lualine = {
 --   options = {
