@@ -22,7 +22,6 @@ ids.gids.nixbld = 30000;
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
-
   # Not sure if this only applies to the internal keyboard
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToEscape = true;

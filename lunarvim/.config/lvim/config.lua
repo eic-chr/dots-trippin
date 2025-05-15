@@ -26,7 +26,8 @@ reload "user.jsts"
 require "user.keymappings"
 require "user.neogit"
 require "user.snippets"
-require "user.whichkey"
+reload "user.whichkey"
+-- reload "user.overseer"
 require "user.zk"
 require("user.treesitter")
 require("user.zen-mode")
@@ -35,25 +36,33 @@ require "user.markdown"
 -- require "user.surround"
 -- vim.cmd(":RltvNmbr")
 
+local overseer_ok, overseer = pcall(require, "overseer")
+if overseer_ok then
+  lvim.builtin.lualine.sections.lualine_x = {
+    "overseer", -- zeigt "✔", "✖", "⟳", etc.
+    "encoding",
+    "filetype",
+  }
+end
 -- lvim.builtin.lualine = {
 --   options = {
 --     -- theme = 'gruvbox',
---     section_separators = {'', ''},
---     component_separators = {'', ''},
+--     section_separators = { '', '' },
+--     component_separators = { '', '' },
 --   },
---   sections = {
---     lualine_a = {'mode'},
---     lualine_b = {'branch'},
---     lualine_c = {'filename'},
---     lualine_x = {'filetype'},
---     lualine_y = {'progress'},
---     lualine_z = {'location'}
---   },
+-- sections = {
+--     lualine_a = { 'mode' },
+--     lualine_b = { 'branch' },
+--     lualine_c = { 'filename' },
+-- lualine_x = { require("overseer").component.status },
+--     lualine_y = { 'progress' },
+--     lualine_z = { 'location' }
+-- },
 --   inactive_sections = {
 --     lualine_a = {},
 --     lualine_b = {},
---     lualine_c = {'filename'},
---     lualine_x = {'location'},
+--     lualine_c = { 'filename' },
+--     lualine_x = { 'location' },
 --     lualine_y = {},
 --     lualine_z = {}
 --   },

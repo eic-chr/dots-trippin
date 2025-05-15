@@ -2,6 +2,12 @@
 
 lvim.plugins = {
   {
+    "stevearc/overseer.nvim",
+    config = function()
+      require("overseer").setup()
+    end,
+  },
+  {
     "samoshkin/vim-mergetool",
     config = function()
       vim.g.mergetool_layout = 'mr' -- (merge in the middle, remote right, local left)

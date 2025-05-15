@@ -1,4 +1,3 @@
-
 lvim.builtin.which_key.mappings["g"] = {
   name = "Git",
   -- g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle(12000)<cr>", "Lazygit" },
@@ -33,6 +32,17 @@ lvim.builtin.which_key.mappings["g"] = {
     p = { "<cmd>Gist -b -p<cr>", "Create Private" },
   },
 }
+lvim.builtin.which_key.mappings["o"] = {
+  name = "+overseer", -- Gruppentitel unter <leader>o
+
+  r = { "<cmd>OverseerRun<CR>", "Run Task" },
+  t = { "<cmd>OverseerToggle<CR>", "Toggle Task List" },
+  l = { "<cmd>OverseerLoadBundle<CR>", "Load Bundle" },
+  s = { "<cmd>OverseerSaveBundle<CR>", "Save Bundle" },
+  c = { "<cmd>OverseerClearCache<CR>", "Clear Cache" },
+  k = { "<cmd>OverseerTaskAction<CR>", "Task Actions" }, -- Befehl zum Stoppen von Tasks
+}
+
 lvim.builtin.which_key.mappings["t"] = {
   name = "+Terminal",
   f = { "<cmd>ToggleTerm<cr>", "Floating terminal" },
