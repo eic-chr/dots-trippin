@@ -13,6 +13,11 @@ apply: configuration.nix
 	doas nixos-rebuild switch -I nixos-config=$(abspath $<) $(NIX_CHANNELS)
 	# list-executables --clear-cache 2>&1 > /dev/null
 
+PHONY+=deps
+deps: configuration.nix
+	doas nixos-rebuild --upgrade-all build -I nixos-config=$(abspath $<) $(NIX_CHANNELS)
+	nix path-info -r ./result --json | jq -r '.[] | select(.narHash == null) | .path'
+	# list-executables --clear-cache 2>&1 > /dev/null
 PHONY+=update
 update: configuration.nix
 	doas nixos-rebuild --upgrade-all switch -I nixos-config=$(abspath $<) $(NIX_CHANNELS)
