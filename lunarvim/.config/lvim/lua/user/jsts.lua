@@ -7,6 +7,25 @@ local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local capabilities = require("lvim.lsp").common_capabilities()
 
+local function organize_imports()
+  local params = {
+    command = "_typescript.organizeImports",
+    arguments = { vim.api.nvim_buf_get_name(0) },
+    title = ""
+  }
+  vim.lsp.buf.execute_command(params)
+end
+
+require('lspconfig').tsserver.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  commands = {
+    OrganizeImports = {
+      organize_imports,
+      description = "Organize Imports"
+    }
+  }
+}
 -- require("typescript").setup {
 --   -- disable_commands = false, -- prevent the plugin from creating Vim commands
 --   debug = false, -- enable debug logging for commands

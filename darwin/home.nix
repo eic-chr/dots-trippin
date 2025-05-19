@@ -30,6 +30,8 @@
 
   home.sessionVariables.GIT_EDITOR = "${pkgs.lunarvim}/bin/lvim";
 
-  #home.file.".p10k.zsh".source = ../p10k-config/.p10k.zsh;
+  home.file.".p10k.zsh".source = ../p10k-config/.p10k.zsh;
+  home.file.".oh-my-zsh/custom/themes/powerlevel10k".source =
+    "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
   #home.file.".zshrc".source = ../zsh-zgenom/.zshrc;
 }

@@ -15,6 +15,9 @@ in
 
 
   home-manager.users.christian = {
+    home.file.".p10k.zsh".source = ../p10k-config/.p10k.zsh;
+    home.file.".oh-my-zsh/custom/themes/powerlevel10k".source =
+      "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
     home.file.".config/autostart-scripts/setxkbmap.sh" = {
       text = ''
 #!/bin/bash
@@ -49,6 +52,9 @@ in
         pkgs.ferdium
         pkgs.fzf
         pkgs.kdePackages.kolourpaint
+        pkgs.kdePackages.kdegraphics-thumbnailers
+        pkgs.kdePackages.kio-extras
+        pkgs.kdePackages.qtimageformats
         pkgs.keepassxc
         pkgs.libreoffice
         pkgs.nextcloud-client
@@ -79,8 +85,21 @@ in
     programs.thunderbird = import ./thunderbird.nix; 
     programs.zsh = {
       enable = true;
-      initExtra = lib.readFile ./initExtra.sh;
-      enableAutosuggestions = false;
+      initExtra = ''
+        source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme;
+        ZSH_THEME="powerlevel10k/powerlevel10k"
+        eval "$(direnv hook zsh)"
+        [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+      '';
+      enableAutosuggestions = true;
+      syntaxHighlighting.enable = true;
+      # plugins = [
+      #   {
+      #     name = "powerlevel10k";
+      #     src = pkgs.zsh-powerlevel10k;
+      #     file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      #   }
+      # ];
       shellAliases = {
         ls = "${pkgs.eza}/bin/exa";
         l = "${pkgs.eza}/bin/exa -la";
@@ -93,7 +112,7 @@ in
       oh-my-zsh = {
         enable = true;
         plugins = [ "git" ];
-        theme = "robbyrussell";
+        # theme = "powerlevel10k/powerlevel10k";
       };
     };
 
@@ -117,6 +136,15 @@ in
 # home.file.".p10k.zsh".source = ../p10k-config/.p10k.zsh;
   };
 
+  fileSystems."/home/christian/Scans" = {
+    device = "//nas1.eickhoff.lan/Scans";
+    fsType = "cifs";
+    options = [ 
+      "credentials=/home/christian/.smb_crd"
+      "uid=1000" # Your user ID
+      "gid=1000" # Your group ID
+    ]; # Path to the credentials file
+  };
   fileSystems."/home/christian/nas_multimedia" = {
     device = "//nas1.eickhoff.lan/Multimedia";
     fsType = "cifs";
