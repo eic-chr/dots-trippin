@@ -1,7 +1,7 @@
 { programs, lib, pkgs, ... }: {
   programs.zsh = {
     enable = true;
-    enableAutosuggestions = false;
+    enableAutosuggestions = true;
     oh-my-zsh.enable = true;
     oh-my-zsh.theme = "agnoster";
     oh-my-zsh.plugins = [ "git" "sudo" "mvn" "npm" "ssh" ];

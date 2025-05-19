@@ -115,6 +115,7 @@ ids.gids.nixbld = 30000;
     jnv
     languagetool
     ltex-ls # lsp for languagetool
+    zsh-powerlevel10k
   ];
 
   # Nix-darwin does not link installed applications to the user environment. This means apps will not show up
