@@ -86,6 +86,7 @@ in
     programs.zsh = {
       enable = true;
       initExtra = ''
+        bindkey -v
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme;
         ZSH_THEME="powerlevel10k/powerlevel10k"
         eval "$(direnv hook zsh)"

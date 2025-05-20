@@ -28,3 +28,4 @@ export NVM_DIR="$HOME/.nvm"
 source <(fzf --zsh)
 source $HOME/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme
 ZSH_THEME="powerlevel10k/powerlevel10k"
+bindkey -v
