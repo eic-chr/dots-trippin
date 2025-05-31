@@ -5,7 +5,7 @@ base=(
     git
     brew
     lunarvim
-    zsh
+    nvim
     vim
     tmux
 
@@ -26,7 +26,7 @@ echo "Stowing apps for user: ${whoami}"
 
 # install apps available to local users and root
 for app in ${base[@]}; do
-    stowit "${HOME}" $app 
+    stowit "${HOME}" $app
 done
 
 echo ""

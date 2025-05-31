@@ -1,3 +1,5 @@
+vim.notify("The internet with tuff")
+print("is for")
 lvim.leader = ','
 lvim.colorscheme = "tokyonight-night"
 lvim.format_on_save = true
@@ -23,6 +25,7 @@ require "user.plugins"
 require "user.cmp"
 require "user.java"
 reload "user.jsts"
+reload "user.llm"
 require "user.keymappings"
 require "user.neogit"
 require "user.snippets"
@@ -35,6 +38,22 @@ require "user.codeium"
 require "user.markdown"
 -- require "user.surround"
 -- vim.cmd(":RltvNmbr")
+-- Define a function to check that ollama is installed and working
+local function get_condition()
+  return package.loaded["ollama"] and require("ollama").status ~= nil
+end
+
+
+-- Define a function to check the status and return the corresponding icon
+local function get_status_icon()
+  local status = require("ollama").status()
+
+  if status == "IDLE" then
+    return "OLLAMA IDLE"
+  elseif status == "WORKING" then
+    return "OLLAMA BUSY"
+  end
+end
 
 local overseer_ok, overseer = pcall(require, "overseer")
 if overseer_ok then
@@ -42,8 +61,10 @@ if overseer_ok then
     "overseer", -- zeigt "✔", "✖", "⟳", etc.
     "encoding",
     "filetype",
+    get_status_icon, get_condition
   }
 end
+
 -- lvim.builtin.lualine = {
 --   options = {
 --     -- theme = 'gruvbox',

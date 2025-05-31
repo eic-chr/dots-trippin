@@ -29,3 +29,4 @@ source <(fzf --zsh)
 source $HOME/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme
 ZSH_THEME="powerlevel10k/powerlevel10k"
 bindkey -v
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh

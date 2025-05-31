@@ -2,6 +2,15 @@
 
 lvim.plugins = {
   {
+    "olimorris/codecompanion.nvim",
+    opts = {
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
+  {
     "stevearc/overseer.nvim",
     config = function()
       require("overseer").setup()

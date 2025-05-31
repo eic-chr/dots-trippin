@@ -87,10 +87,10 @@ ids.gids.nixbld = 30000;
     awscli2
     azure-cli
     bat
-    curl
     direnv
     eza
     fd
+    lazyvim
     fzf
     jq
 #    kafkactl
