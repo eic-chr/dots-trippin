@@ -51,6 +51,7 @@ in
       pkgs.cifs-utils
         pkgs.ferdium
         pkgs.fzf
+        pkgs.kdePackages.merkuro
         pkgs.kdePackages.kolourpaint
         pkgs.kdePackages.kdegraphics-thumbnailers
         pkgs.kdePackages.kio-extras

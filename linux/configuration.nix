@@ -187,6 +187,7 @@
       simplescreenrecorder
       stow
       teamviewer
+      texliveFull
       tmux
       vlc
       vscode
