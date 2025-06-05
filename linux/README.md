@@ -114,7 +114,7 @@ home-manager switch --flake .#charlotte@offnix
    ```bash
    # On each system, run:
    sudo nixos-generate-config
-   
+
    # Copy the generated hardware-configuration.nix to the appropriate host directory
    ```
 
@@ -183,8 +183,8 @@ If rebuild fails, check:
 - Password needs to be entered manually on first KMail start
 
 #### Charlotte's Email Setup Details
-- **Identity**: Charlotte Eickhoff (EWolutions - Eickhoff & Wölfing IT Solutions GbR)
-- **Automatic services**: 
+- **Identity**: Charlotte Amend (EWolutions - Eickhoff & Wölfing IT Solutions GbR)
+- **Automatic services**:
   - `kmail-setup.service` - Configures email account on login
   - `keyboard-setup.service` - Sets German MacBook layout
 - **Manual step**: Enter email password when prompted by KMail

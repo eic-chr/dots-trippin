@@ -44,7 +44,7 @@
 
   # X11 configuration
   services.xserver = {
-    enable = true;  
+    enable = true;
     layout = "us";
     xkbVariant = "intl";
     xkbOptions = lib.concatStringsSep "," [
@@ -53,7 +53,7 @@
       "compose:dblquote"
       "caps:escape"
     ];
-    exportConfiguration = true; 
+    exportConfiguration = true;
     displayManager = {
       sessionCommands = ''
         ${pkgs.x11vnc}/bin/x11vnc -rfbauth $HOME/.vnc/passwd &
@@ -135,6 +135,9 @@
   # Common system packages
   environment.systemPackages = with pkgs; [
     direnv
+    gcc
+    gnumake
+    pkg-config
     git
     git-crypt
     gnumake
@@ -170,7 +173,7 @@
   # Networking
   networking = {
     networkmanager.enable = true;
-    firewall.allowedTCPPorts = [ 3389 ];  # RDP
+    firewall.allowedTCPPorts = [ 3389 ]; # RDP
   };
 
   # SSH

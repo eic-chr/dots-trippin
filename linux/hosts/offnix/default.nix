@@ -13,7 +13,7 @@
     };
     charlotte = {
       isNormalUser = true;
-      description = "Charlotte Eickhoff";
+      description = "Charlotte Amend";
       extraGroups = [ "networkmanager" ];
       shell = pkgs.zsh;
     };
