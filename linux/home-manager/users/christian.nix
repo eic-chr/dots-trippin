@@ -76,6 +76,7 @@
     signal-cli
     gpt4all
     signal-desktop
+    stow
     thunderbird
     xorg.xset
     zed-editor
@@ -87,7 +88,24 @@
     oh-my-zsh
     git
   ];
-
+  systemd.user.services.dotfiles-setup = {
+    Unit = {
+      Description = "Setup dotfiles with stow";
+      After = [ "graphical-session.target" ];
+      Wants = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash ${config.home.homeDirectory}/projects/ceickhoff/dots-trippin/setup.sh";
+      RemainAfterExit = true;
+      Environment = [
+        "PATH=${lib.makeBinPath [ pkgs.stow pkgs.git pkgs.coreutils ]}"
+      ];
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
   # Systemd service for keyboard configuration
   systemd.user.services.keyboard-setup = {
     Unit = {
@@ -106,6 +124,22 @@
   };
 
   programs = {
+    gpg = {
+      enable = true;
+      settings = {
+        # GPG-Agent als SSH-Agent verwenden
+        use-agent = true;
+      };
+    };
+
+    services.gpg-agent = {
+      enable = true;
+      enableSshSupport = true;
+      sshKeys = [
+        # SHA256 Hash deines SSH-Keys (falls gewünscht)
+      ];
+      pinentryPackage = pkgs.pinentry-gtk2;
+    };
     ssh = {
       enable = true;
       addKeysToAgent = "yes";
@@ -158,8 +192,18 @@
     text = ''
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de
     '';
-    mode = "0644";
   };
+
+  home.file.".ssh/config" = {
+    text = ''
+      Host *
+          AddKeysToAgent yes
+          IdentityFile ~/.ssh/id_ed25519
+          ServerAliveInterval 60
+          ServerAliveCountMax 3
+    '';
+  };
+
   # Zed editor configuration
   home.file.".config/zed/settings.json" = {
     text = builtins.toJSON {
