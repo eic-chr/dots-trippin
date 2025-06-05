@@ -61,6 +61,7 @@
               home.packages = with pkgs; [
                 docker
                 vscode
+                zed-editor
                 golangci-lint
                 gopls
                 gofumpt

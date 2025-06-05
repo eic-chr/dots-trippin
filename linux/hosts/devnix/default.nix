@@ -29,6 +29,7 @@
     delve
     nil
     vscode
+    zed-editor
   ];
 
   # Bootloader configuration specific to devnix
