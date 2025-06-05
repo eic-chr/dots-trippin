@@ -120,6 +120,11 @@
       enable = true;
       settings = builtins.fromTOML (lib.readFile ../starship/starship.toml);
     };
+
+    wezterm = {
+      enable = true;
+      extraConfig = lib.readFile ../../../wezterm.lua;
+    };
   };
 
   # Zed editor configuration
