@@ -122,11 +122,6 @@
   programs = {
     firefox.enable = true;
     zsh.enable = true;
-    gnupg.agent = {
-      enable = true;
-      enableSSHSupport = true;
-      pinentryPackage = lib.mkForce pkgs.pinentry-gtk2;
-    };
   };
 
   # Allow unfree packages
