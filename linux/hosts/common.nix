@@ -76,9 +76,6 @@
     # Configure input settings for all keyboards
     libinput = {
       enable = true;
-      keyboard = {
-        xkbOptions = "compose:ralt";
-      };
     };
   };
 
