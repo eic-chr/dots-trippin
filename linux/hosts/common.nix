@@ -57,22 +57,17 @@
     displayManager = {
       sessionCommands = ''
         ${pkgs.x11vnc}/bin/x11vnc -rfbauth $HOME/.vnc/passwd &
-      '';
-      setupCommands = ''
         ${pkgs.xorg.setxkbmap}/bin/setxkbmap us intl
       '';
+      autoLogin = {
+        enable = false;
+        user = "christian";
+      };
       sddm = {
         enable = true;
-        settings = {
-          X11 = {
-            ServerArguments = "-nolisten tcp -keeptty -verbose 3";
-            EnableHiDPI = true;
-          };
-        };
       };
     };
     desktopManager.plasma6.enable = true;
-
     # Configure input settings for all keyboards
     libinput = {
       enable = true;

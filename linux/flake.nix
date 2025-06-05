@@ -7,9 +7,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    plasma-manager = {
+      url = "github:pjones/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, plasma-manager, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -39,7 +44,12 @@
               home-manager.useUserPackages = true;
               home-manager.users = {
                 christian = import ./home-manager/users/christian.nix;
-                charlotte = import ./home-manager/users/charlotte.nix;
+                charlotte = {
+                  imports = [
+                    plasma-manager.homeManagerModules.plasma-manager
+                    ./home-manager/users/charlotte.nix
+                  ];
+                };
               };
             }
           ];
@@ -56,7 +66,7 @@
               home.username = "christian";
               home.homeDirectory = "/home/christian";
               home.stateVersion = "24.11";
-              
+
               # Add host-specific packages for devnix
               home.packages = with pkgs; [
                 docker

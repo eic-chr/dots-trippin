@@ -2,6 +2,15 @@
 
 {
   home.stateVersion = "24.11";
+  home.language = {
+    base = "de_DE.UTF-8";
+  };
+  home.sessionVariables = {
+    LANG = "de_DE.UTF-8";
+    LC_ALL = "de_DE.UTF-8";
+    LC_MESSAGES = "de_DE.UTF-8";
+  };
+
   home.file.".config/kxkbrc" = {
     text = ''
       [Layout]
@@ -106,6 +115,29 @@
   };
 
   programs = {
+    plasma = {
+      enable = true;
+
+      # Direkte kdeGlobals Konfiguration
+      configFile = {
+        "kdeGlobals" = {
+          "Locale" = {
+            "LANG" = "de_DE.UTF-8";
+            "LC_MESSAGES" = "de_DE.UTF-8";
+            "Country" = "de";
+            "Language" = "de";
+          };
+          "General" = {
+            "Name" = "Breeze";
+            "ColorScheme" = "BreezeLight";
+          };
+          "KDE" = {
+            "SingleClick" = false;
+            "LookAndFeelPackage" = "org.kde.breezedark.desktop";
+          };
+        };
+      };
+    };
     zsh = {
       enable = true;
       initExtra = ''
