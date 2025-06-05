@@ -10,6 +10,8 @@ help:
 	@echo "Daily Usage:"
 	@echo "  devnix        - Build and switch to devnix configuration"
 	@echo "  offnix        - Build and switch to offnix configuration"
+	@echo "  devnix-path   - Switch using absolute path (avoids Git issues)"
+	@echo "  offnix-path   - Switch using absolute path (avoids Git issues)"
 	@echo ""
 	@echo "Advanced:"
 	@echo "  switch-devnix - Switch to devnix configuration"
@@ -45,14 +47,23 @@ devnix: switch-devnix
 
 offnix: switch-offnix
 
+# Alternative targets with absolute path (avoids Git ownership issues)
+devnix-path:
+	@echo "Switching to devnix configuration (absolute path)..."
+	git add . && doas nixos-rebuild switch --flake path:$$(pwd)#devnix
+
+offnix-path:
+	@echo "Switching to offnix configuration (absolute path)..."
+	git add . && doas nixos-rebuild switch --flake path:$$(pwd)#offnix
+
 # Switch commands
 switch-devnix:
 	@echo "Switching to devnix configuration..."
-	doas nixos-rebuild switch --flake .#devnix
+	git add . && doas nixos-rebuild switch --flake .#devnix
 
 switch-offnix:
 	@echo "Switching to offnix configuration..."
-	doas nixos-rebuild switch --flake .#offnix
+	git add . && doas nixos-rebuild switch --flake .#offnix
 
 # Build without switching
 build-devnix:
