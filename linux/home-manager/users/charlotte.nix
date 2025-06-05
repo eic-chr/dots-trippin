@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  home.stateVersion = "24.11";
+
   home.file = {
     "signature-ewolutions-ca.txt" = {
       text = ''
@@ -147,8 +149,8 @@
       text = ''
         [Identity #0]
         Email Address=charlotte@ewolutions.de
-        Identity Name=Charlotte Eickhoff
-        Name=Charlotte Eickhoff
+        Identity Name=Charlotte Amend
+        Name=Charlotte Amend
         Organization=EWolutions - Eickhoff & Wölfing IT Solutions GbR
         Reply-To Address=
         Signature Type=0

@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  home.stateVersion = "24.11";
+
   home.file = {
     ".p10k.zsh".source = ../../p10k-config/.p10k.zsh;
     ".oh-my-zsh/custom/themes/powerlevel10k".source = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
