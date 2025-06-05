@@ -6,12 +6,11 @@ help:
 	@echo ""
 	@echo "Migration:"
 	@echo "  migrate       - Migrate from old configuration to new flake-based setup"
+	@echo "  setup         - Fix Git ownership issues (run once if needed)"
 	@echo ""
 	@echo "Daily Usage:"
 	@echo "  devnix        - Build and switch to devnix configuration"
 	@echo "  offnix        - Build and switch to offnix configuration"
-	@echo "  devnix-path   - Switch using absolute path (avoids Git issues)"
-	@echo "  offnix-path   - Switch using absolute path (avoids Git issues)"
 	@echo ""
 	@echo "Advanced:"
 	@echo "  switch-devnix - Switch to devnix configuration"
@@ -42,28 +41,36 @@ migrate:
 	chmod +x ./migrate-to-flakes.sh
 	./migrate-to-flakes.sh
 
+# Fix Git ownership issues
+setup:
+	@echo "Setting up Git repository and ownership..."
+	@if [ ! -d .git ]; then \
+		echo "Initializing Git repository..."; \
+		git init; \
+		git add .; \
+		git commit -m "Initial flake configuration"; \
+	else \
+		echo "Adding current changes to Git..."; \
+		git add . || true; \
+		git commit -m "Update configuration" || echo "No changes to commit"; \
+	fi
+	@echo "Adding safe directory for root..."
+	doas git config --global --add safe.directory $$(pwd)
+	@echo "Setup complete!"
+
 # Quick host switching
 devnix: switch-devnix
 
 offnix: switch-offnix
 
-# Alternative targets with absolute path (avoids Git ownership issues)
-devnix-path:
-	@echo "Switching to devnix configuration (absolute path)..."
-	git add . && doas nixos-rebuild switch --flake path:$$(pwd)#devnix
-
-offnix-path:
-	@echo "Switching to offnix configuration (absolute path)..."
-	git add . && doas nixos-rebuild switch --flake path:$$(pwd)#offnix
-
 # Switch commands
 switch-devnix:
 	@echo "Switching to devnix configuration..."
-	git add . && doas nixos-rebuild switch --flake .#devnix
+	doas nixos-rebuild switch --flake .#devnix
 
 switch-offnix:
 	@echo "Switching to offnix configuration..."
-	git add . && doas nixos-rebuild switch --flake .#offnix
+	doas nixos-rebuild switch --flake .#offnix
 
 # Build without switching
 build-devnix:
