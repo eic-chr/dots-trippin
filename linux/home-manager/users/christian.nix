@@ -124,6 +124,22 @@
   };
 
   programs = {
+    # Git-Konfiguration
+    git = {
+      enable = true;
+      userName = "Christian Eickhoff";
+      userEmail = "christian@ewolutions.de";
+
+      extraConfig = {
+        init.defaultBranch = "main";
+        push.default = "simple";
+        pull.rebase = true;
+        core.editor = "nvim";
+        push.autoSetupRemote = true;
+        branch.autosetupmerge = "always";
+        branch.autosetuprebase = "always";
+      };
+    };
     gpg = {
       enable = true;
       settings = {
@@ -137,12 +153,12 @@
       enable = true;
       addKeysToAgent = "yes";
       forwardAgent = true;
-
       extraConfig = ''
         Host *
             ServerAliveInterval 60
             ServerAliveCountMax 3
             IdentitiesOnly yes
+            AddKeysToAgent yes
       '';
     };
     thunderbird = import ../../thunderbird.nix;
@@ -276,12 +292,11 @@
   };
   services.gpg-agent = {
     enable = true;
-    enableSshSupport = true;
-    sshKeys = [
-      # SHA256 Hash deines SSH-Keys (falls gewünscht)
-    ];
-    pinentryPackage = pkgs.pinentry-gtk2;
+    enableSshSupport = false;
+    pinentryPackage = pkgs.pinentry-qt; # QT-Version für KDE
+    defaultCacheTtl = 28800; # 8 Stunden
+    maxCacheTtl = 86400; # 24 Stunden
   };
-  # services.ssh-agent.enable = true;
+  services.ssh-agent.enable = true;
   # Host-specific configurations (handled in flake.nix for standalone mode)
 }
