@@ -124,19 +124,5 @@
     };
   };
 
-  # Host-specific configurations
-  home.packages = with pkgs;
-    if config.networking.hostName == "devnix" then [
-      docker
-      vscode
-      golangci-lint
-      gopls
-      gofumpt
-      gotools
-      gomodifytags
-      impl
-      iferr
-      gotests
-      delve
-    ] else [];
+  # Host-specific configurations (handled in flake.nix for standalone mode)
 }

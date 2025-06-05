@@ -31,9 +31,9 @@ linux/
 - Bootloader: GRUB on `/dev/sda`
 
 ### offnix
-- Office system with LibreOffice, TeamViewer
+- Office system with LibreOffice, TeamViewer, KDE PIM Suite
 - Users: `christian` and `charlotte`
-- Charlotte uses German MacBook keyboard layout
+- Charlotte uses German MacBook keyboard layout and KMail
 - Bootloader: systemd-boot with UEFI
 
 ## Usage
@@ -52,11 +52,34 @@ make offnix
 make switch-offnix
 ```
 
+### Home-Manager Only (Faster)
+
+For user-specific configuration changes without full system rebuilds:
+
+```bash
+# Current user on current host
+make hm-switch
+
+# Specific users
+make hm-christian     # Christian (auto-detect host)
+make hm-charlotte     # Charlotte (offnix only)
+
+# Host-specific
+make hm-christian-devnix
+make hm-christian-offnix
+make hm-charlotte-offnix
+```
+
 ### Building Only (without switching)
 
 ```bash
+# Full system builds
 make build-devnix
 make build-offnix
+
+# Home-Manager only
+make hm-build
+make hm-check
 ```
 
 ### Updating
@@ -79,6 +102,10 @@ sudo nixos-rebuild switch --flake .#offnix
 # Build only
 nixos-rebuild build --flake .#devnix
 nixos-rebuild build --flake .#offnix
+
+# Home-Manager standalone
+home-manager switch --flake .#christian@devnix
+home-manager switch --flake .#charlotte@offnix
 ```
 
 ## Initial Setup
@@ -97,7 +124,7 @@ nixos-rebuild build --flake .#offnix
    - `p10k-config/.p10k.zsh`
    - `starship/starship.toml`
    - `wezterm.lua`
-   - `thunderbird.nix`
+   - `thunderbird.nix` (for Christian only)
 
 ## Keyboard Configuration
 
@@ -139,6 +166,44 @@ If rebuild fails, check:
 2. All referenced files exist
 3. Syntax is correct: `nix flake check`
 
+## Email Configuration
+
+### Christian
+- Uses Thunderbird (configured via Home Manager)
+- Configuration imported from `thunderbird.nix`
+
+### Charlotte
+- Uses KMail (KDE's email client)
+- **Pre-configured account**: charlotte@ewolutions.de
+- **SMTP Server**: mail.ewolutions.de (port 587, TLS)
+- **IMAP Server**: mail.ewolutions.de (port 993, SSL)
+- Part of KDE PIM suite including Kontact, KAddressBook, KOrganizer
+- Akonadi database backend automatically configured
+- Account setup runs automatically on first login
+- Password needs to be entered manually on first KMail start
+
+#### Charlotte's Email Setup Details
+- **Identity**: Charlotte Eickhoff (EWolutions - Eickhoff & Wölfing IT Solutions GbR)
+- **Automatic services**: 
+  - `kmail-setup.service` - Configures email account on login
+  - `keyboard-setup.service` - Sets German MacBook layout
+- **Manual step**: Enter email password when prompted by KMail
+
+## Home-Manager vs System Rebuilds
+
+**Use Home-Manager targets for:**
+- Dotfiles changes (shell configs, starship theme)
+- User-specific packages
+- Application configurations (git, wezterm)
+- Much faster (~30 seconds vs 2-5 minutes)
+
+**Use system rebuilds for:**
+- System services, hardware changes
+- Adding/removing users
+- Bootloader or kernel changes
+
+See [HOME-MANAGER.md](HOME-MANAGER.md) for detailed usage guide.
+
 ## Adding New Systems
 
 1. Create new directory under `hosts/`
@@ -146,3 +211,4 @@ If rebuild fails, check:
 3. Import common configuration
 4. Add system to `flake.nix` outputs
 5. Add make targets if desired
+</edits>

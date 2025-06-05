@@ -31,14 +31,27 @@
   # Office specific packages
   environment.systemPackages = with pkgs; [
     libreoffice
-    thunderbird
     joplin-desktop
     signal-desktop
     teamviewer
+    # KDE PIM suite for Charlotte
+    kdePackages.kmail
+    kdePackages.kontact
+    kdePackages.akonadi
+    kdePackages.akonadi-mime
+    kdePackages.akonadi-contacts
+    kdePackages.akonadi-calendar
+    kdePackages.kaddressbook
+    kdePackages.korganizer
   ];
 
   # Enable TeamViewer service
   services.teamviewer.enable = true;
+
+  # Enable Akonadi service for KDE PIM
+  services.akonadi = {
+    enable = true;
+  };
 
   # Bootloader configuration specific to offnix
   boot.loader.systemd-boot.enable = true;

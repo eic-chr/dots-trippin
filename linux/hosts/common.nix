@@ -176,4 +176,17 @@
 
   # SSH
   services.openssh.enable = true;
+
+  # Database support for KDE PIM/Akonadi
+  services.mysql = {
+    enable = true;
+    package = pkgs.mariadb;
+    settings = {
+      mysqld = {
+        innodb_file_per_table = "ON";
+        innodb_file_format = "Barracuda";
+        innodb_large_prefix = "ON";
+      };
+    };
+  };
 }

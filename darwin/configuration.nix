@@ -90,7 +90,6 @@ ids.gids.nixbld = 30000;
     direnv
     eza
     fd
-    lazyvim
     fzf
     jq
 #    kafkactl

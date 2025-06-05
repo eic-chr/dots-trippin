@@ -45,5 +45,59 @@
           ];
         };
       };
+
+      # Standalone Home-Manager configurations
+      homeConfigurations = {
+        "christian@devnix" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [
+            ./home-manager/users/christian.nix
+            {
+              home.username = "christian";
+              home.homeDirectory = "/home/christian";
+              home.stateVersion = "24.11";
+              
+              # Add host-specific packages for devnix
+              home.packages = with pkgs; [
+                docker
+                vscode
+                golangci-lint
+                gopls
+                gofumpt
+                gotools
+                gomodifytags
+                impl
+                iferr
+                gotests
+                delve
+              ];
+            }
+          ];
+        };
+
+        "christian@offnix" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [
+            ./home-manager/users/christian.nix
+            {
+              home.username = "christian";
+              home.homeDirectory = "/home/christian";
+              home.stateVersion = "24.11";
+            }
+          ];
+        };
+
+        "charlotte@offnix" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [
+            ./home-manager/users/charlotte.nix
+            {
+              home.username = "charlotte";
+              home.homeDirectory = "/home/charlotte";
+              home.stateVersion = "24.11";
+            }
+          ];
+        };
+      };
     };
 }
