@@ -44,18 +44,15 @@ migrate:
 # Fix Git ownership issues
 setup:
 	@echo "Setting up Git repository and ownership..."
-	@if [ ! -d .git ]; then \
-		echo "Initializing Git repository..."; \
-		git init; \
-		git add .; \
-		git commit -m "Initial flake configuration"; \
+	@if [ ! -d ../.git ]; then \
+		echo "Initializing Git repository in parent directory..."; \
+		cd .. && git init && git add . && git commit -m "Initial flake configuration"; \
 	else \
 		echo "Adding current changes to Git..."; \
-		git add . || true; \
-		git commit -m "Update configuration" || echo "No changes to commit"; \
+		cd .. && git add . && git commit -m "Update configuration" || echo "No changes to commit"; \
 	fi
 	@echo "Adding safe directory for root..."
-	doas git config --global --add safe.directory $$(pwd)
+	doas git config --global --add safe.directory $$(cd .. && pwd)
 	@echo "Setup complete!"
 
 # Quick host switching
