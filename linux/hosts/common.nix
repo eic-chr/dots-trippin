@@ -146,7 +146,7 @@
     pavucontrol
     pciutils
     polkit
-    kdePackages.polkit-kde-agent-1     
+    kdePackages.polkit-kde-agent
     ripgrep
     stow
     tmux

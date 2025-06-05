@@ -48,10 +48,7 @@
   # Enable TeamViewer service
   services.teamviewer.enable = true;
 
-  # Enable Akonadi service for KDE PIM
-  services.akonadi = {
-    enable = true;
-  };
+  # Akonadi runs as user service, configured in home-manager
 
   # Bootloader configuration specific to offnix
   boot.loader.systemd-boot.enable = true;
