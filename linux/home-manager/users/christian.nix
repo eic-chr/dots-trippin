@@ -24,7 +24,7 @@
       '';
     };
     ".oh-my-zsh/custom/themes/powerlevel10k".source = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
-    
+
     ".config/plasma-workspace/env/keyboard.sh" = {
       text = ''
         #!/bin/sh
@@ -106,8 +106,20 @@
   };
 
   programs = {
+    ssh = {
+      enable = true;
+      addKeysToAgent = "yes";
+      forwardAgent = true;
+
+      extraConfig = ''
+        Host *
+            ServerAliveInterval 60
+            ServerAliveCountMax 3
+            IdentitiesOnly yes
+      '';
+    };
     thunderbird = import ../../thunderbird.nix;
-    
+
     zsh = {
       enable = true;
       initExtra = ''
@@ -141,7 +153,13 @@
 
 
   };
-
+  # SSH Public Key
+  home.file.".ssh/id_ed25519.pub" = {
+    text = ''
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de
+    '';
+    mode = "0644";
+  };
   # Zed editor configuration
   home.file.".config/zed/settings.json" = {
     text = builtins.toJSON {
@@ -150,7 +168,7 @@
       buffer_font_size = 13;
       ui_font_family = "FiraCode Nerd Font";
       ui_font_size = 13;
-    
+
       # Editor settings
       tab_size = 2;
       hard_tabs = false;
@@ -158,7 +176,7 @@
       show_whitespace = "selection";
       remove_trailing_whitespace_on_save = true;
       ensure_final_newline_on_save = true;
-    
+
       # Language settings
       languages = {
         "Nix" = {
@@ -174,7 +192,7 @@
           hard_tabs = true;
         };
       };
-    
+
       # AI assistant configuration for Claude
       assistant = {
         version = "2";
@@ -186,7 +204,7 @@
           name = "anthropic";
         };
       };
-    
+
       # Terminal settings
       terminal = {
         shell = {
@@ -195,7 +213,7 @@
         font_family = "FiraCode Nerd Font";
         font_size = 13;
       };
-    
+
       # Git integration
       git = {
         git_gutter = "tracked_files";
@@ -203,7 +221,7 @@
           enabled = true;
         };
       };
-    
+
       # Project panel
       project_panel = {
         button = true;
@@ -211,7 +229,7 @@
         dock = "left";
         git_status = true;
       };
-    
+
       # Telemetry
       telemetry = {
         diagnostics = false;
@@ -219,6 +237,6 @@
       };
     };
   };
-
+  services.ssh-agent.enable = true;
   # Host-specific configurations (handled in flake.nix for standalone mode)
 }

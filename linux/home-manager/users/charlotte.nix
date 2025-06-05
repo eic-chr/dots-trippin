@@ -2,7 +2,18 @@
 
 {
   home.stateVersion = "24.11";
-
+  home.file.".config/kxkbrc" = {
+    text = ''
+      [Layout]
+      DisplayNames=
+      LayoutList=de
+      Model=macbook79
+      Options=compose:ralt
+      ResetOldOptions=true
+      Use=true
+      VariantList=mac
+    '';
+  };
   home.file = {
     "signature-ewolutions-ca.txt" = {
       text = ''
@@ -222,13 +233,13 @@
 
         [cache]
         DisconnectedModeEnabled=true
-        
+
         [siever]
         SieveSupport=false
         SievePort=4190
         SieveAlternateURL=
         SieveCustomUsername=
-        
+
         [General]
         TrashCollection=0
       '';
@@ -251,29 +262,29 @@
       text = ''
         #!/bin/bash
         # Setup script for KMail with Charlotte's account
-        
+
         # Wait for desktop session to be ready
         sleep 15
-        
+
         # Start Akonadi if not running
         if ! pgrep -x "akonadi" > /dev/null; then
             akonadictl start
             sleep 10
         fi
-        
+
         # Configure Akonadi agents
         akonadictl restart
         sleep 5
-        
+
         # Add IMAP resource if not exists
         if ! akonadictl list | grep -q "akonadi_imap_resource_0"; then
             akonadictl add akonadi_imap_resource akonadi_imap_resource_0
             sleep 3
         fi
-        
+
         # Synchronize collections
         akonadictl restart
-        
+
         echo "KMail setup completed for Charlotte"
       '';
       executable = true;
