@@ -4,7 +4,25 @@
   home.stateVersion = "24.11";
 
   home.file = {
-    ".p10k.zsh".source = ../../../p10k-config/.p10k.zsh;
+    ".p10k.zsh" = {
+      text = ''
+        # Minimal p10k configuration
+        typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+        typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+          dir
+          vcs
+          prompt_char
+        )
+        typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+          status
+          command_execution_time
+          background_jobs
+          time
+        )
+        typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=76
+        typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=196
+      '';
+    };
     ".oh-my-zsh/custom/themes/powerlevel10k".source = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
     
     ".config/plasma-workspace/env/keyboard.sh" = {
