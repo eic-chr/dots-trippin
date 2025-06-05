@@ -123,82 +123,82 @@
       enable = true;
       extraConfig = lib.readFile ../../wezterm.lua;
     };
+  };
 
-    # Zed editor configuration
-    home.file.".config/zed/settings.json" = {
-      text = builtins.toJSON {
-        theme = "One Dark";
-        buffer_font_family = "FiraCode Nerd Font";
-        buffer_font_size = 13;
-        ui_font_family = "FiraCode Nerd Font";
-        ui_font_size = 13;
-      
-        # Editor settings
-        tab_size = 2;
-        hard_tabs = false;
-        soft_wrap = "editor_width";
-        show_whitespace = "selection";
-        remove_trailing_whitespace_on_save = true;
-        ensure_final_newline_on_save = true;
-      
-        # Language settings
-        languages = {
-          "Nix" = {
-            tab_size = 2;
-            hard_tabs = false;
-          };
-          "Rust" = {
-            tab_size = 4;
-            hard_tabs = false;
-          };
-          "Go" = {
-            tab_size = 4;
-            hard_tabs = true;
-          };
+  # Zed editor configuration
+  home.file.".config/zed/settings.json" = {
+    text = builtins.toJSON {
+      theme = "One Dark";
+      buffer_font_family = "FiraCode Nerd Font";
+      buffer_font_size = 13;
+      ui_font_family = "FiraCode Nerd Font";
+      ui_font_size = 13;
+    
+      # Editor settings
+      tab_size = 2;
+      hard_tabs = false;
+      soft_wrap = "editor_width";
+      show_whitespace = "selection";
+      remove_trailing_whitespace_on_save = true;
+      ensure_final_newline_on_save = true;
+    
+      # Language settings
+      languages = {
+        "Nix" = {
+          tab_size = 2;
+          hard_tabs = false;
         };
-      
-        # AI assistant configuration for Claude
-        assistant = {
-          version = "2";
-          default_model = {
-            provider = "anthropic";
-            model = "claude-3-5-sonnet-20241022";
-          };
-          provider = {
-            name = "anthropic";
-          };
+        "Rust" = {
+          tab_size = 4;
+          hard_tabs = false;
         };
-      
-        # Terminal settings
-        terminal = {
-          shell = {
-            program = "zsh";
-          };
-          font_family = "FiraCode Nerd Font";
-          font_size = 13;
+        "Go" = {
+          tab_size = 4;
+          hard_tabs = true;
         };
-      
-        # Git integration
-        git = {
-          git_gutter = "tracked_files";
-          inline_blame = {
-            enabled = true;
-          };
+      };
+    
+      # AI assistant configuration for Claude
+      assistant = {
+        version = "2";
+        default_model = {
+          provider = "anthropic";
+          model = "claude-3-5-sonnet-20241022";
         };
-      
-        # Project panel
-        project_panel = {
-          button = true;
-          default_width = 240;
-          dock = "left";
-          git_status = true;
+        provider = {
+          name = "anthropic";
         };
-      
-        # Telemetry
-        telemetry = {
-          diagnostics = false;
-          metrics = false;
+      };
+    
+      # Terminal settings
+      terminal = {
+        shell = {
+          program = "zsh";
         };
+        font_family = "FiraCode Nerd Font";
+        font_size = 13;
+      };
+    
+      # Git integration
+      git = {
+        git_gutter = "tracked_files";
+        inline_blame = {
+          enabled = true;
+        };
+      };
+    
+      # Project panel
+      project_panel = {
+        button = true;
+        default_width = 240;
+        dock = "left";
+        git_status = true;
+      };
+    
+      # Telemetry
+      telemetry = {
+        diagnostics = false;
+        metrics = false;
       };
     };
   };
