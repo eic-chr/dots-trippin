@@ -117,7 +117,7 @@
 
     starship = {
       enable = true;
-      settings = builtins.fromTOML (lib.readFile ../../starship/starship.toml);
+      settings = builtins.fromTOML (lib.readFile ../starship/starship.toml);
     };
   };
 

@@ -4,7 +4,7 @@
   home.stateVersion = "24.11";
 
   home.file = {
-    ".p10k.zsh".source = ../../p10k-config/.p10k.zsh;
+    ".p10k.zsh".source = ../../../p10k-config/.p10k.zsh;
     ".oh-my-zsh/custom/themes/powerlevel10k".source = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
     
     ".config/plasma-workspace/env/keyboard.sh" = {
@@ -118,12 +118,12 @@
 
     starship = {
       enable = true;
-      settings = builtins.fromTOML (lib.readFile ../../starship/starship.toml);
+      settings = builtins.fromTOML (lib.readFile ../starship/starship.toml);
     };
 
     wezterm = {
       enable = true;
-      extraConfig = lib.readFile ../../wezterm.lua;
+      extraConfig = lib.readFile ../../../wezterm.lua;
     };
   };
 
