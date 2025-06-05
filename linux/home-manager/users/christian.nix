@@ -212,6 +212,47 @@
           ServerAliveCountMax 3
     '';
   };
+  # KDE Dark Mode Konfiguration
+  home.file.".config/kdeglobals" = {
+    text = ''
+      [Colors:Button]
+      BackgroundNormal=49,54,59
+
+      [Colors:Selection]
+      BackgroundNormal=61,174,233
+
+      [Colors:Tooltip]
+      BackgroundNormal=49,54,59
+
+      [Colors:View]
+      BackgroundNormal=35,38,41
+
+      [Colors:Window]
+      BackgroundNormal=49,54,59
+
+      [General]
+      ColorScheme=BreezeDark
+      Name=Breeze Dark
+      shadeSortColumn=true
+
+      [KDE]
+      LookAndFeelPackage=org.kde.breezedark.desktop
+      widgetStyle=breeze
+
+      [WM]
+      activeBackground=49,54,59
+      activeBlend=255,255,255
+      activeForeground=252,252,252
+    '';
+  };
+
+  # Plasma Theme
+  home.file.".config/plasmarc" = {
+    text = ''
+      [Theme]
+      name=breeze-dark
+    '';
+  };
 
   # Zed editor configuration
   home.file.".config/zed/settings.json" = {
@@ -251,7 +292,7 @@
         version = "2";
         default_model = {
           provider = "anthropic";
-          model = "claude-3-5-sonnet-20241022";
+          model = "claude-sonnet-4-latest";
         };
         provider = {
           name = "anthropic";
