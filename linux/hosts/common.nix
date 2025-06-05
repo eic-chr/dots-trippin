@@ -142,7 +142,7 @@
     htop
     jq
     lunarvim
-    partition-manager
+    kdePackages.partitionmanager
     pavucontrol
     pciutils
     polkit
