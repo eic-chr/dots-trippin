@@ -136,15 +136,27 @@ hm-charlotte: hm-charlotte-offnix
 # Home-Manager targets for specific hosts
 hm-christian-devnix:
 	@echo "Switching Christian's home-manager configuration on devnix..."
-	home-manager switch --flake .#christian@devnix
+	@if command -v home-manager >/dev/null 2>&1; then \
+		home-manager switch --flake .#christian@devnix; \
+	else \
+		nix-shell -p home-manager --run "home-manager switch --flake .#christian@devnix"; \
+	fi
 
 hm-christian-offnix:
 	@echo "Switching Christian's home-manager configuration on offnix..."
-	home-manager switch --flake .#christian@offnix
+	@if command -v home-manager >/dev/null 2>&1; then \
+		home-manager switch --flake .#christian@offnix; \
+	else \
+		nix-shell -p home-manager --run "home-manager switch --flake .#christian@offnix"; \
+	fi
 
 hm-charlotte-offnix:
 	@echo "Switching Charlotte's home-manager configuration on offnix..."
-	home-manager switch --flake .#charlotte@offnix
+	@if command -v home-manager >/dev/null 2>&1; then \
+		home-manager switch --flake .#charlotte@offnix; \
+	else \
+		nix-shell -p home-manager --run "home-manager switch --flake .#charlotte@offnix"; \
+	fi
 
 # Current user home-manager (auto-detect)
 hm-switch:
@@ -152,10 +164,18 @@ hm-switch:
 	HOSTNAME=$$(hostname); \
 	if [ "$$USER" = "christian" ]; then \
 		echo "Switching Christian's home-manager on $$HOSTNAME..."; \
-		home-manager switch --flake ".#christian@$$HOSTNAME"; \
+		if command -v home-manager >/dev/null 2>&1; then \
+			home-manager switch --flake ".#christian@$$HOSTNAME"; \
+		else \
+			nix-shell -p home-manager --run "home-manager switch --flake '.#christian@$$HOSTNAME'"; \
+		fi; \
 	elif [ "$$USER" = "charlotte" ] && [ "$$HOSTNAME" = "offnix" ]; then \
 		echo "Switching Charlotte's home-manager on $$HOSTNAME..."; \
-		home-manager switch --flake ".#charlotte@$$HOSTNAME"; \
+		if command -v home-manager >/dev/null 2>&1; then \
+			home-manager switch --flake ".#charlotte@$$HOSTNAME"; \
+		else \
+			nix-shell -p home-manager --run "home-manager switch --flake '.#charlotte@$$HOSTNAME'"; \
+		fi; \
 	else \
 		echo "Error: Unsupported user/host combination: $$USER@$$HOSTNAME"; \
 		echo "Supported combinations:"; \
@@ -171,10 +191,18 @@ hm-build:
 	HOSTNAME=$$(hostname); \
 	if [ "$$USER" = "christian" ]; then \
 		echo "Building Christian's home-manager on $$HOSTNAME..."; \
-		home-manager build --flake ".#christian@$$HOSTNAME"; \
+		if command -v home-manager >/dev/null 2>&1; then \
+			home-manager build --flake ".#christian@$$HOSTNAME"; \
+		else \
+			nix-shell -p home-manager --run "home-manager build --flake '.#christian@$$HOSTNAME'"; \
+		fi; \
 	elif [ "$$USER" = "charlotte" ] && [ "$$HOSTNAME" = "offnix" ]; then \
 		echo "Building Charlotte's home-manager on $$HOSTNAME..."; \
-		home-manager build --flake ".#charlotte@$$HOSTNAME"; \
+		if command -v home-manager >/dev/null 2>&1; then \
+			home-manager build --flake ".#charlotte@$$HOSTNAME"; \
+		else \
+			nix-shell -p home-manager --run "home-manager build --flake '.#charlotte@$$HOSTNAME'"; \
+		fi; \
 	else \
 		echo "Error: Unsupported user/host combination: $$USER@$$HOSTNAME"; \
 		exit 1; \
@@ -184,8 +212,20 @@ hm-build:
 hm-check:
 	@echo "Checking home-manager configurations..."
 	@echo "Christian@devnix:"
-	@home-manager build --flake .#christian@devnix --dry-run >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"
+	@if command -v home-manager >/dev/null 2>&1; then \
+		home-manager build --flake .#christian@devnix --dry-run >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"; \
+	else \
+		nix-shell -p home-manager --run "home-manager build --flake .#christian@devnix --dry-run" >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"; \
+	fi
 	@echo "Christian@offnix:"
-	@home-manager build --flake .#christian@offnix --dry-run >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"
+	@if command -v home-manager >/dev/null 2>&1; then \
+		home-manager build --flake .#christian@offnix --dry-run >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"; \
+	else \
+		nix-shell -p home-manager --run "home-manager build --flake .#christian@offnix --dry-run" >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"; \
+	fi
 	@echo "Charlotte@offnix:"
-	@home-manager build --flake .#charlotte@offnix --dry-run >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"
+	@if command -v home-manager >/dev/null 2>&1; then \
+		home-manager build --flake .#charlotte@offnix --dry-run >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"; \
+	else \
+		nix-shell -p home-manager --run "home-manager build --flake .#charlotte@offnix --dry-run" >/dev/null 2>&1 && echo "  ✓ Valid" || echo "  ✗ Invalid"; \
+	fi
