@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [ plasma-manager.homeManagerModules.plasma-manager ];
+
   home.stateVersion = "24.11";
   home.language = {
     base = "de_DE.UTF-8";
