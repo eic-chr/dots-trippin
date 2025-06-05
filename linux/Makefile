@@ -1,31 +1,35 @@
-PHONY+=all
-all: apply 
+.PHONY: help devnix offnix switch-devnix switch-offnix build-devnix build-offnix update clean
 
-CHANNELS_ROOT := /nix/var/nix/profiles/per-user/root/channels/
-NIXPKGS := /nix/var/nix/profiles/per-user/root/channels/nixos
+help:
+	@echo "Available targets:"
+	@echo "  devnix        - Build and switch to devnix configuration"
+	@echo "  offnix        - Build and switch to offnix configuration"
+	@echo "  switch-devnix - Switch to devnix configuration"
+	@echo "  switch-offnix - Switch to offnix configuration"
+	@echo "  build-devnix  - Build devnix configuration without switching"
+	@echo "  build-offnix  - Build offnix configuration without switching"
+	@echo "  update        - Update flake inputs"
+	@echo "  clean         - Clean old generations"
 
-NIX_CHANNELS=-I nixpkgs=$(CHANNELS_ROOT)nixos
-NIX_CHANNELS+=-I home-manager=$(CHANNELS_ROOT)home-manager
-NIX_CHANNELS+=-I plasma-manager=$(CHANNELS_ROOT)plasma-manager
+devnix: switch-devnix
 
-PHONY+=apply
-apply: configuration.nix
-	doas nixos-rebuild switch -I nixos-config=$(abspath $<) $(NIX_CHANNELS)
-	# list-executables --clear-cache 2>&1 > /dev/null
+offnix: switch-offnix
 
-PHONY+=deps
-deps: configuration.nix
-	doas nixos-rebuild --upgrade-all build -I nixos-config=$(abspath $<) $(NIX_CHANNELS)
-	nix path-info -r ./result --json | jq -r '.[] | select(.narHash == null) | .path'
-	# list-executables --clear-cache 2>&1 > /dev/null
-PHONY+=update
-update: configuration.nix
-	doas nixos-rebuild --upgrade-all switch -I nixos-config=$(abspath $<) $(NIX_CHANNELS)
-	# list-executables --clear-cache 2>&1 > /dev/null
+switch-devnix:
+	doas nixos-rebuild switch --flake .#devnix
 
-PHONY+=fix-bl
-fix-bl:
-	doas nixos-rebuild switch --install-bootloader --flake .#
+switch-offnix:
+	doas nixos-rebuild switch --flake .#offnix
 
+build-devnix:
+	nixos-rebuild build --flake .#devnix
 
-.PHONY: $(PHONY)
+build-offnix:
+	nixos-rebuild build --flake .#offnix
+
+update:
+	nix flake update
+
+clean:
+	doas nix-collect-garbage -d
+	nix-collect-garbage -d
