@@ -48,11 +48,11 @@ offnix: switch-offnix
 # Switch commands
 switch-devnix:
 	@echo "Switching to devnix configuration..."
-	sudo nixos-rebuild switch --flake .#devnix
+	doas nixos-rebuild switch --flake .#devnix
 
 switch-offnix:
 	@echo "Switching to offnix configuration..."
-	sudo nixos-rebuild switch --flake .#offnix
+	doas nixos-rebuild switch --flake .#offnix
 
 # Build without switching
 build-devnix:
@@ -71,7 +71,7 @@ update:
 
 clean:
 	@echo "Cleaning old generations..."
-	sudo nix-collect-garbage -d
+	doas nix-collect-garbage -d
 	nix-collect-garbage -d
 	@echo "Cleanup completed."
 
@@ -83,7 +83,7 @@ check:
 status:
 	@echo "=== System Status ==="
 	@echo "Hostname: $$(hostname)"
-	@echo "NixOS Generation: $$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | tail -1)"
+	@echo "NixOS Generation: $$(doas nix-env --list-generations --profile /nix/var/nix/profiles/system | tail -1)"
 	@echo "Flake Status:"
 	@nix flake metadata . 2>/dev/null || echo "  No flake lock found"
 	@echo ""
