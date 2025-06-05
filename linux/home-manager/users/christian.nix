@@ -132,14 +132,7 @@
       };
     };
 
-    services.gpg-agent = {
-      enable = true;
-      enableSshSupport = true;
-      sshKeys = [
-        # SHA256 Hash deines SSH-Keys (falls gewünscht)
-      ];
-      pinentryPackage = pkgs.pinentry-gtk2;
-    };
+
     ssh = {
       enable = true;
       addKeysToAgent = "yes";
@@ -281,6 +274,14 @@
       };
     };
   };
-  services.ssh-agent.enable = true;
+  services.gpg-agent = {
+    enable = true;
+    enableSshSupport = true;
+    sshKeys = [
+      # SHA256 Hash deines SSH-Keys (falls gewünscht)
+    ];
+    pinentryPackage = pkgs.pinentry-gtk2;
+  };
+  # services.ssh-agent.enable = true;
   # Host-specific configurations (handled in flake.nix for standalone mode)
 }
