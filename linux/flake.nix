@@ -101,6 +101,7 @@
         "charlotte@offnix" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
+            plasma-manager.homeManagerModules.plasma-manager
             ./home-manager/users/charlotte.nix
             {
               home.username = "charlotte";
