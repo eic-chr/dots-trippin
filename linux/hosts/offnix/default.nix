@@ -3,6 +3,20 @@
 {
   networking.hostName = "offnix";
 
+  # German locale for offnix
+  i18n.defaultLocale = lib.mkForce "de_DE.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "de_DE.UTF-8";
+    LC_IDENTIFICATION = "de_DE.UTF-8";
+    LC_MEASUREMENT = "de_DE.UTF-8";
+    LC_MONETARY = "de_DE.UTF-8";
+    LC_NAME = "de_DE.UTF-8";
+    LC_NUMERIC = "de_DE.UTF-8";
+    LC_PAPER = "de_DE.UTF-8";
+    LC_TELEPHONE = "de_DE.UTF-8";
+    LC_TIME = "de_DE.UTF-8";
+  };
+
   # User configurations
   users.users = {
     christian = {
@@ -19,12 +33,38 @@
     };
   };
 
-  # X11 keyboard configuration for Charlotte
+  # X11 keyboard configuration - German layout for offnix
+  services.xserver = {
+    layout = lib.mkForce "de";
+    xkbVariant = lib.mkForce "";
+    xkbOptions = lib.mkForce (lib.concatStringsSep "," [
+      "compose:ralt"
+      "caps:escape"
+    ]);
+  };
+
+  # Override keyboard configuration from common.nix for German layout
+  environment.etc."X11/xorg.conf.d/00-keyboard.conf" = lib.mkForce {
+    text = ''
+      Section "InputClass"
+          Identifier "system-keyboard"
+          MatchIsKeyboard "on"
+          Option "XkbLayout" "de"
+          Option "XkbVariant" "mac"
+          Option "XkbOptions" "compose:ralt"
+      EndSection
+    '';
+  };
+
+  # Additional session commands for Charlotte's MacBook keyboard
   services.xserver.displayManager.sessionCommands = lib.mkIf (config.services.xserver.enable) ''
     if [ "$USER" = "charlotte" ]; then
       ${pkgs.xorg.setxkbmap}/bin/setxkbmap de mac
       ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option compose:ralt
       ${pkgs.xorg.xset}/bin/xset r rate 200 30
+    else
+      ${pkgs.xorg.setxkbmap}/bin/setxkbmap de
+      ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option compose:ralt
     fi
   '';
 

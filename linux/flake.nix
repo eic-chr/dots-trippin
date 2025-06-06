@@ -29,7 +29,42 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.christian = import ./home-manager/users/christian.nix;
+              home-manager.users.christian = {
+                imports = [
+                  plasma-manager.homeManagerModules.plasma-manager
+                  ./home-manager/users/christian.nix
+                ];
+                # English locale for devnix
+                home.language = {
+                  base = "en_US.UTF-8";
+                };
+                home.sessionVariables = {
+                  LANG = "en_US.UTF-8";
+                  LC_ALL = "en_US.UTF-8";
+                  LC_MESSAGES = "en_US.UTF-8";
+                };
+                programs.plasma = {
+                  enable = true;
+                  configFile = {
+                    "kdeGlobals" = {
+                      "Locale" = {
+                        "LANG" = "en_US.UTF-8";
+                        "LC_MESSAGES" = "en_US.UTF-8";
+                        "Country" = "us";
+                        "Language" = "en";
+                      };
+                      "General" = {
+                        "Name" = "Breeze Dark";
+                        "ColorScheme" = "BreezeDark";
+                      };
+                      "KDE" = {
+                        "SingleClick" = false;
+                        "LookAndFeelPackage" = "org.kde.breezedark.desktop";
+                      };
+                    };
+                  };
+                };
+              };
             }
           ];
         };
@@ -43,7 +78,42 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users = {
-                christian = import ./home-manager/users/christian.nix;
+                christian = {
+                  imports = [
+                    plasma-manager.homeManagerModules.plasma-manager
+                    ./home-manager/users/christian.nix
+                  ];
+                  # German locale for christian on offnix
+                  home.language = {
+                    base = "de_DE.UTF-8";
+                  };
+                  home.sessionVariables = {
+                    LANG = "de_DE.UTF-8";
+                    LC_ALL = "de_DE.UTF-8";
+                    LC_MESSAGES = "de_DE.UTF-8";
+                  };
+                  programs.plasma = {
+                    enable = true;
+                    configFile = {
+                      "kdeGlobals" = {
+                        "Locale" = {
+                          "LANG" = "de_DE.UTF-8";
+                          "LC_MESSAGES" = "de_DE.UTF-8";
+                          "Country" = "de";
+                          "Language" = "de";
+                        };
+                        "General" = {
+                          "Name" = "Breeze Dark";
+                          "ColorScheme" = "BreezeDark";
+                        };
+                        "KDE" = {
+                          "SingleClick" = false;
+                          "LookAndFeelPackage" = "org.kde.breezedark.desktop";
+                        };
+                      };
+                    };
+                  };
+                };
                 charlotte = {
                   imports = [
                     plasma-manager.homeManagerModules.plasma-manager
@@ -61,11 +131,44 @@
         "christian@devnix" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
+            plasma-manager.homeManagerModules.plasma-manager
             ./home-manager/users/christian.nix
             {
               home.username = "christian";
               home.homeDirectory = "/home/christian";
               home.stateVersion = "24.11";
+
+              # English locale for devnix
+              home.language = {
+                base = "en_US.UTF-8";
+              };
+              home.sessionVariables = {
+                LANG = "en_US.UTF-8";
+                LC_ALL = "en_US.UTF-8";
+                LC_MESSAGES = "en_US.UTF-8";
+              };
+
+              programs.plasma = {
+                enable = true;
+                configFile = {
+                  "kdeGlobals" = {
+                    "Locale" = {
+                      "LANG" = "en_US.UTF-8";
+                      "LC_MESSAGES" = "en_US.UTF-8";
+                      "Country" = "us";
+                      "Language" = "en";
+                    };
+                    "General" = {
+                      "Name" = "Breeze Dark";
+                      "ColorScheme" = "BreezeDark";
+                    };
+                    "KDE" = {
+                      "SingleClick" = false;
+                      "LookAndFeelPackage" = "org.kde.breezedark.desktop";
+                    };
+                  };
+                };
+              };
 
               # Add host-specific packages for devnix
               home.packages = with pkgs; [
@@ -89,11 +192,44 @@
         "christian@offnix" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
+            plasma-manager.homeManagerModules.plasma-manager
             ./home-manager/users/christian.nix
             {
               home.username = "christian";
               home.homeDirectory = "/home/christian";
               home.stateVersion = "24.11";
+
+              # German locale for offnix
+              home.language = {
+                base = "de_DE.UTF-8";
+              };
+              home.sessionVariables = {
+                LANG = "de_DE.UTF-8";
+                LC_ALL = "de_DE.UTF-8";
+                LC_MESSAGES = "de_DE.UTF-8";
+              };
+
+              programs.plasma = {
+                enable = true;
+                configFile = {
+                  "kdeGlobals" = {
+                    "Locale" = {
+                      "LANG" = "de_DE.UTF-8";
+                      "LC_MESSAGES" = "de_DE.UTF-8";
+                      "Country" = "de";
+                      "Language" = "de";
+                    };
+                    "General" = {
+                      "Name" = "Breeze Dark";
+                      "ColorScheme" = "BreezeDark";
+                    };
+                    "KDE" = {
+                      "SingleClick" = false;
+                      "LookAndFeelPackage" = "org.kde.breezedark.desktop";
+                    };
+                  };
+                };
+              };
             }
           ];
         };

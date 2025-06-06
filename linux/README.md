@@ -27,14 +27,18 @@ linux/
 
 ### devnix
 - Development system with Docker, Go tools, VS Code
+- **Language**: English (en_US.UTF-8)
 - User: `christian` with US International keyboard layout
 - Bootloader: GRUB on `/dev/sda`
+- **Plasma Manager**: Enabled with English UI
 
 ### offnix
 - Office system with LibreOffice, TeamViewer, KDE PIM Suite
+- **Language**: German (de_DE.UTF-8)
 - Users: `christian` and `charlotte`
 - Charlotte uses German MacBook keyboard layout and KMail
 - Bootloader: systemd-boot with UEFI
+- **Plasma Manager**: Enabled with German UI for all users
 
 ## Usage
 
@@ -138,14 +142,45 @@ home-manager switch --flake .#charlotte@offnix
 - Automatic setup via systemd service
 - Compose key: Right Alt
 
+## Localization
+
+### Language Configuration
+- **devnix**: English system and UI (en_US.UTF-8)
+- **offnix**: German system and UI (de_DE.UTF-8)
+
+### Plasma Manager Integration
+All KDE settings are managed through plasma-manager:
+- Theme: Breeze Dark for all users
+- Language settings: Automatic per host
+- Regional settings: Configured based on host locale
+
+For detailed localization information, see [LOCALIZATION.md](LOCALIZATION.md).
+
+### VM Testing
+Test language configurations safely:
+
+```bash
+# Test German configuration (offnix)
+make vm-create-offnix
+make vm-start-offnix
+
+# Test English configuration (devnix)  
+make vm-create-devnix
+make vm-start-devnix
+```
+
 ## Troubleshooting
 
 ### Keyboard Layout Issues
 If keyboard layout doesn't work automatically:
 
 ```bash
-# For Christian (US International)
+# For Christian on devnix (US International)
 setxkbmap us intl
+setxkbmap -option compose:ralt
+
+# For users on offnix (German)
+setxkbmap de
 setxkbmap -option compose:ralt
 
 # For Charlotte (German MacBook)
@@ -153,8 +188,15 @@ setxkbmap de mac
 setxkbmap -option compose:ralt
 ```
 
+### Language Issues
+If UI language is incorrect:
+1. Check system locale: `locale`
+2. Verify KDE settings: `kreadconfig5 --file kdeGlobals --group Locale --key LANG`
+3. Log out and back in to KDE
+4. Check [LOCALIZATION.md](LOCALIZATION.md) for detailed troubleshooting
+
 ### Service Status
-Check if the keyboard service is running:
+Check if services are running:
 
 ```bash
 systemctl --user status keyboard-setup
@@ -204,11 +246,20 @@ If rebuild fails, check:
 
 See [HOME-MANAGER.md](HOME-MANAGER.md) for detailed usage guide.
 
+## Files Overview
+
+- [LOCALIZATION.md](LOCALIZATION.md) - Detailed language configuration guide
+- [VM-TESTING.md](VM-TESTING.md) - Complete VM testing documentation
+- [HOME-MANAGER.md](HOME-MANAGER.md) - Home-Manager usage guide
+- [MIGRATION.md](MIGRATION.md) - Migration from old configurations
+
 ## Adding New Systems
 
 1. Create new directory under `hosts/`
 2. Add `default.nix` and `hardware-configuration.nix`
 3. Import common configuration
-4. Add system to `flake.nix` outputs
-5. Add make targets if desired
+4. Set appropriate locale (en_US.UTF-8 or de_DE.UTF-8)
+5. Add system to `flake.nix` outputs with Plasma Manager integration
+6. Add make targets if desired
+7. Test in VM before deployment
 </edits>
