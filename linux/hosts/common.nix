@@ -22,18 +22,6 @@
 
   # Set your time zone and locale
   time.timeZone = "Europe/Berlin";
-  i18n.defaultLocale = "en_US.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT = "de_DE.UTF-8";
-    LC_MONETARY = "de_DE.UTF-8";
-    LC_NAME = "de_DE.UTF-8";
-    LC_NUMERIC = "de_DE.UTF-8";
-    LC_PAPER = "de_DE.UTF-8";
-    LC_TELEPHONE = "de_DE.UTF-8";
-    LC_TIME = "de_DE.UTF-8";
-  };
 
   # Enable Avahi for network discovery
   services.avahi = {
@@ -53,8 +41,10 @@
       "compose:dblquote"
       "caps:escape"
     ];
+    videoDrivers = [ "virtio" "cirrus" "vesa" ];
     exportConfiguration = true;
     displayManager = {
+      defaultSession = "plasma";
       sessionCommands = ''
         ${pkgs.x11vnc}/bin/x11vnc -rfbauth $HOME/.vnc/passwd &
         ${pkgs.xorg.setxkbmap}/bin/setxkbmap us intl
@@ -65,6 +55,7 @@
       };
       sddm = {
         enable = true;
+        wayland.enable = true;
       };
     };
     desktopManager.plasma6.enable = true;
@@ -148,6 +139,7 @@
     x11vnc
     xclip
     fzf
+    neovim
   ];
 
   # Fonts
