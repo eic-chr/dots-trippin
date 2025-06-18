@@ -20,15 +20,51 @@
   users.users.christian = {
     isNormalUser = true;
     description = "Christian Eickhoff";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "video" "audio" ];
     shell = pkgs.zsh;
   };
+
+  # KDE Plasma 6 mit Wayland
+  services.xserver.enable = true;
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+  };
+  services.desktopManager.plasma6.enable = true;
+
+  # Wayland als Standard-Session
+  services.displayManager.defaultSession = "plasma";
+
+  # Hardware-Beschleunigung für VM
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+  };
+
+  # RDP für Remote-Zugriff
+  services.xrdp = {
+    enable = true;
+    defaultWindowManager = "startplasma-wayland";
+    openFirewall = true;
+  };
+
+  # Audio Support
+  sound.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+  };
+
+  # Firewall für RDP
+  networking.firewall.allowedTCPPorts = [ 3389 ];
 
   # Enable docker for development
   virtualisation.docker.enable = true;
 
-  # Development specific packages
+  # Development specific packages + KDE essentials
   environment.systemPackages = with pkgs; [
+    # Development tools
     ansible
     clinfo
     docker
@@ -44,6 +80,14 @@
     nil
     vscode
     zed-editor
+    
+    # KDE/Desktop essentials
+    firefox
+    konsole
+    kdePackages.plasma-workspace
+    
+    # Remote desktop tools
+    remmina  # RDP client für Tests
   ];
 
   # Bootloader configuration specific to devnix
