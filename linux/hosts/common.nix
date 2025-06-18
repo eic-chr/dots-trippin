@@ -88,7 +88,8 @@
   # Remote desktop
   services.xrdp = {
     enable = true;
-    defaultWindowManager = "startplasma-x11";
+    defaultWindowManager = "startplasma-wayland";
+    openFirewall = true;
   };
 
   # Polkit rule for wheel group
