@@ -68,6 +68,15 @@ return {
           processId = require("dap.utils").pick_process,
           cwd = "${workspaceFolder}",
         },
+
+        {
+          type = "pwa-node",
+          request = "launch",
+          name = "Debug Jest Test",
+          program = "${workspaceFolder}/backstage/node_modules/.bin/backstage-cli",
+          args = { "repo", "test" },
+          cwd = "${workspaceFolder}/backstage",
+        },
         -- {
         --   name = "Astro: npm run dev mit Debugger",
         --   type = "pwa-node",
