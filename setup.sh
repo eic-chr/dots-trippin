@@ -8,6 +8,7 @@ base=(
     nvim
     vim
     tmux
+    zk
 
 )
 
