@@ -1,3 +1,4 @@
+-- ~/.config/nvim/lua/plugins/zk.lua - Finale Konfiguration
 return {
   "zk-org/zk-nvim",
   name = "zk",
@@ -13,9 +14,9 @@ return {
       "<leader>zs",
       function()
         local notebooks = {
-          { name = "Personal", path = "~/projects/zk/personal" },
-          { name = "HUK", path = "~/projects/zk/huk" },
-          { name = "EWO", path = "~/projects/zk/ewo" },
+          { name = "Personal", path = "~/projects/ceickhoff/zk/personal" },
+          { name = "HUK", path = "~/projects/ceickhoff/zk/huk" },
+          { name = "EWO", path = "~/projects/ceickhoff/zk/ewo" },
         }
 
         vim.ui.select(notebooks, {
@@ -37,7 +38,7 @@ return {
     {
       "<leader>zsp",
       function()
-        vim.cmd("cd ~/projects/zk/personal")
+        vim.cmd("cd ~/projects/ceickhoff/zk/personal")
         vim.notify("📚 Personal Notes", vim.log.levels.INFO)
       end,
       desc = "→ Personal",
@@ -46,7 +47,7 @@ return {
     {
       "<leader>zsh",
       function()
-        vim.cmd("cd ~/projects/zk/huk")
+        vim.cmd("cd ~/projects/ceickhoff/zk/huk")
         vim.notify("💼 HUK Notes", vim.log.levels.INFO)
       end,
       desc = "→ HUK",
@@ -55,7 +56,7 @@ return {
     {
       "<leader>zse",
       function()
-        vim.cmd("cd ~/projects/zk/ewo")
+        vim.cmd("cd ~/projects/ceickhoff/zk/ewo")
         vim.notify("🚀 EWO Notes", vim.log.levels.INFO)
       end,
       desc = "→ EWO",
@@ -71,10 +72,10 @@ return {
     {
       "<leader>znp",
       function()
-        vim.cmd("cd ~/projects/zk/personal")
+        vim.cmd("cd ~/projects/ceickhoff/zk/personal")
         local title = vim.fn.input("Personal note: ")
         if title ~= "" then
-          require("zk").new(nil, { title = title })
+          require("zk").new({ title = title })
         end
       end,
       desc = "New personal note",
@@ -83,10 +84,10 @@ return {
     {
       "<leader>znh",
       function()
-        vim.cmd("cd ~/projects/zk/huk")
+        vim.cmd("cd ~/projects/ceickhoff/zk/huk")
         local title = vim.fn.input("HUK note: ")
         if title ~= "" then
-          require("zk").new(nil, { title = title })
+          require("zk").new({ title = title })
         end
       end,
       desc = "New HUK note",
@@ -95,10 +96,10 @@ return {
     {
       "<leader>zne",
       function()
-        vim.cmd("cd ~/projects/zk/ewo")
+        vim.cmd("cd ~/projects/ceickhoff/zk/ewo")
         local title = vim.fn.input("EWO note: ")
         if title ~= "" then
-          require("zk").new(nil, { title = title })
+          require("zk").new({ title = title })
         end
       end,
       desc = "New EWO note",
@@ -108,7 +109,13 @@ return {
     {
       "<leader>zd",
       function()
-        require("zk").new(nil, { dir = "daily", title = os.date("%Y-%m-%d") })
+        local result = vim.fn.system("zk daily --print-path")
+        local path = vim.trim(result)
+        if vim.v.shell_error == 0 and path ~= "" then
+          vim.cmd("edit " .. path)
+        else
+          vim.notify("Error creating daily note", vim.log.levels.ERROR)
+        end
       end,
       desc = "Daily note (current)",
     },
@@ -116,8 +123,14 @@ return {
     {
       "<leader>zdp",
       function()
-        vim.cmd("cd ~/projects/zk/personal")
-        require("zk").new(nil, { dir = "daily", title = os.date("%Y-%m-%d") })
+        vim.cmd("cd ~/projects/ceickhoff/zk/personal")
+        local result = vim.fn.system("zk daily --print-path")
+        local path = vim.trim(result)
+        if vim.v.shell_error == 0 and path ~= "" then
+          vim.cmd("edit " .. path)
+        else
+          vim.notify("Error creating personal daily note", vim.log.levels.ERROR)
+        end
       end,
       desc = "Personal daily",
     },
@@ -125,8 +138,14 @@ return {
     {
       "<leader>zdh",
       function()
-        vim.cmd("cd ~/projects/zk/huk")
-        require("zk").new(nil, { dir = "daily", title = os.date("%Y-%m-%d") })
+        vim.cmd("cd ~/projects/ceickhoff/zk/huk")
+        local result = vim.fn.system("zk daily --print-path")
+        local path = vim.trim(result)
+        if vim.v.shell_error == 0 and path ~= "" then
+          vim.cmd("edit " .. path)
+        else
+          vim.notify("Error creating HUK daily note", vim.log.levels.ERROR)
+        end
       end,
       desc = "HUK daily",
     },
@@ -135,13 +154,67 @@ return {
     {
       "<leader>zW",
       function()
-        local year = os.date("%Y")
-        local week = os.date("%W")
-        local title = string.format("%s-W%02d", year, tonumber(week))
-        require("zk").new(nil, { dir = "weekly", title = title })
+        local result = vim.fn.system("zk weekly --print-path")
+        local path = vim.trim(result)
+        if vim.v.shell_error == 0 and path ~= "" then
+          vim.cmd("edit " .. path)
+        else
+          vim.notify("Error creating weekly note", vim.log.levels.ERROR)
+        end
       end,
       desc = "Weekly note (current)",
     },
+
+    -- === STRUCTURED NOTES (ideas, meetings, projects) ===
+    {
+      "<leader>zni",
+      function()
+        local title = vim.fn.input("Idea title: ")
+        if title ~= "" then
+          require("zk").new({ dir = "ideas", title = title, template = "idea.md" })
+        end
+      end,
+      desc = "New idea",
+    },
+
+    {
+      "<leader>znm",
+      function()
+        local title = vim.fn.input("Meeting title: ")
+        if title ~= "" then
+          require("zk").new({ dir = "meetings", title = title, template = "meeting.md" })
+        end
+      end,
+      desc = "New meeting note",
+    },
+
+    {
+      "<leader>znj",
+      function()
+        local title = vim.fn.input("Project title: ")
+        if title ~= "" then
+          require("zk").new({ dir = "projects", title = title, template = "project.md" })
+        end
+      end,
+      desc = "New project note",
+    },
+
+    {
+      "<leader>znr",
+      function()
+        local title = vim.fn.input("Research topic: ")
+        if title ~= "" then
+          require("zk").new({ dir = "research", title = title, template = "research.md" })
+        end
+      end,
+      desc = "New research note",
+    },
+
+    -- === BROWSE STRUCTURED NOTES ===
+    { "<leader>zoi", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/ideas' } }<CR>", desc = "Browse ideas" },
+    { "<leader>zom", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/meetings' } }<CR>", desc = "Browse meetings" },
+    { "<leader>zoj", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/projects' } }<CR>", desc = "Browse projects" },
+    { "<leader>zor", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/research' } }<CR>", desc = "Browse research" },
 
     -- === TEMPLATE SELECTION ===
     {
@@ -185,7 +258,7 @@ return {
             if template then
               local title = vim.fn.input("Note title: ")
               if title ~= "" then
-                require("zk").new(nil, {
+                require("zk").new({
                   dir = folder == "." and nil or folder,
                   template = template,
                   title = title,
@@ -206,9 +279,9 @@ return {
         if search_term ~= "" then
           require("telescope.builtin").live_grep({
             search_dirs = {
-              vim.fn.expand("~/projects/zk/personal"),
-              vim.fn.expand("~/projects/zk/huk"),
-              vim.fn.expand("~/projects/zk/ewo"),
+              vim.fn.expand("~/projects/ceickhoff/zk/personal"),
+              vim.fn.expand("~/projects/ceickhoff/zk/huk"),
+              vim.fn.expand("~/projects/ceickhoff/zk/ewo"),
             },
             prompt_title = "🔍 All Notebooks",
             default_text = search_term,

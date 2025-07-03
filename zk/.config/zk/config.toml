@@ -1,0 +1,127 @@
+# NOTEBOOK SETTINGS
+[notebook]
+dir = "~/projects/ceickhoff/zk"
+
+# NOTE SETTINGS
+[note]
+
+# Language used when writing notes.
+# This is used to generate slugs or with date formats.
+language = "de"
+
+# The default title used for new note, if no `--title` flag is provided.
+default-title = "Untitled"
+
+# Template used to generate a note's filename, without extension.
+filename = "{{id}}-{{slug title}}"
+
+# The file extension used for the notes.
+extension = "md"
+
+# Template used to generate a note's content.
+# If not an absolute path, it is relative to .zk/templates/
+template = "default.md"
+
+# Configure random ID generation.
+
+# The charset used for random IDs.
+id-charset = "alphanum"
+
+# Length of the generated IDs.
+id-length = 4
+
+# Letter case for the random IDs.
+id-case = "lower"
+
+
+# EXTRA VARIABLES
+[extra]
+author = "Mickaël"
+
+
+# GROUP OVERRIDES
+[group.daily]
+paths = ["daily", "*/daily"]
+note.filename = "{{format-date now}}"
+note.template = "daily.md"
+note.title = "{{format-date now}}"
+
+[group.weekly]
+paths = ["weekly", "*/weekly"]
+note.filename = "{{format-date now 'year'}}-W{{format-date now 'week-number'}}"
+note.template = "weekly.md"
+note.title = "{{format-date now 'year'}}-W{{format-date now 'week-number'}}"
+
+[group.meetings]
+paths = ["meetings", "*/meetings"]
+note.filename = "{{format-date now}}-{{slug title}}"
+note.template = "meeting.md"
+
+[group.projects]
+paths = ["projects", "*/projects"]
+note.filename = "{{slug title}}"
+note.template = "project.md"
+
+[group.ideas]
+paths = ["ideas", "*/ideas"]
+note.filename = "{{id}}-{{slug title}}"
+note.template = "idea.md"# MARKDOWN SETTINGS
+
+[group.research]
+paths = ["research", "*/research"]
+note.filename = "{{slug title}}"
+note.template = "research.md"
+
+[format.markdown]
+# Enable support for #hashtags
+hashtags = true
+# Enable support for :colon:separated:tags:
+colon-tags = true
+
+
+# EXTERNAL TOOLS
+[tool]
+
+# Default editor used to open notes.
+editor = "nvim"
+
+# Default shell used by aliases and commands.
+shell = "/bin/zsh"
+
+# Pager used to scroll through long output.
+pager = "less -FIRX"
+
+# Command used to preview a note during interactive fzf mode.
+fzf-preview = "bat -p --color always {-1}"
+
+# NAMED FILTERS
+[filter]
+recents = "--sort created- --created-after 'last two weeks'"
+
+# COMMAND ALIASES
+[alias]
+
+# Edit the last modified note.
+edlast = "zk edit --limit 1 --sort modified- $@"
+
+# Edit the notes selected interactively among the notes created the last two weeks.
+recent = "zk edit --sort created- --created-after 'last two weeks' --interactive"
+
+# Show a random note.
+lucky = "zk list --quiet --format full --sort random --limit 1"
+
+daily = "zk new daily --title '{{format-date now}}' --print-path"
+weekly = "zk new weekly --title '{{format-date now 'year'}}-W{{format-date now 'week-number'}}' --print-path"
+meeting = "zk new meetings"
+project = "zk new projects"
+idea = "zk new ideas"
+research = "zk new research --template research"
+
+# LSP (EDITOR INTEGRATION)
+[lsp]
+
+[lsp.diagnostics]
+# Report titles of wiki-links as hints.
+wiki-title = "hint"
+# Warn for dead links between notes.
+dead-link = "error"
