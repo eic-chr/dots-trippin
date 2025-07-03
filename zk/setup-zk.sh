@@ -9,7 +9,7 @@ mkdir -p $notes_dir/{personal,huk,ewo}
 
 # Unterordner für jeden Cluster
 for cluster in personal huk ewo; do
-    mkdir -p $notes_dir/$cluster/{daily,weekly,meetings,projects,ideas,archive}
+    mkdir -p $notes_dir/$cluster/{daily,weekly,meetings,projects,ideas,checklists,archive}
 
     # Cluster-spezifische zk config
     cat > $notes_dir/$cluster/config.toml << EOF

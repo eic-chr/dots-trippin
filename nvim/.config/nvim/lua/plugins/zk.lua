@@ -167,6 +167,16 @@ return {
 
     -- === STRUCTURED NOTES (ideas, meetings, projects) ===
     {
+      "<leader>znc",
+      function()
+        local title = vim.fn.input("Checklist title: ")
+        if title ~= "" then
+          require("zk").new({ dir = "checklists", title = title, template = "checklist" })
+        end
+      end,
+      desc = "New checklist",
+    },
+    {
       "<leader>zni",
       function()
         local title = vim.fn.input("Idea title: ")
@@ -242,7 +252,8 @@ return {
                 break
               end
               if type == "file" and name:match("%.md$") then
-                table.insert(templates, name:gsub("%.md$", ""))
+                local template_name = (name:gsub("%.md$", ""))
+                table.insert(templates, template_name)
               end
             end
           end
@@ -260,7 +271,7 @@ return {
               if title ~= "" then
                 require("zk").new({
                   dir = folder == "." and nil or folder,
-                  template = template,
+                  template = template .. ".md",
                   title = title,
                 })
               end

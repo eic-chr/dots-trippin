@@ -62,6 +62,11 @@ paths = ["projects", "*/projects"]
 note.filename = "{{slug title}}"
 note.template = "project.md"
 
+[group.checklists]
+paths = ["checklists", "*/checklists"]
+note.filename = "{{id}}-{{slug title}}"
+note.template = "checklist.md"# MARKDOWN SETTINGS
+
 [group.ideas]
 paths = ["ideas", "*/ideas"]
 note.filename = "{{id}}-{{slug title}}"
