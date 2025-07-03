@@ -5,7 +5,7 @@
       "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
     home.file.".config/autostart-scripts/setxkbmap.sh" = {
       text = ''
-#!/bin/bash
+#!/usr/bin/env bash
         setxkbmap us intl
         '';
       executable = true;
