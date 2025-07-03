@@ -3,6 +3,11 @@
 {
   networking.hostName = "devnix";
 
+  # Import the common configuration
+  imports = [
+    ../common.nix
+    ./hardware-configuration.nix
+  ];
   # English locale for devnix
   i18n.defaultLocale = lib.mkForce "en_US.UTF-8";
   i18n.extraLocaleSettings = {
@@ -24,36 +29,16 @@
     shell = pkgs.zsh;
   };
 
-  # KDE Plasma 6 mit Wayland
   services.xserver.enable = true;
   services.displayManager.sddm = {
     enable = true;
-    wayland.enable = true;
   };
   services.desktopManager.plasma6.enable = true;
-
-  # Wayland als Standard-Session
-  services.displayManager.defaultSession = "plasma";
-
-  # Hardware-Beschleunigung für VM
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-  };
 
   # RDP für Remote-Zugriff
   services.xrdp = {
     enable = true;
-    defaultWindowManager = "startplasma-wayland";
-    openFirewall = true;
-  };
-
-  # Audio Support
-  sound.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    pulse.enable = true;
+    defaultWindowManager = "startplasma-x11";
   };
 
   # Firewall für RDP
@@ -83,8 +68,7 @@
     
     # KDE/Desktop essentials
     firefox
-    konsole
-    kdePackages.plasma-workspace
+    kdePackages.konsole
     
     # Remote desktop tools
     remmina  # RDP client für Tests
@@ -95,14 +79,9 @@
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
-  # Import the common configuration
-  imports = [
-    ../common.nix
-    ./hardware-configuration.nix
-  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken.
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 }

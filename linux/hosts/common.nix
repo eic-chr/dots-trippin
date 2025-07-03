@@ -15,67 +15,60 @@
     };
   };
 
-  # Use doas instead of sudo
+# Use doas instead of sudo
   security.doas.enable = true;
   security.sudo.enable = false;
   security.doas.wheelNeedsPassword = false;
 
-  # Set your time zone and locale
+# Set your time zone and locale
   time.timeZone = "Europe/Berlin";
 
-  # Enable Avahi for network discovery
+# Enable Avahi for network discovery
   services.avahi = {
     enable = true;
     nssmdns = true;
     openFirewall = true;
   };
 
-  # X11 configuration
+# X11 configuration
   services.xserver = {
     enable = true;
     layout = "us";
     xkbVariant = "intl";
     xkbOptions = lib.concatStringsSep "," [
       "altwin:swap_lalt_lwin"
-      "ctrl:nocaps"
-      "compose:dblquote"
-      "caps:escape"
+        "ctrl:nocaps"
+        "compose:dblquote"
+        "caps:escape"
     ];
-    videoDrivers = [ "virtio" "cirrus" "vesa" ];
-    exportConfiguration = true;
     displayManager = {
-      defaultSession = "plasma";
-      sessionCommands = ''
-        ${pkgs.x11vnc}/bin/x11vnc -rfbauth $HOME/.vnc/passwd &
-        ${pkgs.xorg.setxkbmap}/bin/setxkbmap us intl
-      '';
-      autoLogin = {
-        enable = false;
-        user = "christian";
-      };
+      defaultSession = "plasmax11";
       sddm = {
         enable = true;
-        wayland.enable = true;
+        wayland = {
+          enable = false;
+        };
       };
     };
     desktopManager.plasma6.enable = true;
-    # Configure input settings for all keyboards
+# Configure input settings for all keyboards
     libinput = {
       enable = true;
     };
   };
 
-  # Ensure keyboard settings persist
+# Ensure keyboard settings persist
   environment.etc."X11/xorg.conf.d/00-keyboard.conf".text = ''
     Section "InputClass"
-        Identifier "system-keyboard"
-        MatchIsKeyboard "on"
-        Option "XkbLayout" "us"
-        Option "XkbVariant" "intl"
-        Option "XkbOptions" "compose:ralt"
+    Identifier "system-keyboard"
+    MatchIsKeyboard "on"
+    Option "XkbLayout" "us"
+    Option "XkbVariant" "intl"
+    Option "XkbOptions" "compose:ralt"
     EndSection
-  '';
+    '';
 
+<<<<<<< HEAD
   # Remote desktop
   services.xrdp = {
     enable = true;
@@ -84,85 +77,84 @@
   };
 
   # Polkit rule for wheel group
+=======
+# Remote desktop
+# Polkit rule for wheel group
+>>>>>>> 5e08aa1 (remove wayland)
   environment.etc."polkit-1/rules.d/49-wheel.rules".text = ''
     polkit.addRule(function(action, subject) {
-      if (subject.isInGroup("wheel")) {
+        if (subject.isInGroup("wheel")) {
         return polkit.Result.YES;
-      }
-    });
+        }
+        });
   '';
 
-  # Printing
+# Printing
   services.printing.enable = true;
+# Wayland-Pakete explizit ausschließen
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [
+    plasma-wayland-protocols
+  ];
 
-  # Audio
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
 
-  # Enable common programs
+# Enable common programs
   programs = {
     firefox.enable = true;
     zsh.enable = true;
   };
 
-  # Allow unfree packages
+# Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Common system packages
+# Common system packages
   environment.systemPackages = with pkgs; [
     direnv
-    gcc
-    gnumake
-    pkg-config
-    git
-    git-crypt
-    gnumake
-    gnupg
-    htop
-    jq
-    lunarvim
-    kdePackages.partitionmanager
-    pavucontrol
-    pciutils
-    polkit
-    kdePackages.polkit-kde-agent-1
-    ripgrep
-    stow
-    tmux
-    vlc
-    x11vnc
-    xclip
-    fzf
-    neovim
-  ];
+      gcc
+      gnumake
+      pkg-config
+      git
+      git-crypt
+      gnumake
+      gnupg
+      htop
+      jq
+      lunarvim
+      kdePackages.partitionmanager
+      pavucontrol
+      pciutils
+      polkit
+      kdePackages.polkit-kde-agent-1
+      ripgrep
+      stow
+      tmux
+      vlc
+      x11vnc
+      xclip
+      fzf
+      neovim
+      ];
 
-  # Fonts
+# Fonts
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
-    nerd-fonts.droid-sans-mono
-    nerd-fonts.meslo-lg
-    hack-font
-    roboto
-    dejavu_fonts
-    noto-fonts-color-emoji
+      nerd-fonts.droid-sans-mono
+      nerd-fonts.meslo-lg
+      hack-font
+      roboto
+      dejavu_fonts
+      noto-fonts-color-emoji
   ];
 
-  # Networking
+# Networking
   networking = {
     networkmanager.enable = true;
     firewall.allowedTCPPorts = [ 3389 ]; # RDP
   };
 
-  # SSH
+# SSH
   services.openssh.enable = true;
 
-  # Database support for KDE PIM/Akonadi
+# Database support for KDE PIM/Akonadi
   services.mysql = {
     enable = true;
     package = pkgs.mariadb;
