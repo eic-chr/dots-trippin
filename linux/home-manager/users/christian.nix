@@ -205,6 +205,11 @@
 
   home.file.".ssh/config" = {
     text = ''
+      Host github
+          HostName github.com
+          User git
+          IdentityFile ~/.ssh/id_rsa
+          IdentitiesOnly yes
       Host gitlab-ewo
           HostName gitlab.dev.ewolutions.de
           User git
