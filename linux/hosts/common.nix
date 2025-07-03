@@ -68,19 +68,8 @@
     EndSection
     '';
 
-<<<<<<< HEAD
-  # Remote desktop
-  services.xrdp = {
-    enable = true;
-    defaultWindowManager = "startplasma-wayland";
-    openFirewall = true;
-  };
-
-  # Polkit rule for wheel group
-=======
 # Remote desktop
 # Polkit rule for wheel group
->>>>>>> 5e08aa1 (remove wayland)
   environment.etc."polkit-1/rules.d/49-wheel.rules".text = ''
     polkit.addRule(function(action, subject) {
         if (subject.isInGroup("wheel")) {
@@ -94,8 +83,6 @@
 # Wayland-Pakete explizit ausschließen
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     plasma-wayland-protocols
-      kwayland
-      kwayland-integration
   ];
 
 
@@ -134,7 +121,6 @@
       xclip
       fzf
       neovim
-      zk
       ];
 
 # Fonts

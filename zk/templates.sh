@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Template-Setup für zk
 
 # Verzeichnis erstellen

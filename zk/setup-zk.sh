@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Setup für Multi-Cluster zk Organisation
 
 echo "Setting up zk cluster organization..."
-notes_dir="$HOME/projects/zk"
+notes_dir="$HOME/projects/ceickhoff/zettelkasten/"
+echo "using $notes_dir as dir"
 # Ansatz 1: Separate Notebooks
 echo "Creating separate notebook structure..."
 mkdir -p $notes_dir/{personal,huk,ewo}

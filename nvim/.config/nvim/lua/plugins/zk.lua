@@ -14,9 +14,9 @@ return {
       "<leader>zs",
       function()
         local notebooks = {
-          { name = "Personal", path = "~/projects/ceickhoff/zk/personal" },
-          { name = "HUK", path = "~/projects/ceickhoff/zk/huk" },
-          { name = "EWO", path = "~/projects/ceickhoff/zk/ewo" },
+          { name = "Personal", path = "~/projects/ceickhoff/zettelkasten/personal" },
+          { name = "HUK", path = "~/projects/ceickhoff/zettelkasten/huk" },
+          { name = "EWO", path = "~/projects/ceickhoff/zettelkasten/ewo" },
         }
 
         vim.ui.select(notebooks, {
@@ -38,7 +38,7 @@ return {
     {
       "<leader>zsp",
       function()
-        vim.cmd("cd ~/projects/ceickhoff/zk/personal")
+        vim.cmd("cd ~/projects/ceickhoff/zettelkasten/personal")
         vim.notify("📚 Personal Notes", vim.log.levels.INFO)
       end,
       desc = "→ Personal",
@@ -47,7 +47,7 @@ return {
     {
       "<leader>zsh",
       function()
-        vim.cmd("cd ~/projects/ceickhoff/zk/huk")
+        vim.cmd("cd ~/projects/ceickhoff/zettelkasten/huk")
         vim.notify("💼 HUK Notes", vim.log.levels.INFO)
       end,
       desc = "→ HUK",
@@ -56,7 +56,7 @@ return {
     {
       "<leader>zse",
       function()
-        vim.cmd("cd ~/projects/ceickhoff/zk/ewo")
+        vim.cmd("cd ~/projects/ceickhoff/zettelkasten/ewo")
         vim.notify("🚀 EWO Notes", vim.log.levels.INFO)
       end,
       desc = "→ EWO",
@@ -72,7 +72,7 @@ return {
     {
       "<leader>znp",
       function()
-        vim.cmd("cd ~/projects/ceickhoff/zk/personal")
+        vim.cmd("cd ~/projects/ceickhoff/zettelkasten/personal")
         local title = vim.fn.input("Personal note: ")
         if title ~= "" then
           require("zk").new({ title = title })
@@ -84,7 +84,7 @@ return {
     {
       "<leader>znh",
       function()
-        vim.cmd("cd ~/projects/ceickhoff/zk/huk")
+        vim.cmd("cd ~/projects/ceickhoff/zettelkasten/huk")
         local title = vim.fn.input("HUK note: ")
         if title ~= "" then
           require("zk").new({ title = title })
@@ -96,7 +96,7 @@ return {
     {
       "<leader>zne",
       function()
-        vim.cmd("cd ~/projects/ceickhoff/zk/ewo")
+        vim.cmd("cd ~/projects/ceickhoff/zettelkasten/ewo")
         local title = vim.fn.input("EWO note: ")
         if title ~= "" then
           require("zk").new({ title = title })
@@ -123,7 +123,7 @@ return {
     {
       "<leader>zdp",
       function()
-        vim.cmd("cd ~/projects/ceickhoff/zk/personal")
+        vim.cmd("cd ~/projects/ceickhoff/zettelkasten/personal")
         local result = vim.fn.system("zk daily --print-path")
         local path = vim.trim(result)
         if vim.v.shell_error == 0 and path ~= "" then
@@ -138,7 +138,7 @@ return {
     {
       "<leader>zdh",
       function()
-        vim.cmd("cd ~/projects/ceickhoff/zk/huk")
+        vim.cmd("cd ~/projects/ceickhoff/zettelkasten/huk")
         local result = vim.fn.system("zk daily --print-path")
         local path = vim.trim(result)
         if vim.v.shell_error == 0 and path ~= "" then
@@ -290,9 +290,9 @@ return {
         if search_term ~= "" then
           require("telescope.builtin").live_grep({
             search_dirs = {
-              vim.fn.expand("~/projects/ceickhoff/zk/personal"),
-              vim.fn.expand("~/projects/ceickhoff/zk/huk"),
-              vim.fn.expand("~/projects/ceickhoff/zk/ewo"),
+              vim.fn.expand("~/projects/ceickhoff/zettelkasten/personal"),
+              vim.fn.expand("~/projects/ceickhoff/zettelkasten/huk"),
+              vim.fn.expand("~/projects/ceickhoff/zettelkasten/ewo"),
             },
             prompt_title = "🔍 All Notebooks",
             default_text = search_term,
