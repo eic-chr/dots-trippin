@@ -94,6 +94,8 @@
 # Wayland-Pakete explizit ausschließen
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     plasma-wayland-protocols
+      kwayland
+      kwayland-integration
   ];
 
 
@@ -132,6 +134,7 @@
       xclip
       fzf
       neovim
+      zk
       ];
 
 # Fonts
