@@ -121,6 +121,8 @@
       xclip
       fzf
       neovim
+      pinentry-curses
+      mosh
       ];
 
 # Fonts
@@ -138,6 +140,10 @@
   networking = {
     networkmanager.enable = true;
     firewall.allowedTCPPorts = [ 3389 ]; # RDP
+
+    firewall.allowedUDPPortRanges = [
+      { from = 60000; to = 61000; }
+    ];
   };
 
 # SSH

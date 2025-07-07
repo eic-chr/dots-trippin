@@ -216,7 +216,7 @@
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
-    pinentryPackage = lib.mkForce pkgs.pinentry-gtk2;
+    pinentryPackage = lib.mkForce pkgs.pinentry-curses;
   };
 
 # List services that you want to enable:
@@ -228,6 +228,9 @@
   virtualisation.docker.enable = true;
 # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 3389 ];
+  networking.firewall.allowedUDPPortRanges = [
+  { from = 60000; to = 61000; }
+];
 # networking.firewall.allowedUDPPorts = [ ... ];
 # Or disable the firewall altogether.
 # networking.firewall.enable = false;
