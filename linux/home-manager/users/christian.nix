@@ -87,6 +87,7 @@
     zsh-syntax-highlighting
     oh-my-zsh
     git
+    wget
   ];
   systemd.user.services.dotfiles-setup = {
     Unit = {

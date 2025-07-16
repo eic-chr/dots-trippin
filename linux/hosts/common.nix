@@ -108,6 +108,8 @@
       htop
       jq
       lunarvim
+      luaPackages.luarocks
+      lua-language-server
       kdePackages.partitionmanager
       pavucontrol
       pciutils
@@ -120,9 +122,11 @@
       x11vnc
       xclip
       fzf
+      fd
       neovim
       pinentry-curses
       mosh
+      zk
       ];
 
 # Fonts

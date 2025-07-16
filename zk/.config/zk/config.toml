@@ -1,7 +1,3 @@
-# NOTEBOOK SETTINGS
-[notebook]
-dir = "~/projects/ceickhoff/zettelkasten"
-
 # NOTE SETTINGS
 [note]
 
@@ -28,7 +24,7 @@ template = "default.md"
 id-charset = "alphanum"
 
 # Length of the generated IDs.
-id-length = 4
+id-length = 8
 
 # Letter case for the random IDs.
 id-case = "lower"
@@ -36,7 +32,7 @@ id-case = "lower"
 
 # EXTRA VARIABLES
 [extra]
-author = "Mickaël"
+author = "Christian Eickhoff"
 
 
 # GROUP OVERRIDES
@@ -46,11 +42,14 @@ note.filename = "{{format-date now}}"
 note.template = "daily.md"
 note.title = "{{format-date now}}"
 
+[group.fleeting]
+paths = ["fleeting", "*/fleeting"]
+note.template = "fleeting.md"
+
 [group.weekly]
 paths = ["weekly", "*/weekly"]
-note.filename = "{{format-date now 'year'}}-W{{format-date now 'week-number'}}"
+note.filename = "{{format-date now 'year'}}-W{{format-date now '%V'}}"
 note.template = "weekly.md"
-note.title = "{{format-date now 'year'}}-W{{format-date now 'week-number'}}"
 
 [group.meetings]
 paths = ["meetings", "*/meetings"]
@@ -59,22 +58,18 @@ note.template = "meeting.md"
 
 [group.projects]
 paths = ["projects", "*/projects"]
-note.filename = "{{slug title}}"
 note.template = "project.md"
 
 [group.checklists]
 paths = ["checklists", "*/checklists"]
-note.filename = "{{id}}-{{slug title}}"
 note.template = "checklist.md"# MARKDOWN SETTINGS
 
 [group.ideas]
 paths = ["ideas", "*/ideas"]
-note.filename = "{{id}}-{{slug title}}"
 note.template = "idea.md"# MARKDOWN SETTINGS
 
 [group.research]
 paths = ["research", "*/research"]
-note.filename = "{{slug title}}"
 note.template = "research.md"
 
 [format.markdown]
@@ -116,8 +111,9 @@ recent = "zk edit --sort created- --created-after 'last two weeks' --interactive
 # Show a random note.
 lucky = "zk list --quiet --format full --sort random --limit 1"
 
-daily = "zk new daily --title '{{format-date now}}' --print-path"
-weekly = "zk new weekly --title '{{format-date now 'year'}}-W{{format-date now 'week-number'}}' --print-path"
+daily = "zk new daily --print-path"
+weekly = "zk new weekly --print-path"
+fleeting = "zk new fleeting --print-path --no-input"
 meeting = "zk new meetings"
 project = "zk new projects"
 idea = "zk new ideas"

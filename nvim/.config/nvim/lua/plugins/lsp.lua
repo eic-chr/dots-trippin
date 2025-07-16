@@ -18,6 +18,20 @@ return {
       tsserver = {},
       astro = {}, -- das ist der Astro LSP
       marksman = {},
+      lua_ls = {
+        mason = false, -- 🔴 Verhindert, dass Mason lua_ls verwendet!
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { "vim" },
+            },
+            workspace = {
+              checkThirdParty = false,
+              library = vim.api.nvim_get_runtime_file("", true),
+            },
+          },
+        },
+      },
     },
     -- you can do any additional lsp server setup here
     -- return true if you don't want this server to be setup with lspconfig
