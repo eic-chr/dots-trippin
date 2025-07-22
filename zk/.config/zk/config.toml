@@ -86,8 +86,8 @@ colon-tags = true
 editor = "nvim"
 
 # Default shell used by aliases and commands.
-#shell = "/bin/zsh"
-shell = "/etc/profiles/per-user/christian/bin/zsh"
+shell = "/bin/zsh"
+# shell = "/etc/profiles/per-user/christian/bin/zsh"
 
 # Pager used to scroll through long output.
 pager = "less -FIRX"
