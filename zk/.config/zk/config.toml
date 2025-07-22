@@ -42,6 +42,10 @@ note.filename = "{{format-date now}}"
 note.template = "daily.md"
 note.title = "{{format-date now}}"
 
+[group.permanent]
+paths = ["permanent", "*/permanent"]
+note.template = "permanent.md"
+
 [group.fleeting]
 paths = ["fleeting", "*/fleeting"]
 note.template = "fleeting.md"

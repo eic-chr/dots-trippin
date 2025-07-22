@@ -61,6 +61,11 @@ return {
       desc = "Fleeting note",
     },
     {
+      "<leader>znp",
+      new_zettel("permanent", true),
+      desc = "Permanent note",
+    },
+    {
       "<leader>znc",
       new_zettel("checklist", true),
       desc = "New checklist",
