@@ -107,7 +107,7 @@
       gnupg
       htop
       jq
-      lunarvim
+      kitty
       luaPackages.luarocks
       lua-language-server
       kdePackages.partitionmanager
