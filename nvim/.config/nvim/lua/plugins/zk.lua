@@ -1,21 +1,27 @@
 -- ~/.config/nvim/lua/plugins/zk.lua - Finale Konfiguration
 local zk_dir = "~/projects/ceickhoff/zettelkasten/personal"
-local function new_zettel(alias, needs_title,title)
+
+local function new_zettel(alias, needs_title, title)
   return function()
     local opts = {
       dir = alias,
-      template = alias .. ".md"
+      template = alias .. ".md",
     }
+
     vim.fn.chdir(zk_dir)
+
     if needs_title then
       if title and title ~= "" then
         opts.title = title
       else
         opts.title = vim.fn.input("Title: ")
+      end
     end
+
     require("zk").new(opts)
   end
 end
+
 return {
   "zk-org/zk-nvim",
   name = "zk",
@@ -26,8 +32,8 @@ return {
     })
   end,
   keys = {
-    { "<leader>zo", "<Cmd>ZkNotes<CR>",                                          desc = "Open notes" },
-    { "<leader>zt", "<Cmd>ZkTags<CR>",                                           desc = "Browse tags" },
+    { "<leader>zo", "<Cmd>ZkNotes<CR>", desc = "Open notes" },
+    { "<leader>zt", "<Cmd>ZkTags<CR>", desc = "Browse tags" },
     { "<leader>zf", "<Cmd>ZkNotes { match = { vim.fn.input('Search: ') } }<CR>", desc = "Find notes" },
 
     -- === CONTEXT-SPECIFIC NOTE CREATION ===
@@ -50,20 +56,26 @@ return {
         -- Einfacher Date-Picker mit Optionen
         local options = {
           "Today (" .. os.date("%Y-%m-%d") .. ")",
-          "Yesterday (" .. os.date("%Y-%m-%d", os.time() - 24*60*60) .. ")",
-          "Tomorrow (" .. os.date("%Y-%m-%d", os.time() + 24*60*60) .. ")",
-          "2 days ago (" .. os.date("%Y-%m-%d", os.time() - 2*24*60*60) .. ")",
-          "3 days ago (" .. os.date("%Y-%m-%d", os.time() - 3*24*60*60) .. ")",
-          "This Monday (" .. os.date("%Y-%m-%d", os.time() - (os.date("*t").wday-2)*24*60*60) .. ")",
-          "Last Monday (" .. os.date("%Y-%m-%d", os.time() - (os.date("*t").wday-2+7)*24*60*60) .. ")",
+          "Yesterday (" .. os.date("%Y-%m-%d", os.time() - 24 * 60 * 60) .. ")",
+          "Tomorrow (" .. os.date("%Y-%m-%d", os.time() + 24 * 60 * 60) .. ")",
+          "2 days ago (" .. os.date("%Y-%m-%d", os.time() - 2 * 24 * 60 * 60) .. ")",
+          "3 days ago (" .. os.date("%Y-%m-%d", os.time() - 3 * 24 * 60 * 60) .. ")",
+          "This Monday (" .. os.date("%Y-%m-%d", os.time() - (os.date("*t").wday - 2) * 24 * 60 * 60) .. ")",
+          "Last Monday (" .. os.date("%Y-%m-%d", os.time() - (os.date("*t").wday - 2 + 7) * 24 * 60 * 60) .. ")",
           "Custom date...",
         }
 
-        local the_title = vim.ui.select(options, {
+        vim.ui.select(options, {
           prompt = "Select date for daily note:",
-        }
+        }, function(choice)
+          local date = choice and choice:match("%((%d%d%d%d%-%d%d%-%d%d)%)")
+          if not date then
+            date = vim.fn.input("Enter custom date (YYYY-MM-DD): ")
+          end
+          vim.notify("on thenew_zettel", vim.log.levels.INFO)
+          new_zettel("daily", true, date)()
+        end)
       end,
-      new_zettel("daily", true,the_title),
       desc = "Daily",
     },
 
@@ -107,9 +119,9 @@ return {
     },
 
     -- === BROWSE STRUCTURED NOTES ===
-    { "<leader>zoi", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/idea' } }<CR>",     desc = "Browse ideas" },
-    { "<leader>zom", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/meeting' } }<CR>",  desc = "Browse meetings" },
-    { "<leader>zoj", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/project' } }<CR>",  desc = "Browse projects" },
+    { "<leader>zoi", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/idea' } }<CR>", desc = "Browse ideas" },
+    { "<leader>zom", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/meeting' } }<CR>", desc = "Browse meetings" },
+    { "<leader>zoj", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/project' } }<CR>", desc = "Browse projects" },
     { "<leader>zor", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/research' } }<CR>", desc = "Browse research" },
     -- === GLOBAL SEARCH ===
     {

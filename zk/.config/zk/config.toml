@@ -38,9 +38,9 @@ author = "Christian Eickhoff"
 # GROUP OVERRIDES
 [group.daily]
 paths = ["daily", "*/daily"]
-note.filename = "{{format-date now}}"
 note.template = "daily.md"
-note.title = "{{format-date now}}"
+note.filename = "{{title}}"
+note.title = "{{title}}"
 
 [group.permanent]
 paths = ["permanent", "*/permanent"]
