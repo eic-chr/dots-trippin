@@ -1,6 +1,6 @@
 -- ~/.config/nvim/lua/plugins/zk.lua - Finale Konfiguration
 local zk_dir = "~/projects/ceickhoff/zettelkasten/personal"
-local function new_zettel(alias, needs_title)
+local function new_zettel(alias, needs_title,title)
   return function()
     local opts = {
       dir = alias,
@@ -8,7 +8,10 @@ local function new_zettel(alias, needs_title)
     }
     vim.fn.chdir(zk_dir)
     if needs_title then
-      opts.title = vim.fn.input("Title: ")
+      if title and title ~= "" then
+        opts.title = title
+      else
+        opts.title = vim.fn.input("Title: ")
     end
     require("zk").new(opts)
   end
@@ -43,7 +46,24 @@ return {
     -- === DAILY NOTES ===
     {
       "<leader>zd",
-      new_zettel("daily", false),
+      function()
+        -- Einfacher Date-Picker mit Optionen
+        local options = {
+          "Today (" .. os.date("%Y-%m-%d") .. ")",
+          "Yesterday (" .. os.date("%Y-%m-%d", os.time() - 24*60*60) .. ")",
+          "Tomorrow (" .. os.date("%Y-%m-%d", os.time() + 24*60*60) .. ")",
+          "2 days ago (" .. os.date("%Y-%m-%d", os.time() - 2*24*60*60) .. ")",
+          "3 days ago (" .. os.date("%Y-%m-%d", os.time() - 3*24*60*60) .. ")",
+          "This Monday (" .. os.date("%Y-%m-%d", os.time() - (os.date("*t").wday-2)*24*60*60) .. ")",
+          "Last Monday (" .. os.date("%Y-%m-%d", os.time() - (os.date("*t").wday-2+7)*24*60*60) .. ")",
+          "Custom date...",
+        }
+
+        local the_title = vim.ui.select(options, {
+          prompt = "Select date for daily note:",
+        }
+      end,
+      new_zettel("daily", true,the_title),
       desc = "Daily",
     },
 
