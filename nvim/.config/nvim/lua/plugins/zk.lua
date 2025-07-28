@@ -10,6 +10,7 @@ local function new_zettel(alias, needs_title, title)
 
     vim.fn.chdir(zk_dir)
 
+    vim.notify("on dir" .. zk_dir, vim.log.levels.INFO)
     if needs_title then
       if title and title ~= "" then
         opts.title = title
@@ -72,7 +73,6 @@ return {
           if not date then
             date = vim.fn.input("Enter custom date (YYYY-MM-DD): ")
           end
-          vim.notify("on thenew_zettel", vim.log.levels.INFO)
           new_zettel("daily", true, date)()
         end)
       end,
