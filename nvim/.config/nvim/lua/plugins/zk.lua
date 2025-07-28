@@ -10,6 +10,7 @@ local function new_zettel(alias, needs_title, title)
 
     vim.fn.chdir(zk_dir)
 
+    vim.notify("on dir" .. zk_dir, vim.log.levels.INFO)
     if needs_title then
       if title and title ~= "" then
         vim.notify("on the new_zettel" .. title, vim.log.levels.INFO)
