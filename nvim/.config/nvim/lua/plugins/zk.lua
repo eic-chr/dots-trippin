@@ -12,6 +12,7 @@ local function new_zettel(alias, needs_title, title)
 
     if needs_title then
       if title and title ~= "" then
+        vim.notify("on the new_zettel" .. title, vim.log.levels.INFO)
         opts.title = title
       else
         opts.title = vim.fn.input("Title: ")
@@ -69,10 +70,11 @@ return {
           prompt = "Select date for daily note:",
         }, function(choice)
           local date = choice and choice:match("%((%d%d%d%d%-%d%d%-%d%d)%)")
+
+          vim.notify("date is" .. date, vim.log.levels.INFO)
           if not date then
             date = vim.fn.input("Enter custom date (YYYY-MM-DD): ")
           end
-          vim.notify("on thenew_zettel", vim.log.levels.INFO)
           new_zettel("daily", true, date)()
         end)
       end,

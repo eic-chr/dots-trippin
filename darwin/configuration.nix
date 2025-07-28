@@ -83,6 +83,7 @@ ids.gids.nixbld = 30000;
 
 
   environment.systemPackages = with pkgs; [
+    # alacritty
     atuin
     awscli2
     azure-cli
@@ -91,6 +92,7 @@ ids.gids.nixbld = 30000;
     eza
     fd
     fzf
+    kitty
     jq
 #    kafkactl
     ripgrep
