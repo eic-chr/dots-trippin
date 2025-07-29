@@ -97,36 +97,38 @@
 
 # Common system packages
   environment.systemPackages = with pkgs; [
-    direnv
+      fd
+      fzf
       gcc
-      gnumake
-      pkg-config
       git
       git-crypt
       gnumake
+      gnumake
       gnupg
       htop
+      imagemagick
       jq
-      kitty
-      luaPackages.luarocks
-      lua-language-server
       kdePackages.partitionmanager
+      kdePackages.polkit-kde-agent-1
+      kitty
+      lazygit
+      lua-language-server
+      luaPackages.luarocks
+      mosh
+      neovim
       pavucontrol
       pciutils
+      pinentry-curses
+      pkg-config
       polkit
-      kdePackages.polkit-kde-agent-1
       ripgrep
       stow
       tmux
       vlc
       x11vnc
       xclip
-      fzf
-      fd
-      neovim
-      pinentry-curses
-      mosh
       zk
+      direnv
       ];
 
 # Fonts
