@@ -17,7 +17,9 @@ return {
       -- tsserver will be automatically installed with mason and loaded with lspconfig
       tsserver = {},
       astro = {}, -- das ist der Astro LSP
-      marksman = {},
+      marksman = {
+        mason = false,
+      },
       lua_ls = {
         mason = false, -- 🔴 Verhindert, dass Mason lua_ls verwendet!
         settings = {

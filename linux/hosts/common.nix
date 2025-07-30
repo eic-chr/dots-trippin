@@ -86,6 +86,7 @@
   ];
 
 
+programs.nix-ld.enable = true;
 # Enable common programs
   programs = {
     firefox.enable = true;
@@ -97,6 +98,7 @@
 
 # Common system packages
   environment.systemPackages = with pkgs; [
+      cargo
       fd
       fzf
       gcc
@@ -114,8 +116,11 @@
       lazygit
       lua-language-server
       luaPackages.luarocks
+      marksman
+      markdownlint-cli
       mosh
       neovim
+      nodejs
       pavucontrol
       pciutils
       pinentry-curses
@@ -124,6 +129,7 @@
       ripgrep
       stow
       tmux
+      unzip
       vlc
       x11vnc
       xclip
