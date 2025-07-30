@@ -93,6 +93,7 @@ ids.gids.nixbld = 30000;
     fd
     fzf
     kitty
+    lazygit
     jq
 #    kafkactl
     ripgrep
