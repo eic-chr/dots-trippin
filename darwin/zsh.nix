@@ -1,28 +1,57 @@
 { programs, lib, pkgs, ... }: {
+
   programs.zsh = {
     enable = true;
     enableAutosuggestions = true;
-    oh-my-zsh.enable = true;
-    oh-my-zsh.theme = "agnoster";
-    oh-my-zsh.plugins = [ "git" "sudo" "mvn" "npm" "ssh" ];
-    shellAliases = {
-      ls = "eza";
-      l = "eza -la";
-      tree = "eza --tree";
-      cat = "bat";
-      make = "gmake";
-      docker-compose = "docker compose";
-      mmake = "gmake -j$(sysctl -n hw.ncpu)";
-    };
-#    plugins = [ (import ../nixpkgs/fzf-tab.nix { inherit pkgs; }) ];
+    enableCompletion = true;  # Wichtig!
     initExtra = lib.readFile ./initExtra.sh;
+
+# Bessere History
+      historySubstringSearch.enable = true;
+
+    oh-my-zsh = {
+      enable = true;
+      theme = "agnoster";
+      plugins = [
+        "git"
+          "macos"        # macOS spezifische Aliase
+          "brew"         # Homebrew completion
+          "docker"       # Docker completion
+          "kubectl"      # Falls du Kubernetes nutzt
+          "z"            # Jump to directories
+      ];
+    };
+
+    shellAliases = {
+# Deine bestehenden...
+      ll = "eza -l";
+      la = "eza -la";
+      lt = "eza --tree --level=2";
+
+# Git shortcuts
+      g = "git";
+      gs = "git status";
+      gd = "git diff";
+      ga = "git add";
+      gc = "git commit";
+      gp = "git push";
+      gl = "git pull";
+
+# System
+      top = "htop";
+      ps = "procs";
+      du = "dust";
+
+# Quick navigation
+      ".." = "cd ..";
+      "..." = "cd ../..";
+      "~" = "cd ~";
+    };
   };
-  programs.direnv.enable = true;
-  programs.fzf.enable = true;
-  programs.zoxide.enable = false;
-  programs.atuin.enable = false;
-#  programs.starship = {
-#    enable = true;
-#    settings = builtins.fromTOML (lib.readFile ../starship/starship.toml);
-#  };
-}
+
+# AKTIVIERE das!
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+                              }

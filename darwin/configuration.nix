@@ -89,11 +89,13 @@ ids.gids.nixbld = 30000;
     azure-cli
     bat
     direnv
+    dust
     eza
     fd
     fzf
     kitty
     lazygit
+    marksman
     jq
 #    kafkactl
     ripgrep
@@ -118,6 +120,7 @@ ids.gids.nixbld = 30000;
     languagetool
     ltex-ls # lsp for languagetool
     zsh-powerlevel10k
+    zk
   ];
 
   # Nix-darwin does not link installed applications to the user environment. This means apps will not show up
