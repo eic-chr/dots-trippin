@@ -1,4 +1,4 @@
-# Performance profiling (nur temporär für Tests)
+# Performance profiling (nur temporär für tests)
 # zmodload zsh/zprof
 
 # PATH exports
@@ -73,18 +73,21 @@ if [ -n "$EAT_SHELL_INTEGRATION_DIR" ]; then
     source "$EAT_SHELL_INTEGRATION_DIR/zsh"
 fi
 
-# FZF with better defaults
+# FZF with better defaults (lazy load)
 if command -v fzf >/dev/null 2>&1; then
-    source <(fzf --zsh)
-    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-    export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
-fi
-
-# Powerlevel10k theme
-if [[ -f $HOME/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme ]]; then
-    source $HOME/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme
-    ZSH_THEME="powerlevel10k/powerlevel10k"
+    # Lazy load FZF
+    fzf_setup() {
+        source <(fzf --zsh)
+        export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+        export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+        unset -f fzf_setup
+    }
+    
+    # Override FZF functions to trigger setup
+    fzf() { fzf_setup && fzf "$@"; }
+    __fzf_history__() { fzf_setup && __fzf_history__; }
+    __fzf_file__() { fzf_setup && __fzf_file__; }
 fi
 
 # Vi mode mit besseren Bindings
@@ -105,8 +108,11 @@ function zle-keymap-select {
 }
 zle -N zle-keymap-select
 
-# P10k config
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-#
+# Better key bindings
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey '^R' fzf-history-widget
+bindkey '^T' fzf-file-widget
+
 # Performance profiling output (nur für Tests)
 # zprof
