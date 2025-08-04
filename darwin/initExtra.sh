@@ -108,11 +108,5 @@ zle -N zle-keymap-select
 # P10k config
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 #
-# Bessere Navigation
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-bindkey '^R' fzf-history-widget
-bindkey '^T' fzf-file-widget
-bindkey '^F' fzf-cd-widget
 # Performance profiling output (nur für Tests)
 # zprof
