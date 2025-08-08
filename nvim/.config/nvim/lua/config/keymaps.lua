@@ -313,6 +313,11 @@ vim.keymap.set("v", "gl", "$h", { desc = "[P]Go to the end of the line" })
 -- -- The `"+` register represents the system clipboard.
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P]Yank to system clipboard" })
 
+vim.keymap.set("n", "<leader>ud", function()
+  local config = vim.diagnostic.config()
+  vim.diagnostic.config({ virtual_text = not config.virtual_text })
+end, { desc = "Toggle diagnostics" })
+
 -- Copy the current line and all diagnostics on that line to system clipboard
 vim.keymap.set("n", "yd", function()
   local pos = vim.api.nvim_win_get_cursor(0)

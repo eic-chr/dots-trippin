@@ -11,8 +11,8 @@ return {
     },
     config = function()
       local dap = require("dap")
-      -- local js_debug_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"
-      local js_debug_path = "/Users/christianeickhoff/Downloads/js-debug/src"
+      local js_debug_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"
+      -- local js_debug_path = "/Users/christianeickhoff/Downloads/js-debug/src"
 
       dap.adapters["node"] = {
         type = "server",

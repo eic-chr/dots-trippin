@@ -1,25 +1,23 @@
 -- ~/.config/nvim/lua/plugins/zk.lua - Finale Konfiguration
-local zk_dir = "~/projects/ceickhoff/zettelkasten/personal"
+local zk_dir = "/Users/christianeickhoff/projects/ceickhoff/zettelkasten/personal"
 
 local function new_zettel(alias, needs_title, title)
   return function()
     local opts = {
-      dir = alias,
+      dir = zk_dir .. "/" .. alias,
       template = alias .. ".md",
     }
 
-    vim.fn.chdir(zk_dir)
 
-    vim.notify("on dir" .. zk_dir, vim.log.levels.INFO)
     if needs_title then
       if title and title ~= "" then
-        vim.notify("on the new_zettel" .. title, vim.log.levels.INFO)
         opts.title = title
       else
         opts.title = vim.fn.input("Title: ")
       end
     end
 
+    vim.fn.chdir(zk_dir)
     require("zk").new(opts)
   end
 end
@@ -34,8 +32,8 @@ return {
     })
   end,
   keys = {
-    { "<leader>zo", "<Cmd>ZkNotes<CR>", desc = "Open notes" },
-    { "<leader>zt", "<Cmd>ZkTags<CR>", desc = "Browse tags" },
+    { "<leader>zo", "<Cmd>ZkNotes<CR>",                                          desc = "Open notes" },
+    { "<leader>zt", "<Cmd>ZkTags<CR>",                                           desc = "Browse tags" },
     { "<leader>zf", "<Cmd>ZkNotes { match = { vim.fn.input('Search: ') } }<CR>", desc = "Find notes" },
 
     -- === CONTEXT-SPECIFIC NOTE CREATION ===
@@ -72,7 +70,6 @@ return {
         }, function(choice)
           local date = choice and choice:match("%((%d%d%d%d%-%d%d%-%d%d)%)")
 
-          vim.notify("date is" .. date, vim.log.levels.INFO)
           if not date then
             date = vim.fn.input("Enter custom date (YYYY-MM-DD): ")
           end
@@ -122,9 +119,9 @@ return {
     },
 
     -- === BROWSE STRUCTURED NOTES ===
-    { "<leader>zoi", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/idea' } }<CR>", desc = "Browse ideas" },
-    { "<leader>zom", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/meeting' } }<CR>", desc = "Browse meetings" },
-    { "<leader>zoj", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/project' } }<CR>", desc = "Browse projects" },
+    { "<leader>zoi", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/idea' } }<CR>",     desc = "Browse ideas" },
+    { "<leader>zom", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/meeting' } }<CR>",  desc = "Browse meetings" },
+    { "<leader>zoj", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/project' } }<CR>",  desc = "Browse projects" },
     { "<leader>zor", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/research' } }<CR>", desc = "Browse research" },
     -- === GLOBAL SEARCH ===
     {
@@ -156,8 +153,6 @@ return {
           notebook = "Personal"
           icon = "🏠"
         end
-
-        vim.notify(icon .. " Current: " .. notebook .. "\n📂 " .. current_dir, vim.log.levels.INFO)
       end,
       desc = "Current notebook info",
     },

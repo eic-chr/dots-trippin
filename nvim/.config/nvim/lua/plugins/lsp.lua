@@ -20,6 +20,16 @@ return {
       marksman = {
         mason = false,
       },
+      nil_ls = {
+        -- Optional: spezifische Konfiguration für nil
+        settings = {
+          ["nil"] = {
+            formatting = {
+              command = { "nixpkgs-fmt" },
+            },
+          },
+        },
+      },
       lua_ls = {
         mason = false, -- 🔴 Verhindert, dass Mason lua_ls verwendet!
         settings = {
