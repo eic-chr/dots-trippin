@@ -11,8 +11,8 @@ return {
     },
     config = function()
       local dap = require("dap")
-      -- local js_debug_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"
-      local js_debug_path = "/Users/christianeickhoff/Downloads/js-debug/src"
+      local js_debug_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"
+      -- local js_debug_path = "/Users/christianeickhoff/Downloads/js-debug/src"
 
       dap.adapters["node"] = {
         type = "server",
@@ -67,6 +67,15 @@ return {
           name = "Attach",
           processId = require("dap.utils").pick_process,
           cwd = "${workspaceFolder}",
+        },
+
+        {
+          type = "pwa-node",
+          request = "launch",
+          name = "Debug Jest Test",
+          program = "${workspaceFolder}/backstage/node_modules/.bin/backstage-cli",
+          args = { "repo", "test" },
+          cwd = "${workspaceFolder}/backstage",
         },
         -- {
         --   name = "Astro: npm run dev mit Debugger",

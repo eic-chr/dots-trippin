@@ -17,7 +17,33 @@ return {
       -- tsserver will be automatically installed with mason and loaded with lspconfig
       tsserver = {},
       astro = {}, -- das ist der Astro LSP
-      marksman = {},
+      marksman = {
+        mason = false,
+      },
+      nil_ls = {
+        -- Optional: spezifische Konfiguration für nil
+        settings = {
+          ["nil"] = {
+            formatting = {
+              command = { "nixpkgs-fmt" },
+            },
+          },
+        },
+      },
+      lua_ls = {
+        mason = false, -- 🔴 Verhindert, dass Mason lua_ls verwendet!
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { "vim" },
+            },
+            workspace = {
+              checkThirdParty = false,
+              library = vim.api.nvim_get_runtime_file("", true),
+            },
+          },
+        },
+      },
     },
     -- you can do any additional lsp server setup here
     -- return true if you don't want this server to be setup with lspconfig

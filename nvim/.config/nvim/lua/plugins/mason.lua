@@ -15,6 +15,7 @@ return {
         "html",
         "jsonls",
         "tsserver",
+        "nil_ls",
         "pyright",
         "tailwindcss",
       },
@@ -27,6 +28,8 @@ return {
         "isort", -- python formatter
         "black", -- python formatter
         "pylint",
+        "js-debug-adapter",
+        "debugpy",
         "eslint_d",
       },
     })
