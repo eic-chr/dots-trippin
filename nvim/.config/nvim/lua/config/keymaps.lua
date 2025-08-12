@@ -313,11 +313,6 @@ vim.keymap.set("v", "gl", "$h", { desc = "[P]Go to the end of the line" })
 -- -- The `"+` register represents the system clipboard.
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P]Yank to system clipboard" })
 
-vim.keymap.set("n", "<leader>ud", function()
-  local config = vim.diagnostic.config()
-  vim.diagnostic.config({ virtual_text = not config.virtual_text })
-end, { desc = "Toggle diagnostics" })
-
 -- Copy the current line and all diagnostics on that line to system clipboard
 vim.keymap.set("n", "yd", function()
   local pos = vim.api.nvim_win_get_cursor(0)
@@ -386,6 +381,7 @@ local function md_inline_calculator(auto_trigger)
       end
     end
   end
+
   -- Manual mode: Check cursor position
   local handled = false
   for _, expr in ipairs(expressions) do
@@ -3648,5 +3644,29 @@ if ok then
   vim.keymap.set("n", "<Leader>dr", dap.repl.open, { desc = "DAP: Open REPL" })
   vim.keymap.set("n", "<Leader>ds", dap.terminate, { desc = "DAP: Stop" })
 end
+
+-- Toggle Diagnostics Hover Info (CE)
+local diagnostics_popup_enabled = true
+
+local function toggle_diagnostics_popup()
+  diagnostics_popup_enabled = not diagnostics_popup_enabled
+  if diagnostics_popup_enabled then
+    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+      group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
+      callback = function()
+        vim.diagnostic.open_float(nil, {
+          focus = false,
+          border = "rounded",
+        })
+      end,
+    })
+    vim.notify("Diagnostics Popup: AN", vim.log.levels.INFO)
+  else
+    vim.api.nvim_clear_autocmds({ group = "float_diagnostic" })
+    vim.notify("Diagnostics Popup: AUS", vim.log.levels.INFO)
+  end
+end
+
+vim.keymap.set("n", "<leader>ue", toggle_diagnostics_popup, { desc = "[CE]Toggle diagnostics popup" })
 
 return M

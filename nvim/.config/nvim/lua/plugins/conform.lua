@@ -22,14 +22,22 @@ return {
       yaml = { "prettier" },
       markdown = { "prettier" },
       lua = { "stylua" },
-      python = { "isort", "black" }, -- isort vor black für saubere Imports
-      -- optional: ruff_format kann zusätzlich laufen, falls du willst:
-      -- python = { "isort", "black", "ruff_format" },
+      python = { "isort", "black" },
     },
-    -- format_on_save = {
-    --   lsp_fallback = true,
-    --   async = false,
-    --   timeout_ms = 1000,
-    -- },
+    -- nicht format_on_save hier setzen, LazyVim macht das nicht
   },
+  config = function(_, opts)
+    require("conform").setup(opts)
+    -- Autoformat beim Speichern
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = "*",
+      callback = function()
+        require("conform").format({
+          async = false,
+          lsp_fallback = true,
+          timeout_ms = 1000,
+        })
+      end,
+    })
+  end,
 }
