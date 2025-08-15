@@ -66,10 +66,37 @@
   # Zusätzliche NixOS-spezifische Pakete
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
+    cifs-utils
+    ferdium
+    fzf
+    xorg.setxkbmap
+    keepassxc
+    libreoffice
+    nextcloud-client
+    pgadmin4
+    python3
+    python311Packages.pip
+    scli
+    gpt4all
+    signal-desktop
+    stow
+    thunderbird
+    xorg.xset
+    zed-editor
+    zsh
+    zsh-completions
+    zsh-history-substring-search
+    zsh-syntax-highlighting
+    wget
     firefox
     
   ] ++ lib.optionals hasPlasma [
     # KDE-spezifische Pakete
+    kdePackages.merkuro
+    kdePackages.kolourpaint
+    kdePackages.kdegraphics-thumbnailers
+    kdePackages.kio-extras
+    kdePackages.qtimageformats
     kdePackages.kate
     kdePackages.dolphin
     kdePackages.konsole
