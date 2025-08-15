@@ -28,23 +28,23 @@
   };
 
   # Laptop-spezifische Hardware-Unterstützung
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      
-      # Battery charge thresholds (falls unterstützt)
-      START_CHARGE_THRESH_BAT0 = 40;
-      STOP_CHARGE_THRESH_BAT0 = 80;
-      
-      # CPU frequency scaling
-      CPU_MIN_PERF_ON_AC = 0;
-      CPU_MAX_PERF_ON_AC = 100;
-      CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 30;
-    };
-  };
+  # services.tlp = {
+  #   enable = true;
+  #   settings = {
+  #     CPU_SCALING_GOVERNOR_ON_AC = "performance";
+  #     CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+  #     
+  #     # Battery charge thresholds (falls unterstützt)
+  #     START_CHARGE_THRESH_BAT0 = 40;
+  #     STOP_CHARGE_THRESH_BAT0 = 80;
+  #     
+  #     # CPU frequency scaling
+  #     CPU_MIN_PERF_ON_AC = 0;
+  #     CPU_MAX_PERF_ON_AC = 100;
+  #     CPU_MIN_PERF_ON_BAT = 0;
+  #     CPU_MAX_PERF_ON_BAT = 30;
+  #   };
+  # };
 
   # Bluetooth
   hardware.bluetooth = {
@@ -98,10 +98,10 @@
 
   # Hardware-spezifische Services
   services.thermald.enable = true;  # Intel thermal management
-  services.auto-cpufreq.enable = true;  # Automatische CPU-Frequenz-Anpassung
+  # services.auto-cpufreq.enable = true;  # Automatische CPU-Frequenz-Anpassung
 
   # Backlight control
-  hardware.brightnessctl.enable = true;
+  # hardware.brightnessctl.enable = true;
   
   # Printing support
   services.printing = {
@@ -116,6 +116,4 @@
 
   # Scanner support
   hardware.sane.enable = true;
-  users.users.${usernix}.extraGroups = [ "scanner" "lp" ];
-  users.users.${secondUsernix}.extraGroups = [ "scanner" "lp" ];
 }
