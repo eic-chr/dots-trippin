@@ -46,13 +46,8 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Hauptbenutzer (ce)
-  users.users.${usernix} = {
-    isNormalUser = true;
-    description = "Christian Eickhoff";
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" ];
-    shell = pkgs.zsh;
-  };
+  # Benutzer werden in host-spezifischen Configs definiert
+  # (entfernt um Konflikte zu vermeiden)
 
   # Zsh global aktivieren
   programs.zsh.enable = true;
@@ -69,7 +64,6 @@
     pulse.enable = true;
     jack.enable = true;
   };
-
   # KDE-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
     # Systemtools
@@ -109,8 +103,7 @@
     # Browser
     firefox
   ];
-
-  # Nix-Einstellungen
+# Nix-Einstellungen
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
