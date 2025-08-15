@@ -15,6 +15,7 @@
     };
   };
 
+  nixpkgs.config.allowUnfree = true;
 # Use doas instead of sudo
   security.doas.enable = true;
   security.sudo.enable = false;
