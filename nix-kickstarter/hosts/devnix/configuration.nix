@@ -10,6 +10,14 @@
   # Hostname
   networking.hostName = hostname;
 
+  # Benutzer für devnix
+  users.users.${usernix} = {
+    isNormalUser = true;
+    description = "Christian Eickhoff";
+    extraGroups = [ "wheel" "networkmanager" "audio" "video" "docker" ];
+    shell = pkgs.zsh;
+  };
+
   # VM-spezifische Einstellungen
   virtualisation = {
     qemu.guestAgent.enable = true;
