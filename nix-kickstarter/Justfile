@@ -1,5 +1,4 @@
 # just is a command runner, Justfile is very similar to Makefile, but simpler.
-
 # TODO update hostname here!
 hostname := "MacBookPro"
 
@@ -13,12 +12,27 @@ default:
 #
 ############################################################################
 
+# Build and switch Darwin configuration, then switch home-manager
+[group('darwin')]
+rebuild-switch:
+  darwin-rebuild switch --flake .
+
+# Full system build and switch (nix build + darwin rebuild + home-manager)
+[group('darwin')]
+build-and-switch:
+  nix build .#darwinConfigurations.{{hostname}}.system
+  sudo darwin-rebuild switch --flake .
 
 ############################################################################
 #
 #  nix related commands
 #
 ############################################################################
+
+# Build the system configuration
+[group('nix')]
+build:
+  nix build
 
 # Update all the flake inputs
 [group('nix')]
@@ -65,4 +79,3 @@ fmt:
 [group('nix')]
 gcroot:
   ls -al /nix/var/nix/gcroots/auto/
-

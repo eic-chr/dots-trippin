@@ -42,8 +42,10 @@ enableZshIntegration = true;
       "alt+w" = "close_window";
       
       # Tab Navigation
-      "alt+bracketleft" = "previous_tab";
-      "alt+bracketright" = "next_tab";
+      "alt+comma" = "previous_tab";        # Alt + ,
+      "alt+period" = "next_tab";           # Alt + .
+      "alt+shift+comma" = "move_tab_backward";   # Tab nach links verschieben  
+      "alt+shift+period" = "move_tab_forward";   # Tab nach rechts verschieben
       
       # Maximieren
       "alt+m" = "toggle_maximized";

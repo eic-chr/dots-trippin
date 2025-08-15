@@ -60,6 +60,7 @@ home.packages = with pkgs; [
 ];
 
   programs = {
+    direnv.enable = true;
     # modern vim
     neovim = {
       enable = true;
