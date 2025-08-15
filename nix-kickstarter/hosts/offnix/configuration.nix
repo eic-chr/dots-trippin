@@ -10,12 +10,21 @@
   # Hostname
   networking.hostName = hostname;
 
-  # Zusätzlicher Benutzer (ca)
-  users.users.${secondUsernix} = {
-    isNormalUser = true;
-    description = "Second User";
-    extraGroups = [ "networkmanager" "audio" "video" ];
-    shell = pkgs.zsh;
+  # Benutzer für offnix
+  users.users = {
+    ${usernix} = {
+      isNormalUser = true;
+      description = "Christian Eickhoff";
+      extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
+      shell = pkgs.zsh;
+    };
+    
+    ${secondUsernix} = {
+      isNormalUser = true;
+      description = "Second User";
+      extraGroups = [ "networkmanager" "audio" "video" "scanner" "lp" ];
+      shell = pkgs.zsh;
+    };
   };
 
   # Laptop-spezifische Hardware-Unterstützung
