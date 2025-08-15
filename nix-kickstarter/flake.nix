@@ -1,13 +1,12 @@
 {
-  description = "Nix for macOS configuration";
-
+  description = "Multi-system Nix configuration for macOS, NixOS VM, and laptop";
   ##################################################################################################################
   #
   # Want to know Nix in details? Looking for a beginner-friendly tutorial?
   # Check out https://github.com/ryan4yin/nixos-and-flakes-book !
   #
   ##################################################################################################################
-
+  
   # the nixConfig here only affects the flake itself, not the system configuration!
   nixConfig = {
     substituters = [
@@ -17,69 +16,164 @@
     ];
   };
 
-  # This is the standard format for flake.nix. `inputs` are the dependencies of the flake,
-  # Each item in `inputs` will be passed as a parameter to the `outputs` function after being pulled and built.
   inputs = {
-    # nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    # Use different nixpkgs for different systems
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
-#home-manager, used for managing user configuration
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    
+    # home-manager for user configuration management
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
-      # The `follows` keyword in inputs is used for inheritance.
-      # Here, `inputs.nixpkgs` of home-manager is kept consistent with the `inputs.nixpkgs` of the current flake,
-      # to avoid problems caused by different versions of nixpkgs dependencies.
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    
+    # plasma-manager for KDE Plasma configuration
+    plasma-manager = {
+      url = "github:pjones/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+    
+    # nix-darwin for macOS
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
   };
 
-  # The `outputs` function will return all the build results of the flake.
-  # A flake can have many use cases and different types of outputs,
-  # parameters in `outputs` are defined in `inputs` and can be referenced by their names.
-  # However, `self` is an exception, this special parameter points to the `outputs` itself (self-reference)
-  # The `@` syntax here is used to alias the attribute set of the inputs's parameter, making it convenient to use inside the function.
   outputs = inputs @ {
     self,
     nixpkgs,
+    nixpkgs-darwin,
     darwin,
     home-manager,
+    plasma-manager,
     ...
   }: let
-    # TODO replace with your own username, system and hostname
-    username = "christianeickhoff";
+    # Common user configuration
+    usernix = "ce";
+    usermac = "christianeickhoff";
     useremail = "christian@ewolutions.de";
-    system = "aarch64-darwin"; # aarch64-darwin or x86_64-darwin
-    hostname = "MacBookPro";
-
-
-    specialArgs =
-      inputs
-      // {
-        inherit username useremail hostname;
+    
+    # Additional user for offnix
+    secondUsernix = "ca";
+    
+    # System-specific configurations
+    systems = {
+      # macOS configuration
+      mac = {
+        system = "aarch64-darwin";
+        hostname = "MacBookPro";
+        nixpkgs = nixpkgs-darwin;
+        users = [usermac];
+        hasPlasma = false;
       };
+      
+      # NixOS VM configuration
+      devnix = {
+        system = "x86_64-linux";
+        hostname = "devnix";
+        nixpkgs = nixpkgs;
+        users = [usernix];
+        hasPlasma = true;
+      };
+      
+      # Laptop configuration with two users
+      offnix = {
+        system = "x86_64-linux";
+        hostname = "offnix";
+        nixpkgs = nixpkgs;
+        users = [usernix secondUsernix];
+        hasPlasma = true;
+      };
+    };
+
+    # Helper function to create specialArgs for each system
+    mkSpecialArgs = systemConfig: 
+      inputs // {
+        inherit usermac usernix secondUsernix useremail;
+        inherit (systemConfig) hostname hasPlasma;
+        # Für Kompatibilität mit bestehenden Modulen
+        username = if systemConfig.hostname == "MacBookPro" then usermac else usernix;
+      };
+
+    # Helper function to create home-manager user configurations
+    mkHomeManagerUsers = systemConfig: 
+      if systemConfig.hostname == "MacBookPro" then {
+        # Für macOS: verwende die bestehende default.nix
+        ${usermac} = import ./home;
+      } else if systemConfig.hostname == "devnix" then {
+        # Für devnix VM: nur ein Benutzer, verwende nixos.nix
+        ${usernix} = import ./home/nixos.nix;
+      } else {
+        # Für offnix: zwei Benutzer, verwende beide existierenden Dateien
+        ${usernix} = import ./home/nixos.nix;
+        ${secondUsernix} = import ./home/ca.nix;
+      };
+
   in {
-    darwinConfigurations."${hostname}" = darwin.lib.darwinSystem {
-      inherit system specialArgs;
+    # macOS configuration
+    darwinConfigurations."${systems.mac.hostname}" = darwin.lib.darwinSystem {
+      system = systems.mac.system;
+      specialArgs = mkSpecialArgs systems.mac;
       modules = [
         ./modules/nix-core.nix
         ./modules/system.nix
         ./modules/apps.nix
-
         ./modules/host-users.nix
         home-manager.darwinModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = specialArgs;
-          home-manager.users.${username} = import ./home;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.mac;
+          home-manager.users = mkHomeManagerUsers systems.mac;
         }
       ];
     };
-    # nix code formatter
-    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
+
+    # NixOS configurations
+    nixosConfigurations."${systems.devnix.hostname}" = nixpkgs.lib.nixosSystem {
+      system = systems.devnix.system;
+      specialArgs = mkSpecialArgs systems.devnix;
+      modules = [
+        ./hosts/devnix/configuration.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.devnix;
+          home-manager.users = mkHomeManagerUsers systems.devnix;
+          home-manager.sharedModules = [
+            plasma-manager.homeManagerModules.plasma-manager
+          ];
+        }
+      ];
+    };
+
+    nixosConfigurations."${systems.offnix.hostname}" = nixpkgs.lib.nixosSystem {
+      system = systems.offnix.system;
+      specialArgs = mkSpecialArgs systems.offnix;
+      modules = [
+        ./hosts/offnix/configuration.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.offnix;
+          home-manager.users = mkHomeManagerUsers systems.offnix;
+          home-manager.sharedModules = [
+            plasma-manager.homeManagerModules.plasma-manager
+          ];
+        }
+      ];
+    };
+
+    # Formatters for all systems
+    formatter = builtins.listToAttrs (map (systemName: 
+      let systemConfig = systems.${systemName}; in {
+        name = systemConfig.system;
+        value = systemConfig.nixpkgs.legacyPackages.${systemConfig.system}.alejandra;
+      }
+    ) (builtins.attrNames systems));
   };
 }
