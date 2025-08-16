@@ -113,13 +113,20 @@ programs.zsh.enable = true;
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ "root" usernix ];
+      auto-optimise-store = true;
     };
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 30d";
+      options = "--delete-older-than 10d";
     };
   };
+   # Boot-Loader: Begrenzte Anzahl von Generationen
+  boot.loader.systemd-boot = {
+    enable = true;
+    configurationLimit = 5;  # Nur 5 Boot-Einträge behalten
+  };
+
 nixpkgs.config.allowUnfree = true;
   # Firewall
   networking.firewall = {

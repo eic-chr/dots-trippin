@@ -13,13 +13,22 @@
   # MacBook Pro 2014 spezifische Kernel-Module
   boot.kernelModules = [ 
     "kvm-intel" 
-    "brcmfmac"      # WiFi (offener Treiber)
+    # WiFi: Versuche proprietären Treiber statt brcmfmac
+    "wl"            # Broadcom proprietärer Treiber
     "applesmc"      # Apple System Management Controller
     "coretemp"      # CPU-Temperatur
   ];
   
-  # Fallback für WiFi falls brcmfmac nicht funktioniert (auskommentiert)
-  # boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+  # Proprietärer Broadcom-Treiber für bessere WiFi-Kompatibilität
+  boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+  
+  # Blacklist konkurrierende Treiber
+  boot.blacklistedKernelModules = [ 
+    "brcmfmac" 
+    "brcmsmac" 
+    "bcma" 
+    "ssb" 
+  ];
   
   # Firmware für MacBook-Hardware
   hardware.enableRedistributableFirmware = true;
@@ -78,17 +87,37 @@
     ];
   };
   
-  # Bluetooth für MacBook Pro 2014
+  # Bluetooth für MacBook Pro 2014 - Erweiterte Konfiguration
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
+    package = pkgs.bluez;
     settings = {
       General = {
         Enable = "Source,Sink,Media,Socket";
         Experimental = true;
+        # MacBook-spezifische Bluetooth-Einstellungen
+        ControllerMode = "dual";
+        FastConnectable = true;
+        ReconnectAttempts = 7;
+        ReconnectIntervals = "1, 2, 4, 8, 16, 32, 64";
+      };
+      
+      Policy = {
+        AutoEnable = true;
+        ReconnectUUIDs = "00001108-0000-1000-8000-00805f9b34fb,0000111e-0000-1000-8000-00805f9b34fb,0000110a-0000-1000-8000-00805f9b34fb,0000110b-0000-1000-8000-00805f9b34fb";
       };
     };
   };
+
+  # Bluetooth-Services
+  services.blueman.enable = true;
+  
+  # Zusätzliche Bluetooth-Unterstützung
+  environment.systemPackages = with pkgs; [
+    bluez-tools
+    bluez-alsa      # Für Audio über Bluetooth
+  ];
   
   # Energieverwaltung: TLP entfernt wegen Konflikt mit power-profiles-daemon
   # services.tlp = { ... };  # Entfernt - Konflikt mit power-profiles-daemon
