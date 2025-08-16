@@ -21,15 +21,23 @@
   console.keyMap = "us";
 
   # X11 und Desktop Environment (KDE Plasma)
-  services.xserver = {
-    enable = true;
-    displayManager.sddm.enable = true;
-    desktopManager.plasma6.enable = true;
-    xkb = {
-      layout = "us";
-      variant = "intl";
-    };
+services.xserver = {
+  enable = true;
+  xkb = {
+    layout = "us";
+    variant = "intl";
   };
+};
+
+# Display Manager - Neue separate Konfiguration
+  # Display Manager - Neue separate Konfiguration
+  services.displayManager.sddm = {
+    enable = true;
+    # Für MacBook Pro 2014: X11 ist stabiler
+    wayland.enable = false;
+  };
+# Desktop Manager - Neue separate Konfiguration  
+services.desktopManager.plasma6.enable = true;
 
   # XDG Portal für KDE
   xdg.portal = {
