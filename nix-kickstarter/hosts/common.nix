@@ -80,18 +80,23 @@ programs.zsh.enable = true;
   # KDE-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
     # Systemtools
-    vim
-    nano
-    wget
+    btop
+    cifs-utils
     curl
+    file
     git
     htop
-    btop
+    keepassxc
+    libreoffice
+    nano
+    nextcloud-client
+    python3
+    thunderbird
     tree
     unzip
-    zip
-    file
+    wget
     which
+    zip
     
     # Netzwerk-Tools
     dig
@@ -101,22 +106,41 @@ programs.zsh.enable = true;
     # Development
     gcc
     gnumake
+    just
     pkg-config
 
     xclip
+        # Multimedia
+    vlc
+    gimp
+    inkscape
     
-    # KDE Apps (gemeinsam für alle KDE-Systeme)
-    kdePackages.kate
-    kdePackages.konsole
-    kdePackages.dolphin
-    kdePackages.okular
-    kdePackages.spectacle
-    kdePackages.gwenview
-    kdePackages.ark
-    kdePackages.kcalc
+    # Development (falls gewünscht)
+    vscode-fhs
     
     # Browser
     firefox
+    chromium
+
+    # KDE Apps (gemeinsam für alle KDE-Systeme)
+  ] ++ lib.optionals hasPlasma [
+    # KDE-spezifische Pakete
+    kdePackages.ark
+    kdePackages.dolphin
+    kdePackages.gwenview
+    kdePackages.kate
+    kdePackages.kcalc
+    kdePackages.kdegraphics-thumbnailers
+    kdePackages.kio-extras
+    kdePackages.kmail
+    kdePackages.kolourpaint
+    kdePackages.konsole
+    kdePackages.korganizer
+    kdePackages.merkuro
+    kdePackages.okular
+    kdePackages.qtimageformats
+    kdePackages.spectacle
+    
   ];
 # Nix-Einstellungen
   nix = {

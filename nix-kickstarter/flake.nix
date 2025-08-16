@@ -56,7 +56,7 @@
     useremail = "christian@ewolutions.de";
     
     # Additional user for offnix
-    secondUsernix = "ca";
+    secondUsernix = "charly";
     
     # System-specific configurations
     systems = {
@@ -108,7 +108,7 @@
       } else {
         # Für offnix: zwei Benutzer, verwende beide existierenden Dateien
         ${usernix} = import ./home/nixos.nix;
-        ${secondUsernix} = import ./home/ca.nix;
+        ${secondUsernix} = import ./home/charly.nix;
       };
 
   in {

@@ -21,7 +21,7 @@
     
     ${secondUsernix} = {
       isNormalUser = true;
-      description = "Second User";
+      description = "Charlotte Amend";
       extraGroups = [ "networkmanager" "audio" "video" "scanner" "lp" ];
       shell = pkgs.zsh;
     };
@@ -70,30 +70,12 @@
 
   # Laptop-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
-    # Browser
-    chromium
-    
-    # Office und Productivity
-    thunderbird
-    libreoffice
-    
-    # KDE Apps (zusätzlich zu denen in common.nix)
-    kdePackages.kmail
-    kdePackages.korganizer
-    
     # Laptop-spezifische Tools
     acpi
     powertop
     brightnessctl
     lm_sensors
     
-    # Multimedia
-    vlc
-    gimp
-    inkscape
-    
-    # Development (falls gewünscht)
-    vscode-fhs
   ];
 
   # Hardware-spezifische Services

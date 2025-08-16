@@ -11,14 +11,15 @@
       enable = true;
       theme = "agnoster";
       plugins = [
-        "git"
+        "brew"         # Homebrew completion
+          "docker"       # Docker completion
+          "git"
+          "just"
+          "kubectl"      # Falls du Kubernetes nutzt
           "macos"        # macOS spezifische Aliase
           "ssh"
-          "git"
-          "brew"         # Homebrew completion
-          "docker"       # Docker completion
-          "kubectl"      # Falls du Kubernetes nutzt
           "z"            # Jump to directories
+          "git"
       ];
     };
 

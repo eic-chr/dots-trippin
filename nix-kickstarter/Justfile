@@ -79,3 +79,11 @@ fmt:
 [group('nix')]
 gcroot:
   ls -al /nix/var/nix/gcroots/auto/
+
+[group('nixos')]
+build-devnix:
+  sudo nixos-rebuild switch --flake .#devnix
+
+[group('nixos')]
+build-offnix:
+  sudo nixos-rebuild switch --flake .#offnix
