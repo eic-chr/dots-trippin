@@ -24,7 +24,7 @@
   services.xserver = {
     enable = true;
     displayManager.sddm.enable = true;
-    desktopManager.plasma5.enable = true;
+    desktopManager.plasma6.enable = true;
     xkb = {
       layout = "us";
       variant = "intl";
@@ -49,8 +49,18 @@
   # Benutzer werden in host-spezifischen Configs definiert
   # (entfernt um Konflikte zu vermeiden)
 
-  # Zsh global aktivieren
-  programs.zsh.enable = true;
+programs.zsh.enable = true;  
+# Some programs need SUID wrappers, can be configured further or are
+# started in user sessions.
+# programs.mtr.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+    pinentryPackage = lib.mkForce pkgs.pinentry-curses;
+  };
+
+# List services that you want to enable:
+
 
   # Sudo ohne Passwort für wheel-Gruppe
   security.sudo.wheelNeedsPassword = false;
@@ -115,7 +125,7 @@
       options = "--delete-older-than 30d";
     };
   };
-
+nixpkgs.config.allowUnfree = true;
   # Firewall
   networking.firewall = {
     enable = true;
@@ -136,12 +146,11 @@
   fonts = {
     packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk
       noto-fonts-emoji
       liberation_ttf
       fira-code
       fira-code-symbols
-      (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+      # (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
     ];
     
     fontconfig = {

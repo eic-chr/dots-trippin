@@ -51,7 +51,7 @@
     ...
   }: let
     # Common user configuration
-    usernix = "ce";
+    usernix = "christian";
     usermac = "christianeickhoff";
     useremail = "christian@ewolutions.de";
     
