@@ -102,6 +102,8 @@ programs.zsh.enable = true;
     gcc
     gnumake
     pkg-config
+
+    xclip
     
     # KDE Apps (gemeinsam für alle KDE-Systeme)
     kdePackages.kate
@@ -129,13 +131,7 @@ programs.zsh.enable = true;
       options = "--delete-older-than 10d";
     };
   };
-   # Boot-Loader: Begrenzte Anzahl von Generationen
-  boot.loader.systemd-boot = {
-    enable = true;
-    configurationLimit = 5;  # Nur 5 Boot-Einträge behalten
-  };
 
-nixpkgs.config.allowUnfree = true;
   # Firewall
   networking.firewall = {
     enable = true;

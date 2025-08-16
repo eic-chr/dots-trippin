@@ -37,6 +37,13 @@
     broadcom-bt-firmware   # Bluetooth-Firmware
   ];
   
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [
+      "broadcom-sta"
+      "broadcom-sta-6.30.223.271-57-6.12.41"
+    ];
+  };
   # MacBook-spezifische Kernel-Parameter
   boot.kernelParams = [
     # WiFi-Stabilität
@@ -128,11 +135,6 @@
   # Hintergrundbeleuchtung für MacBook - manuell konfiguriert
   # hardware.brightnessctl.enable = true;  # Entfernt - nicht verfügbar
   
-  # Manuelle Helligkeit-Konfiguration über udev
-  environment.systemPackages = with pkgs; [
-    brightnessctl  # Manuell hinzugefügt
-    lm_sensors     # Hardware-Monitoring
-  ];
   
   # udev-Regeln für MacBook-spezifische Hardware
   services.udev.extraRules = ''
