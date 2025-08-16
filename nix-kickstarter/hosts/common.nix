@@ -1,5 +1,5 @@
 # Gemeinsame NixOS Konfiguration für alle Hosts
-{ config, pkgs, lib, usernix, useremail, ... }:
+{ config, pkgs, lib, usernix, useremail, hasPlasma, ... }:
 
 {
   # Zeitzone und Lokalisierung
