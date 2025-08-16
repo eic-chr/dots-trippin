@@ -304,7 +304,7 @@
   };
   services.gpg-agent = {
     enable = true;
-    enableSshSupport = false;
+    enableSshSupport = true;
     pinentryPackage = pkgs.pinentry-curses; # QT-Version für KDE
     defaultCacheTtl = 28800; # 8 Stunden
     maxCacheTtl = 86400; # 24 Stunden

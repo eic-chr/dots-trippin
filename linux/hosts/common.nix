@@ -94,8 +94,6 @@ programs.nix-ld.enable = true;
     zsh.enable = true;
   };
 
-# Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
 # Common system packages
   environment.systemPackages = with pkgs; [
@@ -107,7 +105,6 @@ programs.nix-ld.enable = true;
       git-crypt
       gnumake
       gnumake
-      gnupg
       htop
       imagemagick
       jq

@@ -84,9 +84,4 @@
     kdePackages.kmail
   ];
 
-  # Services
-  services.gpg-agent = {
-    enable = true;
-    pinentryPackage = if hasPlasma then pkgs.pinentry-qt else pkgs.pinentry-gtk2;
-  };
 }

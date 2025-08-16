@@ -9,6 +9,7 @@
     ./shell.nix
     ./starship.nix
     ./kitty.nix
+    ./thunderbird.nix
   ];
 
   # Basis Home-Manager Einstellungen
@@ -105,9 +106,13 @@
     kdePackages.gwenview
   ];
 
+  services.ssh-agent.enable = true;
+  # services.gpg-agent = {
+  #   enable = true;
+  #   enableSshSupport = false;
+  #   pinentryPackage = pkgs.pinentry-curses; # QT-Version für KDE
+  #   defaultCacheTtl = 28800; # 8 Stunden
+  #   maxCacheTtl = 86400; # 24 Stunden
+  # };
   # Services
-  services.gpg-agent = {
-    enable = true;
-    pinentryPackage = if hasPlasma then pkgs.pinentry-qt else pkgs.pinentry-gtk2;
-  };
 }
