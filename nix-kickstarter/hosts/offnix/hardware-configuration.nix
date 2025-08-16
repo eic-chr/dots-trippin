@@ -69,7 +69,6 @@
   # Grafik - Intel HD Graphics 4000/5000 Serie
   hardware.opengl = {
     enable = true;
-    driSupport = true;
     driSupport32Bit = true;
     extraPackages = with pkgs; [
       intel-media-driver   # VA-API für Intel
@@ -91,29 +90,20 @@
     };
   };
   
-  # Energieverwaltung für MacBook
-  services.tlp = {
-    enable = true;
-    settings = {
-      # CPU-Einstellungen
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      
-      # WiFi Power Management
-      WIFI_PWR_ON_AC = "off";
-      WIFI_PWR_ON_BAT = "on";
-      
-      # USB Autosuspend - Bluetooth nicht suspenden
-      USB_BLACKLIST_BTUSB = 1;
-      
-      # Akku-Schonung (falls unterstützt)
-      START_CHARGE_THRESH_BAT0 = 40;
-      STOP_CHARGE_THRESH_BAT0 = 80;
-    };
-  };
+  # Energieverwaltung: TLP entfernt wegen Konflikt mit power-profiles-daemon
+  # services.tlp = { ... };  # Entfernt - Konflikt mit power-profiles-daemon
   
-  # Hintergrundbeleuchtung für MacBook
-  hardware.brightnessctl.enable = true;
+  # Alternative Energieverwaltung für MacBook (falls gewünscht)
+  # services.power-profiles-daemon.enable = true;  # Wird meist automatisch aktiviert
+  
+  # Hintergrundbeleuchtung für MacBook - manuell konfiguriert
+  # hardware.brightnessctl.enable = true;  # Entfernt - nicht verfügbar
+  
+  # Manuelle Helligkeit-Konfiguration über udev
+  environment.systemPackages = with pkgs; [
+    brightnessctl  # Manuell hinzugefügt
+    lm_sensors     # Hardware-Monitoring
+  ];
   
   # udev-Regeln für MacBook-spezifische Hardware
   services.udev.extraRules = ''
