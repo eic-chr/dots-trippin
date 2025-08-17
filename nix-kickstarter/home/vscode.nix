@@ -42,16 +42,8 @@
       # Nix Support
       bbenoist.nix
       jnoortheen.nix-ide
-      
-    ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-      # Zusätzliche Extensions die nicht in nixpkgs sind
-      {
-        name = "vim-style-navigation";
-        publisher = "bodil";
-        version = "0.0.37";
-        sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-      }
     ];
+    # Entferne den problematischen marketplace-Block erstmal
 
     # VSCode Settings
     userSettings = {
@@ -199,7 +191,12 @@
       # Terminal
       "terminal.integrated.fontSize" = 14;
       "terminal.integrated.fontFamily" = "'MesloLGS NF', monospace";
-      "terminal.integrated.shell.linux" = "${pkgs.zsh}/bin/zsh";
+      "terminal.integrated.defaultProfile.linux" = "zsh";
+      "terminal.integrated.profiles.linux" = {
+        "zsh" = {
+          "path" = "${pkgs.zsh}/bin/zsh";
+        };
+      };
       
       # Git
       "git.enableSmartCommit" = true;
@@ -298,7 +295,7 @@
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
     nodePackages.yaml-language-server
-    rnix-lsp  # Nix Language Server
+    nixd  # Moderner Nix Language Server (ersetzt rnix-lsp)
     
     # Formatters & Linters
     nodePackages.prettier

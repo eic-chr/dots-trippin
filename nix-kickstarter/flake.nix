@@ -57,6 +57,7 @@
     
     # Additional user for offnix
     secondUsernix = "charly";
+    thirdUsernix = "vincent";
     
     # System-specific configurations
     systems = {
@@ -86,12 +87,20 @@
         users = [usernix secondUsernix];
         hasPlasma = true;
       };
+      # Laptop configuration with two users
+      playnix = {
+        system = "x86_64-linux";
+        hostname = "playnix";
+        nixpkgs = nixpkgs;
+        users = [usernix thirdUsernix];
+        hasPlasma = true;
+      };
     };
 
     # Helper function to create specialArgs for each system
     mkSpecialArgs = systemConfig: 
       inputs // {
-        inherit usermac usernix secondUsernix useremail;
+        inherit usermac usernix secondUsernix thirdUsernix useremail;
         inherit (systemConfig) hostname hasPlasma;
         # Für Kompatibilität mit bestehenden Modulen
         username = if systemConfig.hostname == "MacBookPro" then usermac else usernix;
@@ -105,6 +114,10 @@
       } else if systemConfig.hostname == "devnix" then {
         # Für devnix VM: nur ein Benutzer, verwende nixos.nix
         ${usernix} = import ./home/nixos.nix;
+      } else if systemConfig.hostname == "playnix" then {
+        # Für playnix: zwei Benutzer, verwende beide existierenden Dateien
+        ${usernix} = import ./home/nixos.nix;
+        ${thirdUsernix} = import ./home/vincent.nix;
       } else {
         # Für offnix: zwei Benutzer, verwende beide existierenden Dateien
         ${usernix} = import ./home/nixos.nix;
@@ -161,6 +174,23 @@
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = mkSpecialArgs systems.offnix;
           home-manager.users = mkHomeManagerUsers systems.offnix;
+          home-manager.sharedModules = [
+            plasma-manager.homeManagerModules.plasma-manager
+          ];
+        }
+      ];
+    };
+    nixosConfigurations."${systems.playnix.hostname}" = nixpkgs.lib.nixosSystem {
+      system = systems.playnix.system;
+      specialArgs = mkSpecialArgs systems.playnix;
+      modules = [
+        ./hosts/playnix/configuration.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.playnix;
+          home-manager.users = mkHomeManagerUsers systems.playnix;
           home-manager.sharedModules = [
             plasma-manager.homeManagerModules.plasma-manager
           ];

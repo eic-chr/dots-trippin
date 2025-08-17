@@ -1,3 +1,4 @@
+
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
 { config, pkgs, lib, usernix, useremail, hasPlasma ? false, ... }:
 
@@ -20,7 +21,7 @@
 
   # Überschreibe Git-Einstellungen für den usernix Benutzer
   programs.git = {
-    userName = lib.mkForce "Christian Eickhoff";
+    userName = lib.mkForce "Vincent Eickhoff";
     userEmail = lib.mkForce useremail;
   };
 
@@ -34,19 +35,6 @@
       colorScheme = "BreezeDark";
       iconTheme = "breeze-dark";
       cursor.theme = "breeze_cursors";
-    };
-    input = {
-      touchpads = [
-        {
-          enable = true;
-          name = "Apple Inc. Apple Internal Keyboard / Trackpad";
-          vendorId = "05ac";     # Apple Vendor ID
-          productId = "0263";    # Dein MacBook Trackpad
-          naturalScroll = true;  # Traditionelles Scrolling!
-          tapToClick = true;
-          rightClickMethod = "twoFingers";
-        }
-      ];
     };
     # Panel-Konfiguration
     panels = [
@@ -84,11 +72,9 @@
     ferdium
     fzf
     git-crypt
-    pgadmin4
     signal-desktop
     stow
-    zed-editor
-    
+    steam
   ];
 
   services.ssh-agent.enable = true;

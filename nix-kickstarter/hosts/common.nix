@@ -88,7 +88,6 @@ programs.zsh.enable = true;
     htop
     keepassxc
     libreoffice
-    nano
     nextcloud-client
     python3
     thunderbird
