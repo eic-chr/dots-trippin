@@ -12,11 +12,23 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
+  boot.loader = lib.mkForce {
+    grub.enable = true;          # GRUB aktivieren
+    grub.version = 2;            # GRUB2
+    grub.device = "/dev/sda";    # auf die Platte (nicht Partition)
+    grub.efiSupport = false;     # Legacy BIOS, kein EFI
+    systemd-boot.enable = false; # Systemd-boot komplett deaktivieren
+  };
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/e1db75fc-34c7-4710-87f0-6270d028abc9";
       fsType = "ext4";
     };
+fileSystems."/boot" = {
+	device = "/dev/disk/by-uuid/562D-49E8";
+	fsType = "vfat";
+};
+
 
   swapDevices = [ ];
 
@@ -31,3 +43,4 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
+

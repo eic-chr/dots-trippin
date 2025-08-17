@@ -27,6 +27,12 @@
     };
   };
 
+services.xserver = lib.mkForce {
+  enable = true;
+  xkb = {
+    layout = "de";
+  };
+};
   # Laptop-spezifische Hardware-Unterstützung
   # services.tlp = {
   #   enable = true;

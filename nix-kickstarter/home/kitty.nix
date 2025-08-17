@@ -59,8 +59,8 @@
       "ctrl+shift+3" = "detach_tab";
     } // (if hasPlasma then {
 # Linux shortcuts (Ctrl-based)
-    "ctrl+c" = "copy_to_clipboard";
-    "ctrl+v" = "paste_from_clipboard";
+    "ctrl+shift+c" = "copy_to_clipboard";
+    "ctrl+shift+v" = "paste_from_clipboard";
     "ctrl+plus" = "change_font_size all +2.0";
     "ctrl+minus" = "change_font_size all -2.0";
     "ctrl+0" = "change_font_size all 0";

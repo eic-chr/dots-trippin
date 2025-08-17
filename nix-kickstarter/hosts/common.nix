@@ -1,4 +1,4 @@
-# Gemeinsame NixOS Konfiguration für alle Hosts
+# Gemeensame NixOS Konfiguration für alle Hosts
 { config, pkgs, lib, usernix, useremail, hasPlasma, ... }:
 
 {
@@ -24,8 +24,7 @@
 services.xserver = {
   enable = true;
   xkb = {
-    layout = "us";
-    variant = "intl";
+    layout = "de";
   };
 };
 
@@ -133,6 +132,7 @@ programs.zsh.enable = true;
     kdePackages.kolourpaint
     kdePackages.konsole
     kdePackages.korganizer
+    kdePackages.ksystemlog
     kdePackages.merkuro
     kdePackages.okular
     kdePackages.qtimageformats

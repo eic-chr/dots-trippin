@@ -1,12 +1,12 @@
 # NixOS Konfiguration für offnix Laptop
-{ config, pkgs, lib, hostname, usernix, secondUsernix, useremail, ... }:
+{ config, pkgs, lib, hostname, usernix, thirdUsernix, useremail, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-    ../common.nix
-  ];
-
+  imports = [ ./hardware-configuration.nix ../common.nix ];
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [ "dotnet-runtime-7.0.20" ];
+  };
   # Hostname
   networking.hostName = hostname;
 
@@ -18,8 +18,8 @@
       extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
       shell = pkgs.zsh;
     };
-    
-    ${secondUsernix} = {
+
+    ${thirdUsernix} = {
       isNormalUser = true;
       description = "Vincent Eickhoff";
       extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
@@ -50,31 +50,31 @@
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
-    settings = {
-      General = {
-        Enable = "Source,Sink,Media,Socket";
-      };
-    };
+    settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
   };
   services.blueman.enable = true;
-
+  services.xserver.videoDrivers = [ "amdgpu" ];
+  hardware.opengl.enable = true;
   # Laptop-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
+    mesa
+    vulkan-tools
+    vulkan-loader
     # Laptop-spezifische Tools
     acpi
     powertop
     brightnessctl
     lm_sensors
-    
+
   ];
 
   # Hardware-spezifische Services
-  services.thermald.enable = true;  # Intel thermal management
+  services.thermald.enable = true; # Intel thermal management
   # services.auto-cpufreq.enable = true;  # Automatische CPU-Frequenz-Anpassung
 
   # Backlight control
   # hardware.brightnessctl.enable = true;
-  
+
   # Printing support
   services.printing = {
     enable = true;
@@ -88,4 +88,6 @@
 
   # Scanner support
   hardware.sane.enable = true;
+
+  networking.firewall.enable = lib.mkForce false;
 }

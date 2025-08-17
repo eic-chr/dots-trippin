@@ -87,3 +87,6 @@ build-devnix:
 [group('nixos')]
 build-offnix:
   sudo nixos-rebuild switch --flake .#offnix
+[group('nixos')]
+build-playnix:
+  sudo nixos-rebuild switch --flake .#playnix

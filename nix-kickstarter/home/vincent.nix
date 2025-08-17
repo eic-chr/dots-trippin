@@ -1,6 +1,5 @@
-
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
-{ config, pkgs, lib, usernix, useremail, hasPlasma ? false, ... }:
+{ config, pkgs, lib, thirdUsernix, useremail, hasPlasma ? false, ... }:
 
 {
   # Importiere deine bestehenden Module
@@ -15,20 +14,20 @@
   ];
 
   # Basis Home-Manager Einstellungen
-  home.username = usernix;
-  home.homeDirectory = "/home/${usernix}";
+  home.username = "vincent";
+  home.homeDirectory = "/home/vincent";
   home.stateVersion = "25.05";
 
   # Überschreibe Git-Einstellungen für den usernix Benutzer
   programs.git = {
     userName = lib.mkForce "Vincent Eickhoff";
-    userEmail = lib.mkForce useremail;
+    userEmail = lib.mkForce "vincent@ewolutions.de";
   };
 
   # Plasma-spezifische Konfiguration nur für Systeme mit KDE
   programs.plasma = lib.mkIf hasPlasma {
     enable = true;
-    
+
     # Desktop-Einstellungen
     workspace = {
       lookAndFeel = "org.kde.breezedark.desktop";
@@ -37,25 +36,21 @@
       cursor.theme = "breeze_cursors";
     };
     # Panel-Konfiguration
-    panels = [
-      {
-        location = "bottom";
-        widgets = [
-          "org.kde.plasma.kickoff"
-          "org.kde.plasma.pager"
-          "org.kde.plasma.icontasks"
-          "org.kde.plasma.marginsseparator"
-          "org.kde.plasma.systemtray"
-          "org.kde.plasma.digitalclock"
-        ];
-      }
-    ];
+    panels = [{
+      location = "bottom";
+      widgets = [
+        "org.kde.plasma.kickoff"
+        "org.kde.plasma.pager"
+        "org.kde.plasma.icontasks"
+        "org.kde.plasma.marginsseparator"
+        "org.kde.plasma.systemtray"
+        "org.kde.plasma.digitalclock"
+      ];
+    }];
 
     # Shortcuts
     shortcuts = {
-      ksmserver = {
-        "Lock Session" = [ "Screensaver" "Meta+L" ];
-      };
+      ksmserver = { "Lock Session" = [ "Screensaver" "Meta+L" ]; };
       kwin = {
         "Switch to Desktop 1" = "Meta+1";
         "Switch to Desktop 2" = "Meta+2";
@@ -75,6 +70,7 @@
     signal-desktop
     stow
     steam
+    vintagestory
   ];
 
   services.ssh-agent.enable = true;
