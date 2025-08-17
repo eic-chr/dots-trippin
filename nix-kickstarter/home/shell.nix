@@ -14,7 +14,6 @@
         "brew"         # Homebrew completion
           "docker"       # Docker completion
           "git"
-          "just"
           "kubectl"      # Falls du Kubernetes nutzt
           "macos"        # macOS spezifische Aliase
           "ssh"

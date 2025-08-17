@@ -10,6 +10,7 @@
     ./starship.nix
     ./kitty.nix
     ./thunderbird.nix
+    ./vscode.nix
   ];
 
   # Basis Home-Manager Einstellungen
@@ -34,7 +35,19 @@
       iconTheme = "breeze-dark";
       cursor.theme = "breeze_cursors";
     };
-
+    input = {
+      touchpads = [
+        {
+          enable = true;
+          name = "Apple Inc. Apple Internal Keyboard / Trackpad";
+          vendorId = "05ac";     # Apple Vendor ID
+          productId = "0263";    # Dein MacBook Trackpad
+          naturalScroll = true;  # Traditionelles Scrolling!
+          tapToClick = true;
+          rightClickMethod = "twoFingers";
+        }
+      ];
+    };
     # Panel-Konfiguration
     panels = [
       {
@@ -69,6 +82,7 @@
     # Browser (falls nicht system-weit installiert)
     ferdium
     fzf
+    git-crypt
     pgadmin4
     signal-desktop
     stow

@@ -107,5 +107,15 @@ bindkey '^F' fzf-cd-widget         # Ctrl+F: Fuzzy directory change
 # oder
 bindkey '^G' fzf-cd-widget         # Ctrl+G: Fuzzy directory change
 
+_just_completion() {
+    if [[ -f "justfile" ]]; then
+      local options
+      options="$(just --summary)"
+      reply=(${(s: :)options})  # turn into array and write to return variable
+    fi
+}
+
+compctl -K _just_completion just
+
 # Performance profiling output (nur für Tests)
 # zprof

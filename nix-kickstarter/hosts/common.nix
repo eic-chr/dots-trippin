@@ -34,7 +34,6 @@ services.xserver = {
   services.displayManager.sddm = {
     enable = true;
     # Für MacBook Pro 2014: X11 ist stabiler
-    wayland.enable = false;
   };
 # Desktop Manager - Neue separate Konfiguration  
 services.desktopManager.plasma6.enable = true;
@@ -46,6 +45,7 @@ services.desktopManager.plasma6.enable = true;
       kdePackages.xdg-desktop-portal-kde
     ];
   };
+
 
   # Netzwerk
   networking.networkmanager.enable = true;
@@ -109,14 +109,12 @@ programs.zsh.enable = true;
     just
     pkg-config
 
-    xclip
+    wl-clipboard
         # Multimedia
     vlc
     gimp
     inkscape
     
-    # Development (falls gewünscht)
-    vscode-fhs
     
     # Browser
     firefox
@@ -166,8 +164,8 @@ programs.zsh.enable = true;
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = false;
-      KbdInteractiveAuthentication = false;
+      PasswordAuthentication = true;
+      KbdInteractiveAuthentication = true;
       PermitRootLogin = "no";
     };
   };

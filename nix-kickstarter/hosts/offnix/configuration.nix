@@ -63,7 +63,7 @@
     enable = true;
     touchpad = {
       tapping = true;
-      naturalScrolling = true;
+      naturalScrolling = false;
       accelProfile = "adaptive";
     };
   };
