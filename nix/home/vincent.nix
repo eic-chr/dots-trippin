@@ -72,6 +72,7 @@
     stow
     vintagestory
   ];
+  services.kdeconnect.enable = true;
 
   services.ssh-agent.enable = true;
   services.gpg-agent = {

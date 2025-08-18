@@ -4,13 +4,7 @@
 
 {
   # Importiere deine bestehenden Module
-  imports = [
-    ./core.nix
-    ./git.nix
-    ./shell.nix
-    ./starship.nix
-    ./kitty.nix    
-  ];
+  imports = [ ./core.nix ./git.nix ./shell.nix ./starship.nix ./kitty.nix ];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
@@ -20,35 +14,7 @@
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
-    userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
-  };
-
-  # Plasma-spezifische Konfiguration nur für Systeme mit KDE
-  programs.plasma = lib.mkIf (hasPlasma) {
-    enable = true;
-
-    # Desktop-Einstellungen
-    workspace = {
-      lookAndFeel = "org.kde.breezedark.desktop";
-      colorScheme = "BreezeDark";
-      iconTheme = "breeze-dark";
-      cursor.theme = "breeze_cursors";
-    };
-    # Panel-Konfiguration
-    panels = [{
-      location = "bottom";
-      widgets = [
-        "org.kde.plasma.kickoff"
-        "org.kde.plasma.pager"
-        "org.kde.plasma.icontasks"
-        "org.kde.plasmanix/home/vincent.nix
-    }];
-
-    # Shortcuts
-    shortcuts = {
-      ksmserver = { "Lock Session" = [ "Screensaver" "Meta+L" ]; };
-      kwin = {nix/home/vincent.nix
-    };
+    userEmail = lib.mkForce userEmail; # Anpassenix/home/vincent.nixteme mit KDE
   };
 
   # Zusätzliche NixOS-spezifische Pakete
