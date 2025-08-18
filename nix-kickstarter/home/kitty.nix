@@ -11,43 +11,63 @@
     };
 
 # KEYBOARD SHORTCUTS (leer - alles über extraConfig)
-    keybindings = {
-# Navigation (gleich auf allen Plattformen)
-      "alt+h" = "neighboring_window left";
-      "alt+l" = "neighboring_window right";
-      "alt+k" = "neighboring_window up";
-      "alt+j" = "neighboring_window down";
+keybindings = {
+  # === FENSTER NAVIGATION (vim-style) ===
+  "alt+h" = "neighboring_window left";
+  "alt+j" = "neighboring_window down";
+  "alt+k" = "neighboring_window up";  
+  "alt+l" = "neighboring_window right";
 
-# Fenster verschieben
-      "alt+shift+h" = "move_window left";
-      "alt+shift+l" = "move_window right";
-      "alt+shift+k" = "move_window up";
-      "alt+shift+j" = "move_window down";
+  # === FENSTER MANAGEMENT ===
+  "alt+enter" = "new_window";
+  "alt+w" = "close_window";
+  "alt+m" = "toggle_maximized";
+  
+  # Fenster verschieben (vim-style)
+  "alt+shift+h" = "move_window left";
+  "alt+shift+j" = "move_window down";
+  "alt+shift+k" = "move_window up";
+  "alt+shift+l" = "move_window right";
 
-# Layout Management
-      "alt+1" = "goto_layout tall";
-      "alt+2" = "goto_layout stack";
-      "alt+3" = "goto_layout fat";
-      "alt+4" = "goto_layout grid";
-      "alt+space" = "next_layout";
+  # === LAYOUT MANAGEMENT ===
+  "alt+space" = "next_layout";
+  "alt+shift+space" = "last_used_layout";
+  "alt+1" = "goto_layout tall";
+  "alt+2" = "goto_layout stack"; 
+  "alt+3" = "goto_layout fat";
+  "alt+4" = "goto_layout grid";
+  "alt+5" = "goto_layout horizontal";
+  "alt+6" = "goto_layout vertical";
 
-# Fenster und Tabs
-      "alt+enter" = "new_window";
-      "alt+t" = "new_tab";
-      "alt+w" = "close_window";
+  # === TAB MANAGEMENT ===
+  "alt+t" = "new_tab";
+  "alt+shift+w" = "close_tab";
+  
+  # Tab Navigation
+  "alt+tab" = "next_tab";
+  "alt+shift+tab" = "previous_tab";
+  "alt+comma" = "previous_tab";  # Alternative
+  "alt+period" = "next_tab";     # Alternative
+  
+  # Tab verschieben
+  "alt+shift+comma" = "move_tab_backward"; 
+  "alt+shift+period" = "move_tab_forward";
 
-# Tab Navigation
-      "alt+comma" = "previous_tab";
-      "alt+period" = "next_tab";
-      "alt+shift+comma" = "move_tab_backward";
-      "alt+shift+period" = "move_tab_forward";
+  # === SCROLLING (vim-safe) ===
+  "alt+u" = "scroll_page_up";
+  "alt+d" = "scroll_page_down";
+  "alt+g" = "scroll_home";
+  "alt+shift+g" = "scroll_end";
 
-# Maximieren
-      "alt+m" = "toggle_maximized";
+  # === SUCHE ===
+  "alt+f" = "show_scrollback";
 
-# Scrolling (vim-safe)
-      "alt+u" = "scroll_page_up";
-      "alt+d" = "scroll_page_down";
+  # === FENSTER GRÖSSE ===
+  "alt+equal" = "resize_window wider 5";
+  "alt+minus" = "resize_window narrower 5"; 
+  "alt+shift+equal" = "resize_window taller 5";
+  "alt+shift+minus" = "resize_window shorter 5";
+  "alt+0" = "reset_window_sizes";
 
 # "Fill"-ähnliche Funktionen
       "ctrl+alt+f" = "toggle_maximized";

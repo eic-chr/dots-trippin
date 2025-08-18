@@ -106,6 +106,7 @@ programs.zsh.enable = true;
     gnumake
     just
     pkg-config
+    markdownlint-cli2
 
     wl-clipboard
         # Multimedia
