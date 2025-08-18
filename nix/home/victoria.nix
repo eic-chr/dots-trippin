@@ -9,9 +9,7 @@
     ./git.nix
     ./shell.nix
     ./starship.nix
-    ./kitty.nix
-    ./thunderbird.nix
-    ./vincent/vscode.nix
+    ./kitty.nix    
   ];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
@@ -43,21 +41,13 @@
         "org.kde.plasma.kickoff"
         "org.kde.plasma.pager"
         "org.kde.plasma.icontasks"
-        "org.kde.plasma.marginsseparator"
-        "org.kde.plasma.systemtray"
-        "org.kde.plasma.digitalclock"
-      ];
+        "org.kde.plasmanix/home/vincent.nix
     }];
 
     # Shortcuts
     shortcuts = {
       ksmserver = { "Lock Session" = [ "Screensaver" "Meta+L" ]; };
-      kwin = {
-        "Switch to Desktop 1" = "Meta+1";
-        "Switch to Desktop 2" = "Meta+2";
-        "Switch to Desktop 3" = "Meta+3";
-        "Switch to Desktop 4" = "Meta+4";
-      };
+      kwin = {nix/home/vincent.nix
     };
   };
 
@@ -70,7 +60,6 @@
     git-crypt
     signal-desktop
     stow
-    vintagestory
   ];
 
   services.ssh-agent.enable = true;
