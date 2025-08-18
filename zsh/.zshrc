@@ -1,1 +1,0 @@
-projects/ceickhoff/dotfiles/zsh/.zshrc
