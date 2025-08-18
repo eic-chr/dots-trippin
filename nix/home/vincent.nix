@@ -1,5 +1,5 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
- { config, lib, pkgs, currentUser, userConfig, userEmail, userFullName, hostname, ... }:
+ { config, lib, pkgs, currentUser, userConfig, userEmail, userFullName,hasPlasma, hostname, ... }:
 
 {
   # Importiere deine bestehenden Module
@@ -25,7 +25,7 @@
   };
 
   # Plasma-spezifische Konfiguration nur für Systeme mit KDE
- programs.plasma = lib.mkIf (userConfig.hasPlasma or false) {
+ programs.plasma = lib.mkIf (hasPlasma) {
     enable = true;
 
     # Desktop-Einstellungen

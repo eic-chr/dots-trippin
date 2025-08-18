@@ -1,6 +1,4 @@
-# Home-Manager Konfiguration für den zweiten Benutzer (ca) auf offnix
-# Erweitere deine bestehende ca.nix mit diesen Parametern:
- { config, lib, pkgs, currentUser, userConfig, userEmail, userFullName, hostname, ... }:
+ { config, lib, pkgs, currentUser, userConfig, userEmail, userFullName, hasPlasma, hostname, ... }:
 
 {
   # Importiere deine bestehenden Module (gleiche wie für ce)
@@ -24,7 +22,7 @@
   };
 
   # Plasma-Konfiguration (möglicherweise andere Präferenzen als ce)
- programs.plasma = lib.mkIf (userConfig.hasPlasma or false) {
+ programs.plasma = lib.mkIf (hasPlasma) {
    enable = true;
    
    # Eventuell andere Desktop-Einstellungen für den zweiten Benutzer

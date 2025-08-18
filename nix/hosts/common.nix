@@ -1,5 +1,5 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
-{ config, pkgs, lib, users, userConfigs, ... }:
+{ config, pkgs, lib, users, userConfigs, hasPlasma, ... }:
 let
   # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
   trustedProfiles = [ "developer" "admin" ];
