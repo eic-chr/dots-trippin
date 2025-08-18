@@ -10,7 +10,7 @@
     ./starship.nix
     ./kitty.nix
     ./thunderbird.nix
-    ./vscode.nix
+    ./vincent/vscode.nix
   ];
 
   # Basis Home-Manager Einstellungen
