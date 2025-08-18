@@ -1,6 +1,9 @@
 # just is a command runner, Justfile is very similar to Makefile, but simpler.
 # TODO update hostname here!
 hostname := "MacBookPro"
+# Variablen
+flake_path := justfile_directory()
+current_system := `uname -s`
 
 # List all the just commands
 default:
@@ -74,6 +77,15 @@ gc:
 fmt:
   # format the nix files in this repo
   nix fmt
+
+[group('nix')]
+lint-and-fmt:
+  #!/usr/bin/env bash
+  echo "🔍 Checking flake syntax..."
+  nix flake check {{flake_path}} || exit 1
+  echo "✨ Formatting code..."
+  nix fmt {{flake_path}}
+  echo "✅ Lint and format completed!"
 
 # Show all the auto gc roots in the nix store
 [group('nix')]

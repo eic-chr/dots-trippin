@@ -1,52 +1,33 @@
 # NixOS Konfiguration für offnix Laptop
-{ config, pkgs, lib, hostname, usernix, thirdUsernix, useremail, ... }:
+{ config, pkgs, lib, hostname, users, userConfigs, ... }:
+let
 
+isAdmin = user: user == "christian" || userConfigs.${user}.isAdmin or false;
+isDeveloper = user: userConfigs.${user}.profile or "" == "developer";
+in
 {
   imports = [ ./hardware-configuration.nix ../common.nix ];
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [ "dotnet-runtime-7.0.20" ];
   };
-  # Hostname
+# Hostname
   networking.hostName = hostname;
 
-  # Benutzer für offnix
-  users.users = {
-    ${usernix} = {
-      isNormalUser = true;
-      description = "Christian Eickhoff";
-      extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
-      shell = pkgs.zsh;
-    };
+# Dynamische Benutzer-Erstellung basierend auf hostUsers
+  users.users = builtins.listToAttrs (map (user: {
+        name = user;
+        value = {
+        isNormalUser = true;
+        description = userConfigs.${user}.fullName or user;
+        extraGroups = [ "networkmanager" "audio" "video" "scanner" "lp" ] 
+        ++ lib.optionals (isAdmin user) [ "wheel" ]
+        ++ lib.optionals (isDeveloper user) [ "docker" ];
+        shell = pkgs.zsh;
+        };
+        }) users);
 
-    ${thirdUsernix} = {
-      isNormalUser = true;
-      description = "Vincent Eickhoff";
-      extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
-      shell = pkgs.zsh;
-    };
-  };
-
-  # Laptop-spezifische Hardware-Unterstützung
-  # services.tlp = {
-  #   enable = true;
-  #   settings = {
-  #     CPU_SCALING_GOVERNOR_ON_AC = "performance";
-  #     CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-  #     
-  #     # Battery charge thresholds (falls unterstützt)
-  #     START_CHARGE_THRESH_BAT0 = 40;
-  #     STOP_CHARGE_THRESH_BAT0 = 80;
-  #     
-  #     # CPU frequency scaling
-  #     CPU_MIN_PERF_ON_AC = 0;
-  #     CPU_MAX_PERF_ON_AC = 100;
-  #     CPU_MIN_PERF_ON_BAT = 0;
-  #     CPU_MAX_PERF_ON_BAT = 30;
-  #   };
-  # };
-
-  # Bluetooth
+# Bluetooth
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
@@ -55,38 +36,38 @@
   services.blueman.enable = true;
   services.xserver.videoDrivers = [ "amdgpu" ];
   hardware.opengl.enable = true;
-  # Laptop-spezifische System-Pakete
+# Laptop-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
     mesa
-    vulkan-tools
-    vulkan-loader
-    # Laptop-spezifische Tools
-    acpi
-    powertop
-    brightnessctl
-    lm_sensors
+      vulkan-tools
+      vulkan-loader
+# Laptop-spezifische Tools
+      acpi
+      powertop
+      brightnessctl
+      lm_sensors
 
   ];
 
-  # Hardware-spezifische Services
+# Hardware-spezifische Services
   services.thermald.enable = true; # Intel thermal management
-  # services.auto-cpufreq.enable = true;  # Automatische CPU-Frequenz-Anpassung
+# services.auto-cpufreq.enable = true;  # Automatische CPU-Frequenz-Anpassung
 
-  # Backlight control
-  # hardware.brightnessctl.enable = true;
+# Backlight control
+# hardware.brightnessctl.enable = true;
 
-  # Printing support
-  services.printing = {
-    enable = true;
-    drivers = with pkgs; [ hplip epson-escpr ];
-  };
+# Printing support
+    services.printing = {
+      enable = true;
+      drivers = with pkgs; [ hplip epson-escpr ];
+    };
   services.avahi = {
     enable = true;
     nssmdns4 = true;
     openFirewall = true;
   };
 
-  # Scanner support
+# Scanner support
   hardware.sane.enable = true;
 
   networking.firewall.enable = lib.mkForce false;

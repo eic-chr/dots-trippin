@@ -1,42 +1,42 @@
 # NixOS Konfiguration für offnix Laptop
-{ config, pkgs, lib, hostname, usernix, secondUsernix, useremail, ... }:
+{ config, pkgs, lib, hostname, users, userConfigs, ... }:
+let
+isAdmin = user: user == "christian" || userConfigs.${user}.isAdmin or false;
+isDeveloper = user: userConfigs.${user}.profile or "" == "developer";
+in
 
 {
   imports = [
     ./hardware-configuration.nix
     ../common.nix
   ];
-
+  
   # Hostname
   networking.hostName = hostname;
   networking.firewall.allowedTCPPorts = lib.mkAfter [ 3389 ];
-
-  # Benutzer für offnix
-  users.users = {
-    ${usernix} = {
+  
+  # Dynamische Benutzer-Erstellung basierend auf hostUsers
+  users.users = builtins.listToAttrs (map (user: {
+    name = user;
+    value = {
       isNormalUser = true;
-      description = "Christian Eickhoff";
-      extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
+      description = userConfigs.${user}.fullName or user;
+      extraGroups = [ "networkmanager" "audio" "video" "scanner" "lp" ] 
+        ++ lib.optionals (isAdmin user) [ "wheel" ]
+      ++ lib.optionals (isDeveloper user) [ "docker" ];
       shell = pkgs.zsh;
     };
-    
-    ${secondUsernix} = {
-      isNormalUser = true;
-      description = "Charlotte Amend";
-      extraGroups = [ "networkmanager" "audio" "video" "scanner" "lp" ];
-      shell = pkgs.zsh;
+  }) users);
+
+  services.xserver = lib.mkForce {
+    enable = true;
+    xkb = {
+      layout = "us";
+      variant = "intl";
+      options = "caps:escape";
     };
   };
-
-
-services.xserver = lib.mkForce {
-  enable = true;
-  xkb = {
-    layout = "us";
-    variant = "intl";
-    options = "caps:escape";
-  };
-};
+  
   # Laptop-spezifische Hardware-Unterstützung
   # services.tlp = {
   #   enable = true;
@@ -55,7 +55,7 @@ services.xserver = lib.mkForce {
   #     CPU_MAX_PERF_ON_BAT = 30;
   #   };
   # };
-
+  
   # Bluetooth
   hardware.bluetooth = {
     enable = true;
@@ -67,7 +67,7 @@ services.xserver = lib.mkForce {
     };
   };
   services.blueman.enable = true;
-
+  
   # Touchpad-Unterstützung
   services.libinput = {
     enable = true;
@@ -77,7 +77,7 @@ services.xserver = lib.mkForce {
       accelProfile = "adaptive";
     };
   };
-
+  
   # Laptop-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
     # Laptop-spezifische Tools
@@ -85,13 +85,12 @@ services.xserver = lib.mkForce {
     powertop
     brightnessctl
     lm_sensors
-    
   ];
-
+  
   # Hardware-spezifische Services
   services.thermald.enable = true;  # Intel thermal management
   # services.auto-cpufreq.enable = true;  # Automatische CPU-Frequenz-Anpassung
-
+  
   # Backlight control
   # hardware.brightnessctl.enable = true;
   
@@ -105,7 +104,7 @@ services.xserver = lib.mkForce {
     nssmdns4 = true;
     openFirewall = true;
   };
-
+  
   # Scanner support
   hardware.sane.enable = true;
 }

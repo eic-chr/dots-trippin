@@ -1,5 +1,5 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
-{ config, pkgs, lib, thirdUsernix, useremail, hasPlasma ? false, ... }:
+ { config, lib, pkgs, currentUser, userConfig, userEmail, userFullName, hostname, ... }:
 
 {
   # Importiere deine bestehenden Module
@@ -13,19 +13,19 @@
     ./vincent/vscode.nix
   ];
 
-  # Basis Home-Manager Einstellungen
-  home.username = "vincent";
-  home.homeDirectory = "/home/vincent";
+  # Basis Home-Manager Einstellungen - angepasst für ca
+  home.username = currentUser;
+  home.homeDirectory = "/home/${currentUser}";
   home.stateVersion = "25.05";
 
-  # Überschreibe Git-Einstellungen für den usernix Benutzer
+  # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
-    userName = lib.mkForce "Vincent Eickhoff";
-    userEmail = lib.mkForce "vincent@ewolutions.de";
+    userName = lib.mkForce userFullName;  # Anpassen nach Bedarf
+    userEmail = lib.mkForce userEmail;  # Anpassen nach Bedarf
   };
 
   # Plasma-spezifische Konfiguration nur für Systeme mit KDE
-  programs.plasma = lib.mkIf hasPlasma {
+ programs.plasma = lib.mkIf (userConfig.hasPlasma or false) {
     enable = true;
 
     # Desktop-Einstellungen

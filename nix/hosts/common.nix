@@ -1,6 +1,12 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
-{ config, pkgs, lib, usernix, useremail, hasPlasma, ... }:
-
+{ config, pkgs, lib, users, userConfigs, ... }:
+let
+  # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
+  trustedProfiles = [ "developer" "admin" ];
+  trustedUsers = builtins.filter (user: 
+    builtins.elem (userConfigs.${user}.profile or "") trustedProfiles
+  ) users;
+in
 {
   # Zeitzone und Lokalisierung
   time.timeZone = "Europe/Berlin";
@@ -147,7 +153,7 @@ programs.zsh.enable = true;
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" usernix ];
+      trusted-users = [ "root" ] ++ trustedUsers;
       auto-optimise-store = true;
     };
     gc = {
