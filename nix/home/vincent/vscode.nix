@@ -1,7 +1,10 @@
 # VSCode Konfiguration mit Vim-Integration
-{ config, pkgs, lib, hasPlasma ? false, ... }:
-
 {
+  pkgs,
+  hasPlasma ? false,
+  ...
+}: {
+  nixpkgs.config.allowUnfree = true;
   programs.vscode = {
     enable = true;
     package = pkgs.vscode;
@@ -45,115 +48,130 @@
     # Entferne den problematischen marketplace-Block erstmal
 
     # VSCode Settings
-    userSettings = {
-      # Editor Settings
-      "editor.fontSize" = 14;
-      "editor.fontFamily" = "'MesloLGS NF', 'Fira Code', monospace";
-      "editor.fontLigatures" = true;
-      "editor.lineNumbers" = "relative";
-      "editor.cursorBlinking" = "solid";
-      "editor.scrollBeyondLastLine" = false;
-      "editor.wordWrap" = "bounded";
-      "editor.rulers" = [ 80 120 ];
-      "editor.minimap.enabled" = false;
-      "editor.tabSize" = 2;
-      "editor.insertSpaces" = true;
-      "editor.formatOnSave" = true;
-      "editor.formatOnPaste" = true;
-      "editor.codeActionsOnSave" = {
-        "source.fixAll.eslint" = "explicit";
-        "source.organizeImports" = "explicit";
-      };
+    userSettings =
+      {
+        # Editor Settings
+        "editor.fontSize" = 14;
+        "editor.fontFamily" = "'MesloLGS NF', 'Fira Code', monospace";
+        "editor.fontLigatures" = true;
+        "editor.lineNumbers" = "relative";
+        "editor.cursorBlinking" = "solid";
+        "editor.scrollBeyondLastLine" = false;
+        "editor.wordWrap" = "bounded";
+        "editor.rulers" = [80 120];
+        "editor.minimap.enabled" = false;
+        "editor.tabSize" = 2;
+        "editor.insertSpaces" = true;
+        "editor.formatOnSave" = true;
+        "editor.formatOnPaste" = true;
+        "editor.codeActionsOnSave" = {
+          "source.fixAll.eslint" = "explicit";
+          "source.organizeImports" = "explicit";
+        };
 
-      # Workbench
-      "workbench.colorTheme" = "GitHub Dark Default";
-      "workbench.iconTheme" = "material-icon-theme";
-      "workbench.startupEditor" = "none";
-      "workbench.editor.showTabs" = "multiple";
-      "workbench.activityBar.location" = "top";
+        # Workbench
+        "workbench.colorTheme" = "GitHub Dark Default";
+        "workbench.iconTheme" = "material-icon-theme";
+        "workbench.startupEditor" = "none";
+        "workbench.editor.showTabs" = "multiple";
+        "workbench.activityBar.location" = "top";
 
-      # Terminal
-      "terminal.integrated.fontSize" = 14;
-      "terminal.integrated.fontFamily" = "'MesloLGS NF', monospace";
-      "terminal.integrated.defaultProfile.linux" = "zsh";
-      "terminal.integrated.profiles.linux" = {
-        "zsh" = { "path" = "${pkgs.zsh}/bin/zsh"; };
-      };
+        # Terminal
+        "terminal.integrated.fontSize" = 14;
+        "terminal.integrated.fontFamily" = "'MesloLGS NF', monospace";
+        "terminal.integrated.defaultProfile.linux" = "zsh";
+        "terminal.integrated.profiles.linux" = {
+          "zsh" = {"path" = "${pkgs.zsh}/bin/zsh";};
+        };
 
-      # Git
-      "git.enableSmartCommit" = true;
-      "git.confirmSync" = false;
-      "git.autofetch" = true;
+        # Git
+        "git.enableSmartCommit" = true;
+        "git.confirmSync" = false;
+        "git.autofetch" = true;
 
-      # GitLens
-      "gitlens.codeLens.enabled" = false;
-      "gitlens.currentLine.enabled" = false;
-      "gitlens.hovers.currentLine.over" = "line";
-      "gitlens.blame.format" = "\${author} • \${date} • \${message}";
+        # GitLens
+        "gitlens.codeLens.enabled" = false;
+        "gitlens.currentLine.enabled" = false;
+        "gitlens.hovers.currentLine.over" = "line";
+        "gitlens.blame.format" = "\${author} • \${date} • \${message}";
 
-      # Language-specific settings
-      "eslint.workingDirectories" = [ "client" "server" ];
-      "prettier.requireConfig" = true;
-      "prettier.useEditorConfig" = false;
+        # Language-specific settings
+        "eslint.workingDirectories" = ["client" "server"];
+        "prettier.requireConfig" = true;
+        "prettier.useEditorConfig" = false;
 
-      # Python
-      "python.defaultInterpreterPath" = "${pkgs.python3}/bin/python";
-      "python.formatting.provider" = "black";
-      "python.linting.enabled" = true;
-      "python.linting.pylintEnabled" = true;
+        # Python
+        "python.defaultInterpreterPath" = "${pkgs.python3}/bin/python";
+        "python.formatting.provider" = "black";
+        "python.linting.enabled" = true;
+        "python.linting.pylintEnabled" = true;
 
-      # AsciiDoc
-      "asciidoc.preview.doubleClickToSwitchTab" = false;
-      "asciidoc.preview.scrollPreviewWithEditor" = true;
-      "asciidoc.preview.markEditorSelection" = true;
+        # AsciiDoc
+        "asciidoc.preview.doubleClickToSwitchTab" = false;
+        "asciidoc.preview.scrollPreviewWithEditor" = true;
+        "asciidoc.preview.markEditorSelection" = true;
 
-      # File associations
-      "files.associations" = {
-        "*.nix" = "nix";
-        "justfile" = "makefile";
-        "Justfile" = "makefile";
-      };
+        # File associations
+        "files.associations" = {
+          "*.nix" = "nix";
+          "justfile" = "makefile";
+          "Justfile" = "makefile";
+        };
 
-      # Explorer
-      "explorer.confirmDelete" = false;
-      "explorer.confirmDragAndDrop" = false;
+        # Explorer
+        "explorer.confirmDelete" = false;
+        "explorer.confirmDragAndDrop" = false;
 
-      # Search
-      "search.exclude" = {
-        "**/node_modules" = true;
-        "**/target" = true;
-        "**/.git" = true;
-        "**/dist" = true;
-        "**/build" = true;
-      };
+        # Search
+        "search.exclude" = {
+          "**/node_modules" = true;
+          "**/target" = true;
+          "**/.git" = true;
+          "**/dist" = true;
+          "**/build" = true;
+        };
 
-      # Platform-specific settings
-    } // (if hasPlasma then {
-      # Linux-specific settings
-      "window.titleBarStyle" = "custom";
-      "window.menuBarVisibility" = "toggle";
-    } else {
-      # macOS-specific settings  
-      "window.titleBarStyle" = "custom";
-    });
+        # Platform-specific settings
+      }
+      // (
+        if hasPlasma
+        then {
+          # Linux-specific settings
+          "window.titleBarStyle" = "custom";
+          "window.menuBarVisibility" = "toggle";
+        }
+        else {
+          # macOS-specific settings
+          "window.titleBarStyle" = "custom";
+        }
+      );
 
     # Keybindings (zusätzlich zu Vim-Mappings)
     keybindings = [
       # Terminal shortcuts
       {
-        "key" = if hasPlasma then "ctrl+shift+`" else "cmd+shift+`";
+        "key" =
+          if hasPlasma
+          then "ctrl+shift+`"
+          else "cmd+shift+`";
         "command" = "workbench.action.terminal.toggleTerminal";
       }
 
       # Quick file switching
       {
-        "key" = if hasPlasma then "ctrl+p" else "cmd+p";
+        "key" =
+          if hasPlasma
+          then "ctrl+p"
+          else "cmd+p";
         "command" = "workbench.action.quickOpen";
       }
 
-      # Command palette  
+      # Command palette
       {
-        "key" = if hasPlasma then "ctrl+shift+p" else "cmd+shift+p";
+        "key" =
+          if hasPlasma
+          then "ctrl+shift+p"
+          else "cmd+shift+p";
         "command" = "workbench.action.showCommands";
       }
 

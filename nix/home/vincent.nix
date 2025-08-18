@@ -1,8 +1,16 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
-{ config, lib, pkgs, currentUser, userConfig, userEmail, userFullName, hasPlasma
-, hostname, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  currentUser,
+  userConfig,
+  userEmail,
+  userFullName,
+  hasPlasma,
+  hostname,
+  ...
+}: {
   # Importiere deine bestehenden Module
   imports = [
     ./core.nix
@@ -26,7 +34,7 @@
   };
 
   # Plasma-spezifische Konfiguration nur für Systeme mit KDE
-  programs.plasma = lib.mkIf (hasPlasma) {
+  programs.plasma = lib.mkIf hasPlasma {
     enable = true;
 
     # Desktop-Einstellungen
@@ -37,21 +45,23 @@
       cursor.theme = "breeze_cursors";
     };
     # Panel-Konfiguration
-    panels = [{
-      location = "bottom";
-      widgets = [
-        "org.kde.plasma.kickoff"
-        "org.kde.plasma.pager"
-        "org.kde.plasma.icontasks"
-        "org.kde.plasma.marginsseparator"
-        "org.kde.plasma.systemtray"
-        "org.kde.plasma.digitalclock"
-      ];
-    }];
+    panels = [
+      {
+        location = "bottom";
+        widgets = [
+          "org.kde.plasma.kickoff"
+          "org.kde.plasma.pager"
+          "org.kde.plasma.icontasks"
+          "org.kde.plasma.marginsseparator"
+          "org.kde.plasma.systemtray"
+          "org.kde.plasma.digitalclock"
+        ];
+      }
+    ];
 
     # Shortcuts
     shortcuts = {
-      ksmserver = { "Lock Session" = [ "Screensaver" "Meta+L" ]; };
+      ksmserver = {"Lock Session" = ["Screensaver" "Meta+L"];};
       kwin = {
         "Switch to Desktop 1" = "Meta+1";
         "Switch to Desktop 2" = "Meta+2";

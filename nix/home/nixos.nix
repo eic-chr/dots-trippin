@@ -1,7 +1,16 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
- { config, lib, pkgs, currentUser, userConfig, userEmail, userFullName, hasPlasma,  hostname, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  currentUser,
+  userConfig,
+  userEmail,
+  userFullName,
+  hasPlasma,
+  hostname,
+  ...
+}: {
   # Importiere deine bestehenden Module
   imports = [
     ./core.nix
@@ -20,14 +29,14 @@
 
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
-    userName = lib.mkForce userFullName;  # Anpassen nach Bedarf
-    userEmail = lib.mkForce userEmail;  # Anpassen nach Bedarf
+    userName = lib.mkForce userFullName; # Anpassen nach Bedarf
+    userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
   };
 
   # Plasma-spezifische Konfiguration nur für Systeme mit KDE
- programs.plasma = lib.mkIf (hasPlasma) {
+  programs.plasma = lib.mkIf hasPlasma {
     enable = true;
-    
+
     # Desktop-Einstellungen
     workspace = {
       lookAndFeel = "org.kde.breezedark.desktop";
@@ -40,9 +49,9 @@
         {
           enable = true;
           name = "Apple Inc. Apple Internal Keyboard / Trackpad";
-          vendorId = "05ac";     # Apple Vendor ID
-          productId = "0263";    # Dein MacBook Trackpad
-          naturalScroll = true;  # Traditionelles Scrolling!
+          vendorId = "05ac"; # Apple Vendor ID
+          productId = "0263"; # Dein MacBook Trackpad
+          naturalScroll = true; # Traditionelles Scrolling!
           tapToClick = true;
           rightClickMethod = "twoFingers";
         }
@@ -66,7 +75,7 @@
     # Shortcuts
     shortcuts = {
       ksmserver = {
-        "Lock Session" = [ "Screensaver" "Meta+L" ];
+        "Lock Session" = ["Screensaver" "Meta+L"];
       };
       kwin = {
         "Switch to Desktop 1" = "Meta+1";
@@ -92,9 +101,8 @@
     teamviewer
     wireshark
     zed-editor
-    
   ];
-services.kdeconnect.enable = true;
+  services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {
     enable = true;

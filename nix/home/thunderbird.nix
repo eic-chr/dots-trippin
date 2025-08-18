@@ -1,14 +1,13 @@
-{  pkgs, ... }:
-{programs.thunderbird = 
-  {
+{pkgs, ...}: {
+  programs.thunderbird = {
     enable = true;
     profiles = {
       "my-thunderbird-profile" = {
         isDefault = true;
         extraConfig = ''
-          user_pref("mail.identity.default.compose_html", false);
-        user_pref("mail.default_html_action", 1);
-        user_pref("mailnews.send_plaintext_flowed", false);
+            user_pref("mail.identity.default.compose_html", false);
+          user_pref("mail.default_html_action", 1);
+          user_pref("mailnews.send_plaintext_flowed", false);
         '';
         settings = {
           "mail.identity.id2.sig_file-rel" = "[ProfD]../../signature-ewolutions-ce.txt";

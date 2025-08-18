@@ -1,9 +1,9 @@
-{lib,...}: {
+{lib, ...}: {
   programs.zsh = {
     enable = true;
     enableAutosuggestions = true;
-    enableCompletion = true;  # Wichtig!
-      initExtra = lib.readFile ./initExtra.sh;
+    enableCompletion = true; # Wichtig!
+    initExtra = lib.readFile ./initExtra.sh;
 
     historySubstringSearch.enable = true;
 
@@ -11,24 +11,24 @@
       enable = true;
       theme = "agnoster";
       plugins = [
-        "brew"         # Homebrew completion
-          "docker"       # Docker completion
-          "git"
-          "kubectl"      # Falls du Kubernetes nutzt
-          "macos"        # macOS spezifische Aliase
-          "ssh"
-          "z"            # Jump to directories
-          "git"
+        "brew" # Homebrew completion
+        "docker" # Docker completion
+        "git"
+        "kubectl" # Falls du Kubernetes nutzt
+        "macos" # macOS spezifische Aliase
+        "ssh"
+        "z" # Jump to directories
+        "git"
       ];
     };
 
     shellAliases = {
-# Deine bestehenden...
+      # Deine bestehenden...
       ll = "eza -l";
       la = "eza -la";
       lt = "eza --tree --level=2";
 
-# Git shortcuts
+      # Git shortcuts
       g = "git";
       gs = "git status";
       gd = "git diff";
@@ -37,12 +37,12 @@
       gp = "git push";
       gl = "git pull";
 
-# System
+      # System
       top = "htop";
       ps = "procs";
       du = "dust";
 
-# Quick navigation
+      # Quick navigation
       ".." = "cd ..";
       "..." = "cd ../..";
       "~" = "cd ~";
@@ -53,9 +53,9 @@
     enable = true;
     enableZshIntegration = true;
     defaultCommand = "fd --type f --hidden --follow --exclude .git";
-    defaultOptions = [ "--height 40%" "--layout=reverse" "--border" ];
+    defaultOptions = ["--height 40%" "--layout=reverse" "--border"];
   };
-# AKTIVIERE das!
+  # AKTIVIERE das!
   programs.zoxide = {
     enable = true;
     enableZshIntegration = true;

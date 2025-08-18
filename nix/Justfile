@@ -76,7 +76,7 @@ gc:
 [group('nix')]
 fmt:
   # format the nix files in this repo
-  nix fmt
+  nix fmt {{flake_path}}
 
 [group('nix')]
 lint-and-fmt:

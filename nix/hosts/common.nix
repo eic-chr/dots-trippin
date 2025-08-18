@@ -1,13 +1,22 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
-{ config, pkgs, lib, users, userConfigs, hasPlasma, ... }:
-let
-  # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
-  trustedProfiles = [ "developer" "admin" ];
-  trustedUsers = builtins.filter (user: 
-    builtins.elem (userConfigs.${user}.profile or "") trustedProfiles
-  ) users;
-in
 {
+  config,
+  pkgs,
+  lib,
+  users,
+  userConfigs,
+  hasPlasma,
+  ...
+}: let
+  # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
+  trustedProfiles = ["developer" "admin"];
+  trustedUsers =
+    builtins.filter (
+      user:
+        builtins.elem (userConfigs.${user}.profile or "none") trustedProfiles
+    )
+    users;
+in {
   # Zeitzone und Lokalisierung
   time.timeZone = "Europe/Berlin";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -27,21 +36,21 @@ in
   console.keyMap = "us";
 
   # X11 und Desktop Environment (KDE Plasma)
-services.xserver = {
-  enable = true;
-  xkb = {
-    layout = "de";
+  services.xserver = {
+    enable = true;
+    xkb = {
+      layout = "de";
+    };
   };
-};
 
-# Display Manager - Neue separate Konfiguration
+  # Display Manager - Neue separate Konfiguration
   # Display Manager - Neue separate Konfiguration
   services.displayManager.sddm = {
     enable = true;
     # Für MacBook Pro 2014: X11 ist stabiler
   };
-# Desktop Manager - Neue separate Konfiguration  
-services.desktopManager.plasma6.enable = true;
+  # Desktop Manager - Neue separate Konfiguration
+  services.desktopManager.plasma6.enable = true;
 
   # XDG Portal für KDE
   xdg.portal = {
@@ -51,8 +60,7 @@ services.desktopManager.plasma6.enable = true;
     ];
   };
 
-    # RDP Server für Remote Desktop (funktioniert mit Wayland)
-
+  # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
   # Netzwerk
   networking.networkmanager.enable = true;
@@ -64,13 +72,12 @@ services.desktopManager.plasma6.enable = true;
   # Benutzer werden in host-spezifischen Configs definiert
   # (entfernt um Konflikte zu vermeiden)
 
-programs.zsh.enable = true;  
-# Some programs need SUID wrappers, can be configured further or are
-# started in user sessions.
-# programs.mtr.enable = true;
+  programs.zsh.enable = true;
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
 
-# List services that you want to enable:
-
+  # List services that you want to enable:
 
   # Sudo ohne Passwort für wheel-Gruppe
   security.sudo.wheelNeedsPassword = false;
@@ -85,75 +92,75 @@ programs.zsh.enable = true;
     jack.enable = true;
   };
   # KDE-spezifische System-Pakete
-  environment.systemPackages = with pkgs; [
-    # Systemtools
-    btop
-    cifs-utils
-    curl
-    file
-    git
-    htop
-    keepassxc
-    libreoffice
-    nextcloud-client
-    python3
-    thunderbird
-    tree
-    unzip
-    wget
-    which
-    zip
-    
-    # Netzwerk-Tools
-    dig
-    nmap
-    traceroute
-    
-    # Development
-    gcc
-    gnumake
-    just
-    pkg-config
-    markdownlint-cli2
+  environment.systemPackages = with pkgs;
+    [
+      # Systemtools
+      btop
+      cifs-utils
+      curl
+      file
+      git
+      htop
+      keepassxc
+      libreoffice
+      nextcloud-client
+      python3
+      thunderbird
+      tree
+      unzip
+      wget
+      which
+      zip
 
-    wl-clipboard
-        # Multimedia
-    vlc
-    gimp
-    inkscape
-    
-    
-    # Browser
-    firefox
-    chromium
+      # Netzwerk-Tools
+      dig
+      nmap
+      traceroute
 
-    # KDE Apps (gemeinsam für alle KDE-Systeme)
-  ] ++ lib.optionals hasPlasma [
-    # KDE-spezifische Pakete
-    kdePackages.ark
-    kdePackages.dolphin
-    kdePackages.gwenview
-    kdePackages.kate
-    kdePackages.kcalc
-    kdePackages.kdegraphics-thumbnailers
-    kdePackages.krfb
-    kdePackages.kio-extras
-    kdePackages.kmail
-    kdePackages.kolourpaint
-    kdePackages.konsole
-    kdePackages.korganizer
-    kdePackages.ksystemlog
-    kdePackages.merkuro
-    kdePackages.okular
-    kdePackages.qtimageformats
-    kdePackages.spectacle
-    
-  ];
-# Nix-Einstellungen
+      # Development
+      gcc
+      gnumake
+      just
+      pkg-config
+      markdownlint-cli2
+
+      wl-clipboard
+      # Multimedia
+      vlc
+      gimp
+      inkscape
+
+      # Browser
+      firefox
+      chromium
+
+      # KDE Apps (gemeinsam für alle KDE-Systeme)
+    ]
+    ++ lib.optionals hasPlasma [
+      # KDE-spezifische Pakete
+      kdePackages.ark
+      kdePackages.dolphin
+      kdePackages.gwenview
+      kdePackages.kate
+      kdePackages.kcalc
+      kdePackages.kdegraphics-thumbnailers
+      kdePackages.krfb
+      kdePackages.kio-extras
+      kdePackages.kmail
+      kdePackages.kolourpaint
+      kdePackages.konsole
+      kdePackages.korganizer
+      kdePackages.ksystemlog
+      kdePackages.merkuro
+      kdePackages.okular
+      kdePackages.qtimageformats
+      kdePackages.spectacle
+    ];
+  # Nix-Einstellungen
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" ] ++ trustedUsers;
+      experimental-features = ["nix-command" "flakes"];
+      trusted-users = ["root"] ++ trustedUsers;
       auto-optimise-store = true;
     };
     gc = {
@@ -166,7 +173,7 @@ programs.zsh.enable = true;
   # Firewall
   networking.firewall = {
     enable = false;
-    allowedTCPPorts = [ 22 ];  # SSH
+    allowedTCPPorts = [22]; # SSH
   };
 
   # SSH
@@ -189,7 +196,7 @@ programs.zsh.enable = true;
       fira-code-symbols
       # (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
     ];
-    
+
     fontconfig = {
       enable = true;
       antialias = true;

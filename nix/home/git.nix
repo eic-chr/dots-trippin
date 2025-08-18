@@ -1,27 +1,37 @@
- { config, lib, pkgs, currentUser, userConfig, userEmail, userFullName,hasPlasma, hostname, ... }:
- {
-# `programs.git` will generate the config file: ~/.config/git/config
-# to make git use this config file, `~/.gitconfig` should not exist!
-#
-#    https://git-scm.com/docs/git-config#Documentation/git-config.txt---global
+{
+  config,
+  lib,
+  pkgs,
+  currentUser,
+  userConfig,
+  userEmail,
+  userFullName,
+  hasPlasma,
+  hostname,
+  ...
+}: {
+  # `programs.git` will generate the config file: ~/.config/git/config
+  # to make git use this config file, `~/.gitconfig` should not exist!
+  #
+  #    https://git-scm.com/docs/git-config#Documentation/git-config.txt---global
   home.activation.removeExistingGitconfig = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
     rm -f ~/.gitconfig
-    '';
+  '';
 
   programs.git = {
     enable = true;
     lfs.enable = true;
 
-# TODO replace with your own name & email
+    # TODO replace with your own name & email
     userName = userFullName;
     userEmail = userEmail;
 
     includes = [
-    {
-# use diffrent email & name for work
-      path = "~/work/.gitconfig";
-      condition = "gitdir:~/work/";
-    }
+      {
+        # use diffrent email & name for work
+        path = "~/work/.gitconfig";
+        condition = "gitdir:~/work/";
+      }
     ];
 
     extraConfig = {
@@ -30,10 +40,10 @@
       pull.rebase = true;
     };
 
-# signing = {
-#   key = "xxx";
-#   signByDefault = true;
-# };
+    # signing = {
+    #   key = "xxx";
+    #   signByDefault = true;
+    # };
 
     delta = {
       enable = true;
@@ -43,7 +53,7 @@
     };
 
     aliases = {
-# common aliases
+      # common aliases
       br = "branch";
       co = "checkout";
       st = "status";
@@ -54,7 +64,7 @@
       dc = "diff --cached";
       amend = "commit --amend -m";
 
-# aliases for submodule
+      # aliases for submodule
       update = "submodule update --init --recursive";
       foreach = "submodule foreach";
     };

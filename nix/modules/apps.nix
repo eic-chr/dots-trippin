@@ -1,5 +1,4 @@
-{ pkgs, ...}: {
-
+{pkgs, ...}: {
   ##########################################################################
   #
   #  Install all apps and packages here.
@@ -19,15 +18,15 @@
   # Related Discussion: https://discourse.nixos.org/t/darwin-again/29331
   environment.systemPackages = with pkgs; [
     # Core system tools (alle Benutzer brauchen sie)
-    git              # Version control - systemweit nötig
-    direnv           # Environment management - systemweit besser
+    git # Version control - systemweit nötig
+    direnv # Environment management - systemweit besser
     just
-    
+
     # System administration
-    sshpass          # SSH-Tool für Automatisierung
-    
+    sshpass # SSH-Tool für Automatisierung
+
     # Spell checking (systemweit verfügbar)
-    (aspellWithDicts (dicts: with dicts; [ de en en-computers ]))
+    (aspellWithDicts (dicts: with dicts; [de en en-computers]))
   ];
 
   # TODO To make this work, homebrew need to be installed manually, see https://brew.sh
