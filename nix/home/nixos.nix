@@ -80,6 +80,8 @@
   # Zusätzliche NixOS-spezifische Pakete
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
+    ansible
+    ansible-lint
     discord
     ferdium
     fzf
@@ -87,10 +89,12 @@
     pgadmin4
     signal-desktop
     stow
+    teamviewer
+    wireshark
     zed-editor
     
   ];
-
+services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {
     enable = true;

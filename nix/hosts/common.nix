@@ -45,6 +45,8 @@ services.desktopManager.plasma6.enable = true;
     ];
   };
 
+    # RDP Server für Remote Desktop (funktioniert mit Wayland)
+
 
   # Netzwerk
   networking.networkmanager.enable = true;
@@ -128,6 +130,7 @@ programs.zsh.enable = true;
     kdePackages.kate
     kdePackages.kcalc
     kdePackages.kdegraphics-thumbnailers
+    kdePackages.krfb
     kdePackages.kio-extras
     kdePackages.kmail
     kdePackages.kolourpaint
@@ -156,7 +159,7 @@ programs.zsh.enable = true;
 
   # Firewall
   networking.firewall = {
-    enable = true;
+    enable = false;
     allowedTCPPorts = [ 22 ];  # SSH
   };
 

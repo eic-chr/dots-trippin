@@ -14,6 +14,9 @@ home.packages = with pkgs; [
     tealdeer         # tldr
     zoxide           # cd-Ersatz
     
+# Multimedia
+    imagemagick
+    clipgrab
     # Search & text processing
     ripgrep          # recursively searches directories for a regex pattern
     jq               # A lightweight and flexible command-line JSON processor

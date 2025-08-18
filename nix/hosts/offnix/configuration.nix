@@ -9,6 +9,7 @@
 
   # Hostname
   networking.hostName = hostname;
+  networking.firewall.allowedTCPPorts = lib.mkAfter [ 3389 ];
 
   # Benutzer für offnix
   users.users = {
@@ -27,10 +28,13 @@
     };
   };
 
+
 services.xserver = lib.mkForce {
   enable = true;
   xkb = {
-    layout = "de";
+    layout = "us";
+    variant = "intl";
+    options = "caps:escape";
   };
 };
   # Laptop-spezifische Hardware-Unterstützung

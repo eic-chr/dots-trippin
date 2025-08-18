@@ -17,6 +17,7 @@
     grub.version = 2;            # GRUB2
     grub.device = "/dev/sda";    # auf die Platte (nicht Partition)
     grub.efiSupport = false;     # Legacy BIOS, kein EFI
+    grub.useOSProber = true;
     systemd-boot.enable = false; # Systemd-boot komplett deaktivieren
   };
 
