@@ -50,6 +50,9 @@
     plasma-manager,
     ...
   }: let
+
+  mylib = import ../lib { inherit lib; };
+  myvars = import ../vars { inherit lib; };
     # Host-zu-User Zuordnung
     hostUsers = {
       MacBookPro = ["christianeickhoff"];
