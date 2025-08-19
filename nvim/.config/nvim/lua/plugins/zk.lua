@@ -1,5 +1,5 @@
 -- ~/.config/nvim/lua/plugins/zk.lua - Finale Konfiguration
-local zk_dir = "/Users/christianeickhoff/projects/ceickhoff/zettelkasten/personal"
+local zk_dir = vim.fn.expand("$HOME/projects/ceickhoff/zettelkasten/personal")
 
 local function new_zettel(alias, needs_title, title)
   return function()
@@ -7,7 +7,6 @@ local function new_zettel(alias, needs_title, title)
       dir = zk_dir .. "/" .. alias,
       template = alias .. ".md",
     }
-
 
     if needs_title then
       if title and title ~= "" then
@@ -32,8 +31,8 @@ return {
     })
   end,
   keys = {
-    { "<leader>zo", "<Cmd>ZkNotes<CR>",                                          desc = "Open notes" },
-    { "<leader>zt", "<Cmd>ZkTags<CR>",                                           desc = "Browse tags" },
+    { "<leader>zo", "<Cmd>ZkNotes<CR>", desc = "Open notes" },
+    { "<leader>zt", "<Cmd>ZkTags<CR>", desc = "Browse tags" },
     { "<leader>zf", "<Cmd>ZkNotes { match = { vim.fn.input('Search: ') } }<CR>", desc = "Find notes" },
 
     -- === CONTEXT-SPECIFIC NOTE CREATION ===
@@ -119,9 +118,9 @@ return {
     },
 
     -- === BROWSE STRUCTURED NOTES ===
-    { "<leader>zoi", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/idea' } }<CR>",     desc = "Browse ideas" },
-    { "<leader>zom", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/meeting' } }<CR>",  desc = "Browse meetings" },
-    { "<leader>zoj", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/project' } }<CR>",  desc = "Browse projects" },
+    { "<leader>zoi", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/idea' } }<CR>", desc = "Browse ideas" },
+    { "<leader>zom", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/meeting' } }<CR>", desc = "Browse meetings" },
+    { "<leader>zoj", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/project' } }<CR>", desc = "Browse projects" },
     { "<leader>zor", "<Cmd>ZkNotes { match = { vim.fn.getcwd() .. '/research' } }<CR>", desc = "Browse research" },
     -- === GLOBAL SEARCH ===
     {
