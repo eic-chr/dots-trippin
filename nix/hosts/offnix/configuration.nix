@@ -1,17 +1,16 @@
 # NixOS Konfiguration für offnix Laptop
 {
-  config,
   pkgs,
   lib,
-  hostname,
-  usernix,
-  secondUsernix,
-  useremail,
   ...
-}: {
+}: 
+let
+  hostname = "offnix"; # Define your hostname.
+in
+{
   imports = [
     ./hardware-configuration.nix
-    ../common.nix
+    ../system-packages.nix
   ];
 
   # Hostname

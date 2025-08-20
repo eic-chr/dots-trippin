@@ -2,17 +2,17 @@
 {
   # Base packages für alle
   base = {
-    system = [ "curl" "wget" "git" "vim" "htop" "tree" ];
-    home = [ "firefox" "thunderbird" ];
+    system = ["curl" "wget" "git" "vim" "htop" "tree"];
+    home = ["firefox" "thunderbird"];
   };
 
   # Developer Role
   developer = {
-    system = [ "docker" "podman" "git" "vim" "curl" "wget" ];
-    home = [ 
-      "vscode" 
-      "nodejs" 
-      "python3" 
+    system = ["docker" "podman" "git" "vim" "curl" "wget"];
+    home = [
+      "vscode"
+      "nodejs"
+      "python3"
       "postman"
       "dbeaver-bin"
       "docker-compose"
@@ -27,12 +27,12 @@
       ns = "nix shell";
       nd = "nix develop";
     };
-    systemGroups = [ "wheel" "docker" ];
+    systemGroups = ["wheel" "docker"];
   };
 
   # Office Role
   office = {
-    system = [ "firefox" "thunderbird" ];
+    system = ["firefox" "thunderbird"];
     home = [
       "libreoffice"
       "teams-for-linux"
@@ -45,12 +45,12 @@
       docs = "cd ~/Documents";
       mail = "thunderbird";
     };
-    systemGroups = [ ];
+    systemGroups = [];
   };
 
   # Gamer Role
   gamer = {
-    system = [ "steam" "discord" ];
+    system = ["steam" "discord"];
     home = [
       "obs-studio"
       "gimp"
@@ -62,12 +62,12 @@
       gaming = "cd ~/Games";
       steam-run = "steam-run";
     };
-    systemGroups = [ ];
+    systemGroups = [];
   };
 
   # Student Role
   student = {
-    system = [ "firefox" "libreoffice" ];
+    system = ["firefox" "libreoffice"];
     home = [
       "obsidian"
       "zotero"
@@ -79,6 +79,6 @@
       study = "cd ~/Studies";
       notes = "cd ~/Notes";
     };
-    systemGroups = [ ];
+    systemGroups = [];
   };
 }

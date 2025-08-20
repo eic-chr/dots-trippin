@@ -1,10 +1,12 @@
-
-{ config, pkgs, ... }:
 {
+  config,
+  pkgs,
+  ...
+}: {
   programs.plasma = {
     enable = true;
 
-# Desktop-Einstellungen
+    # Desktop-Einstellungen
     workspace = {
       lookAndFeel = "org.kde.breezedark.desktop";
       colorScheme = "BreezeDark";
@@ -13,33 +15,33 @@
     };
     input = {
       touchpads = [
-      {
-        enable = true;
-        name = "Apple Inc. Apple Internal Keyboard / Trackpad";
-        vendorId = "05ac"; # Apple Vendor ID
+        {
+          enable = true;
+          name = "Apple Inc. Apple Internal Keyboard / Trackpad";
+          vendorId = "05ac"; # Apple Vendor ID
           productId = "0263"; # Dein MacBook Trackpad
           naturalScroll = true; # Traditionelles Scrolling!
           tapToClick = true;
-        rightClickMethod = "twoFingers";
-      }
+          rightClickMethod = "twoFingers";
+        }
       ];
     };
-# Panel-Konfiguration
+    # Panel-Konfiguration
     panels = [
-    {
-      location = "bottom";
-      widgets = [
-        "org.kde.plasma.kickoff"
+      {
+        location = "bottom";
+        widgets = [
+          "org.kde.plasma.kickoff"
           "org.kde.plasma.pager"
           "org.kde.plasma.icontasks"
           "org.kde.plasma.marginsseparator"
           "org.kde.plasma.systemtray"
           "org.kde.plasma.digitalclock"
-      ];
-    }
+        ];
+      }
     ];
 
-# Shortcuts
+    # Shortcuts
     shortcuts = {
       ksmserver = {
         "Lock Session" = ["Screensaver" "Meta+L"];

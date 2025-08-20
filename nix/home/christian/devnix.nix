@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     #
     # ========== Required Configs ==========
@@ -14,5 +13,4 @@
     ./optional/development
     #common/optional/desktops
   ];
-
 }

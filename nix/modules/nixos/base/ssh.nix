@@ -1,6 +1,4 @@
-
-{ lib, ... }:
-{
+{lib, ...}: {
   # Or disable the firewall altogether.
   networking.firewall.enable = lib.mkDefault false;
   # Enable the OpenSSH daemon.

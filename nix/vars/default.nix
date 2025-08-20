@@ -22,30 +22,29 @@
   ];
   secondaryAuthorizedKeys = [
   ];
-   # System-Spezifikationen (öffentlich)
+  # System-Spezifikationen (öffentlich)
   systems = import ./systems.nix;
-  
+
   # Package-Listen pro Rolle (öffentlich)
   packages = import ./packages.nix;
-  
+
   # Rollen-Definitionen ohne sensible Daten (öffentlich)
   roles = import ./roles.nix;
-  
+
   # Konstanten
   defaultShell = "zsh";
   stateVersion = "25.05";
-  
+
   # Netzwerk-Konfiguration
   networking = {
-    defaultFirewallPorts = [ 22 80 443 ];
-    trustedNetworks = [ "192.168.1.0/24" "10.0.0.0/8" ];
+    defaultFirewallPorts = [22 80 443];
+    trustedNetworks = ["192.168.1.0/24" "10.0.0.0/8"];
   };
-  
+
   # Standard-Verzeichnisse
   directories = {
     secrets = ../secrets;
     home = ../home;
     hosts = ../hosts;
   };
-
 }

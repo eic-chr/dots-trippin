@@ -22,7 +22,6 @@
     ./vscode.nix
   ];
 
-
   # Zusätzliche NixOS-spezifische Pakete
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
