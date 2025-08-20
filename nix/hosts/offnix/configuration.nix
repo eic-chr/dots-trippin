@@ -1,7 +1,14 @@
 # NixOS Konfiguration für offnix Laptop
-{ config, pkgs, lib, hostname, usernix, secondUsernix, useremail, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  hostname,
+  usernix,
+  secondUsernix,
+  useremail,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     ../common.nix
@@ -9,34 +16,33 @@
 
   # Hostname
   networking.hostName = hostname;
-  networking.firewall.allowedTCPPorts = lib.mkAfter [ 3389 ];
+  networking.firewall.allowedTCPPorts = lib.mkAfter [3389];
 
   # Benutzer für offnix
   users.users = {
     christian = {
       isNormalUser = true;
       description = "Christian Eickhoff";
-      extraGroups = [ "wheel" "networkmanager" "audio" "video" "scanner" "lp" ];
+      extraGroups = ["wheel" "networkmanager" "audio" "video" "scanner" "lp"];
       shell = pkgs.zsh;
     };
-    
+
     charly = {
       isNormalUser = true;
       description = "Charlotte Amend";
-      extraGroups = [ "networkmanager" "audio" "video" "scanner" "lp" ];
+      extraGroups = ["networkmanager" "audio" "video" "scanner" "lp"];
       shell = pkgs.zsh;
     };
   };
 
-
-services.xserver = lib.mkForce {
-  enable = true;
-  xkb = {
-    layout = "us";
-    variant = "intl";
-    options = "caps:escape";
+  services.xserver = lib.mkForce {
+    enable = true;
+    xkb = {
+      layout = "us";
+      variant = "intl";
+      options = "caps:escape";
+    };
   };
-};
 
   # Bluetooth
   hardware.bluetooth = {
@@ -67,18 +73,16 @@ services.xserver = lib.mkForce {
     powertop
     brightnessctl
     lm_sensors
-    
   ];
 
   # Hardware-spezifische Services
-  services.thermald.enable = true;  # Intel thermal management
+  services.thermald.enable = true; # Intel thermal management
   # services.auto-cpufreq.enable = true;  # Automatische CPU-Frequenz-Anpassung
 
-  
   # Printing support
   services.printing = {
     enable = true;
-    drivers = with pkgs; [ hplip epson-escpr ];
+    drivers = with pkgs; [hplip epson-escpr];
   };
   services.avahi = {
     enable = true;
