@@ -1,7 +1,6 @@
 # VSCode Konfiguration mit Vim-Integration
 {
   pkgs,
-  hasPlasma ? false,
   ...
 }: {
   nixpkgs.config.allowUnfree = true;
@@ -250,46 +249,29 @@
         };
 
         # Platform-specific settings
-      }
-      // (
-        if hasPlasma
-        then {
           # Linux-specific settings
           "window.titleBarStyle" = "custom";
           "window.menuBarVisibility" = "toggle";
-        }
-        else {
           # macOS-specific settings
-          "window.titleBarStyle" = "custom";
-        }
-      );
+      };
 
     # Keybindings (zusätzlich zu Vim-Mappings)
     keybindings = [
       # Terminal shortcuts
       {
-        "key" =
-          if hasPlasma
-          then "ctrl+shift+`"
-          else "cmd+shift+`";
+        "key" = "ctrl+shift+`";
         "command" = "workbench.action.terminal.toggleTerminal";
       }
 
       # Quick file switching
       {
-        "key" =
-          if hasPlasma
-          then "ctrl+p"
-          else "cmd+p";
+        "key" = "ctrl+p";
         "command" = "workbench.action.quickOpen";
       }
 
       # Command palette
       {
-        "key" =
-          if hasPlasma
-          then "ctrl+shift+p"
-          else "cmd+shift+p";
+        "key" = "ctrl+shift+p";
         "command" = "workbench.action.showCommands";
       }
 

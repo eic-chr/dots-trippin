@@ -1,6 +1,5 @@
 {
   pkgs,
-  hasPlasma ? false,
   ...
 }: {
   programs.kitty = {
@@ -81,10 +80,6 @@
         "ctrl+shift+1" = "detach_window new-tab";
         "ctrl+shift+2" = "detach_window";
         "ctrl+shift+3" = "detach_tab";
-      }
-      // (
-        if hasPlasma
-        then {
           # Linux shortcuts (Ctrl-based)
           "ctrl+shift+c" = "copy_to_clipboard";
           "ctrl+shift+v" = "paste_from_clipboard";
@@ -97,22 +92,7 @@
           "ctrl+alt+l" = "resize_window wider 5";
           "ctrl+alt+k" = "resize_window taller 5";
           "ctrl+alt+j" = "resize_window shorter 5";
-        }
-        else {
-          # macOS shortcuts (Cmd-based)
-          "cmd+c" = "copy_to_clipboard";
-          "cmd+v" = "paste_from_clipboard";
-          "cmd+plus" = "change_font_size all +2.0";
-          "cmd+minus" = "change_font_size all -2.0";
-          "cmd+0" = "change_font_size all 0";
-
-          # Fenster Größe ändern (macOS)
-          "cmd+alt+h" = "resize_window narrower 5";
-          "cmd+alt+l" = "resize_window wider 5";
-          "cmd+alt+k" = "resize_window taller 5";
-          "cmd+alt+j" = "resize_window shorter 5";
-        }
-      );
+        };
     settings = {
       disable_ligatures = "never";
       term = "xterm-256color";

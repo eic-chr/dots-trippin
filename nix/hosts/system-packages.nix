@@ -1,22 +1,8 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
 {
-  config,
   pkgs,
-  lib,
-  users,
-  userConfigs,
-  hasPlasma,
   ...
-}: let
-  # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
-  trustedProfiles = ["developer" "admin"];
-  trustedUsers =
-    builtins.filter (
-      user:
-        builtins.elem (userConfigs.${user}.profile or "none") trustedProfiles
-    )
-    users;
-in {
+}: {
   # Zeitzone und Lokalisierung
   time.timeZone = "Europe/Berlin";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -135,9 +121,8 @@ in {
       chromium
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
-    ]
-    ++ lib.optionals hasPlasma [
       # KDE-spezifische Pakete
+      # TODO: move to home manager
       kdePackages.ark
       kdePackages.dolphin
       kdePackages.gwenview
@@ -160,7 +145,7 @@ in {
   nix = {
     settings = {
       experimental-features = ["nix-command" "flakes"];
-      trusted-users = ["root"] ++ trustedUsers;
+      trusted-users = ["root" "christian"];
       auto-optimise-store = true;
     };
     gc = {
