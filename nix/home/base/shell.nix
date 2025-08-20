@@ -13,7 +13,6 @@
       plugins = [
         "brew" # Homebrew completion
         "docker" # Docker completion
-        "git"
         "kubectl" # Falls du Kubernetes nutzt
         "macos" # macOS spezifische Aliase
         "ssh"

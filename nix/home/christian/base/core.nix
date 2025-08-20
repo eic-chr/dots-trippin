@@ -28,7 +28,6 @@
     lazygit # Git-UI
     nil # Nix LSP
     nixfmt # Nix-Formatter
-    nodejs
     marksman # Markdown LSP
     python3 # Entwicklungsumgebung
     # python3Packages.pip
