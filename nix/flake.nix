@@ -16,7 +16,7 @@
     };
   };
 
-  outputs = inputs @ { nixpkgs, nixpkgs-darwin, darwin, home-manager, ... }:
+  outputs = inputs @ { self, nixpkgs, nixpkgs-darwin, darwin, home-manager, plasma-manager, ... }:
       let
       inherit (inputs.nixpkgs) lib;
       mylib = import ../lib { inherit lib; };
