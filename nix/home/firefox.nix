@@ -16,10 +16,10 @@
         # Extensions installieren
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
+          bitwarden  
           privacy-badger
           clearurls
           decentraleyes
-          # vimium-c  # Vim-bindings für Firefox
           darkreader
         ];
 
@@ -224,10 +224,5 @@
     };
   };
 
-  # NUR (Nix User Repository) für Firefox-Addons aktivieren
-  nixpkgs.overlays = [
-    (import (builtins.fetchTarball {
-      url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
-    }))
-  ];
+  # NUR ist jetzt systemweit verfügbar durch das Overlay in common.nix
 }

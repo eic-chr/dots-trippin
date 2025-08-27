@@ -168,7 +168,10 @@ in {
       options = "--delete-older-than 10d";
     };
   };
-
+  # Nixpkgs-Konfiguration mit NUR
+  nixpkgs.overlays = [
+    nur.overlay
+  ];
   # Firewall
   networking.firewall = {
     enable = false;
