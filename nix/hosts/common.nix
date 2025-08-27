@@ -1,6 +1,7 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
 {
   config,
+  nur,
   pkgs,
   lib,
   users,
