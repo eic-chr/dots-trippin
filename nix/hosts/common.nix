@@ -131,7 +131,6 @@ in {
       inkscape
 
       # Browser
-      firefox
       chromium
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)

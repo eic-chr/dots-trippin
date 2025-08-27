@@ -56,7 +56,7 @@
     # Bessere macOS-Kompatibilität
     "acpi_osi=Darwin"
     # Apple-Tastatur Funktionstasten
-    "hid_apple.fnmode=2"
+    "hid_apple.fnmode=1"
     # Cmd/Alt Tausch auf Hardware-Ebene
     "hid_apple.swap_opt_cmd=1"
   ];
