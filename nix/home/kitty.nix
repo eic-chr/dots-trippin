@@ -16,11 +16,14 @@
     # KEYBOARD SHORTCUTS (leer - alles über extraConfig)
     keybindings =
       {
+    # Keybindings
+    "ctrl+shift+f2" = "edit_config_file";
+        "ctrl+shift+f5" = "load_config_file";
         # === FENSTER NAVIGATION (vim-style) ===
-        "alt+h" = "neighboring_window left";
-        "alt+j" = "neighboring_window down";
-        "alt+k" = "neighboring_window up";
-        "alt+l" = "neighboring_window right";
+        "strg+alt+h" = "neighboring_window left";
+        "strg+alt+j" = "neighboring_window down";
+        "strg+alt+k" = "neighboring_window up";
+        "strg+alt+l" = "neighboring_window right";
 
         # === FENSTER MANAGEMENT ===
         "alt+enter" = "new_window";

@@ -20,6 +20,7 @@
     ./kitty.nix
     ./thunderbird.nix
     ./vscode.nix
+    ./firefox.nix
   ];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
@@ -44,6 +45,7 @@
       iconTheme = "breeze-dark";
       cursor.theme = "breeze_cursors";
     };
+    kwin.scripts.polonium.enable = false;
     input = {
       touchpads = [
         {

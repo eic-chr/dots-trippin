@@ -26,7 +26,10 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    # NUR for additional packages (Firefox addons)
+    nur = {
+      url = "github:nix-community/NUR";
+    };
     # plasma-manager for KDE Plasma configuration
     plasma-manager = {
       url = "github:pjones/plasma-manager";

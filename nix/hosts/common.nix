@@ -1,6 +1,7 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
 {
   config,
+  nur,
   pkgs,
   lib,
   users,
@@ -131,7 +132,6 @@ in {
       inkscape
 
       # Browser
-      firefox
       chromium
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
@@ -169,7 +169,10 @@ in {
       options = "--delete-older-than 10d";
     };
   };
-
+  # Nixpkgs-Konfiguration mit NUR
+  nixpkgs.overlays = [
+    nur.overlay
+  ];
   # Firewall
   networking.firewall = {
     enable = false;

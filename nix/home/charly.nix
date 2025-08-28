@@ -75,7 +75,6 @@
   home.packages = with pkgs;
     [
       # Browser
-      firefox
 
       # Eventuell andere Tools für den zweiten Benutzer
       thunderbird # Email-Client

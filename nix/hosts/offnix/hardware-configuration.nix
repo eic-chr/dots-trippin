@@ -44,10 +44,10 @@
 
   nixpkgs.config = {
     allowUnfree = true;
-    permittedInsecurePackages = [
-      "broadcom-sta"
-      "broadcom-sta-6.30.223.271-57-6.12.41"
-    ];
+    allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
+    # permittedInsecurePackages = [
+    #   "broadcom-sta"
+    # ];
   };
   # MacBook-spezifische Kernel-Parameter
   boot.kernelParams = [
@@ -56,7 +56,7 @@
     # Bessere macOS-Kompatibilität
     "acpi_osi=Darwin"
     # Apple-Tastatur Funktionstasten
-    "hid_apple.fnmode=2"
+    "hid_apple.fnmode=1"
     # Cmd/Alt Tausch auf Hardware-Ebene
     "hid_apple.swap_opt_cmd=1"
   ];
