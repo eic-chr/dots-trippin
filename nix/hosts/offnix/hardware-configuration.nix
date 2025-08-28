@@ -44,9 +44,10 @@
 
   nixpkgs.config = {
     allowUnfree = true;
-    permittedInsecurePackages = [
-      "broadcom-sta"
-    ];
+    allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
+    # permittedInsecurePackages = [
+    #   "broadcom-sta"
+    # ];
   };
   # MacBook-spezifische Kernel-Parameter
   boot.kernelParams = [

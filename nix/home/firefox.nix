@@ -181,6 +181,19 @@
             }
           }
         '';
+        extraConfig = ''
+          user_pref("identity.sync.tokenserver.uri", "https://syncserver.dev.ewolutions.de/token/1.0/sync/1.5");
+        user_pref("services.sync.deletePwdFxA", true);
+        user_pref("services.sync.engine.addresses", true);
+        user_pref("services.sync.engine.addresses.available", true);
+        user_pref("services.sync.engine.creditcards", true);
+        user_pref("services.sync.engine.prefs.modified", false);
+        user_pref("services.sync.globalScore", 0);
+        user_pref("services.sync.syncInterval", 600000);
+        user_pref("services.sync.syncThreshold", 300);
+        user_pref("services.sync.username", "eic.chr@gmail.com");
+        '';
+
       };
 
       # Zusätzliches Profil für Work/Privacy
