@@ -20,10 +20,10 @@
     "ctrl+shift+f2" = "edit_config_file";
         "ctrl+shift+f5" = "load_config_file";
         # === FENSTER NAVIGATION (vim-style) ===
-        "strg+alt+h" = "neighboring_window left";
-        "strg+alt+j" = "neighboring_window down";
-        "strg+alt+k" = "neighboring_window up";
-        "strg+alt+l" = "neighboring_window right";
+        "alt+h" = "neighboring_window left";
+        "alt+j" = "neighboring_window down";
+        "alt+k" = "neighboring_window up";
+        "alt+l" = "neighboring_window right";
 
         # === FENSTER MANAGEMENT ===
         "alt+enter" = "new_window";
@@ -127,7 +127,7 @@
       enable_audio_bell = false;
       initial_window_width = "160c";
       initial_window_height = "48c";
-      background_opacity = "0.7";
+      background_opacity = "0.8";
       dynamic_background_opacity = true;
       hide_window_decorations = "yes";
       cursor_shape = "block";

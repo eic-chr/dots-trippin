@@ -20,6 +20,9 @@
     # Use different nixpkgs for different systems
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+     # Unstable für einzelne Pakete
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+
 
     # home-manager for user configuration management
     home-manager = {
@@ -47,6 +50,7 @@
   outputs = inputs @ {
     self,
     nixpkgs,
+    nixpkgs-unstable,
     nixpkgs-darwin,
     darwin,
     home-manager,
@@ -148,6 +152,11 @@
       // {
         inherit (systemConfig) hostname hasPlasma users;
         inherit userConfigs hostUsers;
+
+# nixpkgs-unstable importieren und durchreichen
+        unstable = import inputs.nixpkgs-unstable {
+          system = systemConfig.system;
+        };
         # Für Kompatibilität mit bestehenden Modulen
         username = builtins.head systemConfig.users; # Erster User als Standard
       };
@@ -160,6 +169,7 @@
             config,
             lib,
             pkgs,
+            unstable,
             ...
           }: {
             imports = [

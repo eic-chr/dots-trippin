@@ -2278,7 +2278,7 @@ end, { desc = "[P]BOLD toggle bold markers" })
 -- Crate task or checkbox lamw26wmal
 -- These are marked with <leader>x using bullets.vim
 -- I used <C-l> before, but that is used for pane navigation
-vim.keymap.set({ "n", "i" }, "<M-l>", function()
+vim.keymap.set({ "n", "i" }, "<C-l>", function()
   -- Get the current line/row/column
   local cursor_pos = vim.api.nvim_win_get_cursor(0)
   local row, _ = cursor_pos[1], cursor_pos[2]

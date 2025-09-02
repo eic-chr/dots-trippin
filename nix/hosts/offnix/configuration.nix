@@ -18,6 +18,9 @@ in {
 
   # Hostname
   networking.hostName = hostname;
+  networking.extraHosts = ''
+    91.239.118.30 mail.ewolutions.de
+  '';
   networking.firewall.allowedTCPPorts = lib.mkAfter [3389];
 
   # Dynamische Benutzer-Erstellung basierend auf hostUsers
@@ -74,7 +77,6 @@ in {
     };
   };
   services.blueman.enable = true;
-
   # Touchpad-Unterstützung
   services.libinput = {
     enable = true;
