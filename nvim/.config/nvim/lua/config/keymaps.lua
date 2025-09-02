@@ -38,6 +38,7 @@ end
 -- because the window looks bigger
 -- vim.keymap.set("n", "<M-g>", ":LazyGit<CR>", { desc = "Lazygit (Root Dir)" })
 
+vim.keymap.set("n", "ut", Transparent)
 -- Select the hunk under the cursor, excluding trailing blank line
 vim.keymap.set("n", "<M-2>", function()
   require("mini.diff").textobject()
@@ -768,9 +769,9 @@ end, { desc = "Toggle executable permission" })
 -- Using a tmux pane allows me to easily select text
 -- Had to include quotes around "%" because there are some apple dirs that contain spaces, like iCloud
 vim.keymap.set("n", "<leader>cb", function()
-  local file = vim.fn.expand("%") -- Get the current file name
-  local first_line = vim.fn.getline(1) -- Get the first line of the file
-  if string.match(first_line, "^#!/") then -- If first line contains shebang
+  local file = vim.fn.expand("%")                 -- Get the current file name
+  local first_line = vim.fn.getline(1)            -- Get the first line of the file
+  if string.match(first_line, "^#!/") then        -- If first line contains shebang
     local escaped_file = vim.fn.shellescape(file) -- Properly escape the file name for shell commands
     -- Execute the script on a tmux pane on the right. On my mac I use zsh, so
     -- running this script with bash to not execute my zshrc file after
@@ -778,8 +779,8 @@ vim.keymap.set("n", "<leader>cb", function()
     -- `-l 60` specifies the size of the tmux pane, in this case 60 columns
     vim.cmd(
       "silent !tmux split-window -h -l 60 'bash -c \""
-        .. escaped_file
-        .. "; echo; echo Press any key to exit...; read -n 1; exit\"'"
+      .. escaped_file
+      .. "; echo; echo Press any key to exit...; read -n 1; exit\"'"
     )
   else
     vim.cmd("echo 'Not a script. Shebang line not found.'")
@@ -806,20 +807,20 @@ end, { desc = "[P]BASH, execute file" })
 -- Using a tmux pane allows me to easily select text
 -- Had to include quotes around "%" because there are some apple dirs that contain spaces, like iCloud
 vim.keymap.set("n", "<leader>cg", function()
-  local file = vim.fn.expand("%") -- Get the current file name
-  if string.match(file, "%.go$") then -- Check if the file is a .go file
+  local file = vim.fn.expand("%")           -- Get the current file name
+  if string.match(file, "%.go$") then       -- Check if the file is a .go file
     local file_dir = vim.fn.expand("%:p:h") -- Get the directory of the current file
     -- local escaped_file = vim.fn.shellescape(file) -- Properly escape the file name for shell commands
     -- local command_to_run = "go run " .. escaped_file
     local command_to_run = "go run *.go"
     -- `-l 60` specifies the size of the tmux pane, in this case 60 columns
     local cmd = "silent !tmux split-window -h -l 60 'cd "
-      .. file_dir
-      .. ' && echo "'
-      .. command_to_run
-      .. '\\n" && bash -c "'
-      .. command_to_run
-      .. "; echo; echo Press enter to exit...; read _\"'"
+        .. file_dir
+        .. ' && echo "'
+        .. command_to_run
+        .. '\\n" && bash -c "'
+        .. command_to_run
+        .. "; echo; echo Press enter to exit...; read _\"'"
     vim.cmd(cmd)
   else
     vim.cmd("echo 'Not a Go file.'") -- Notify the user if the file is not a Go file
@@ -919,12 +920,12 @@ M.tmux_pane_function = function(dir)
     -- If no pane exists, open it with zsh and DISABLE_PULL variable
     vim.fn.system(
       "tmux split-window "
-        .. split_cmd
-        .. " -l "
-        .. pane_size
-        .. " 'cd \""
-        .. escaped_dir
-        .. "\" && DISABLE_PULL=1 zsh'"
+      .. split_cmd
+      .. " -l "
+      .. pane_size
+      .. " 'cd \""
+      .. escaped_dir
+      .. "\" && DISABLE_PULL=1 zsh'"
     )
     vim.fn.system("tmux send-keys " .. move_key)
     -- Resolve zsh-vi-mode issue for first-time pane
@@ -952,8 +953,8 @@ end, { desc = "[P]Terminal on tmux pane" })
 -- 2. Just the filepath
 -- 3. Name that I will use with `go mod init`
 vim.keymap.set({ "n", "v", "i" }, "<M-z>", function()
-  local filePath = vim.fn.expand("%:~") -- Gets the file path relative to the home directory
-  local fileName = vim.fn.expand("%:t") -- Gets the name of the file
+  local filePath = vim.fn.expand("%:~")                              -- Gets the file path relative to the home directory
+  local fileName = vim.fn.expand("%:t")                              -- Gets the name of the file
   local goProjectPath = filePath:gsub("^~/", ""):gsub("/[^/]+$", "") -- Removes the ~/ at the start and the filename at the end
   -- Add .com to github and insert username
   goProjectPath = goProjectPath:gsub("github", "github.com/linkarzu")
@@ -1087,12 +1088,12 @@ local function handle_image_paste(img_dir)
     })
   end
   local temp_buf = vim.api.nvim_create_buf(false, true) -- Create an unlisted, scratch buffer
-  vim.api.nvim_set_current_buf(temp_buf) -- Switch to the temporary buffer
+  vim.api.nvim_set_current_buf(temp_buf)                -- Switch to the temporary buffer
   local temp_image_path = vim.fn.tempname() .. ".avif"
   local image_pasted =
-    paste_image(vim.fn.fnamemodify(temp_image_path, ":h"), vim.fn.fnamemodify(temp_image_path, ":t:r"))
+      paste_image(vim.fn.fnamemodify(temp_image_path, ":h"), vim.fn.fnamemodify(temp_image_path, ":t:r"))
   vim.api.nvim_buf_delete(temp_buf, { force = true }) -- Delete the buffer
-  vim.fn.delete(temp_image_path) -- Delete the temporary file
+  vim.fn.delete(temp_image_path)                      -- Delete the temporary file
   vim.defer_fn(function()
     local options = image_pasted and { "no", "yes", "format", "search" } or { "search" }
     local prompt = image_pasted and "Is this a thumbnail image? " or "No image in clipboard. Select search to continue."
@@ -1119,7 +1120,7 @@ local function handle_image_paste(img_dir)
         end
         -- Build the relative path
         local relative_path = levels == 0 and "./assets/" .. IMAGE_STORAGE_PATH
-          or string.rep("../", levels) .. "assets/" .. IMAGE_STORAGE_PATH
+            or string.rep("../", levels) .. "assets/" .. IMAGE_STORAGE_PATH
         vim.api.nvim_put({ "![Image](" .. relative_path .. '){: width="500" }' }, "c", true, true)
         -- Capital "O" to move to the line above
         vim.cmd("normal! O")
@@ -1387,7 +1388,7 @@ vim.keymap.set("n", "<leader>iR", function()
     else
       vim.api.nvim_echo({
         { "Failed to rename image:\n", "ErrorMsg" },
-        { tostring(err), "ErrorMsg" },
+        { tostring(err),               "ErrorMsg" },
       }, false, {})
     end
   end)
@@ -1622,7 +1623,7 @@ local function process_embeds_in_buffer(bufnr)
   return {
     moved = #embeds,
     message = #embeds > 0 and ("Moved " .. #embeds .. " embeds to 'Other videos mentioned' section")
-      or "No embeds to move",
+        or "No embeds to move",
   }
 end
 
@@ -1689,11 +1690,11 @@ wk.add({
   },
   {
     mode = { "n", "v" },
-    { "<leader>m", group = "[P]markdown" },
-    { "<leader>mf", group = "[P]fold" },
-    { "<leader>mh", group = "[P]headings increase/decrease" },
-    { "<leader>ml", group = "[P]links" },
-    { "<leader>ms", group = "[P]spell" },
+    { "<leader>m",   group = "[P]markdown" },
+    { "<leader>mf",  group = "[P]fold" },
+    { "<leader>mh",  group = "[P]headings increase/decrease" },
+    { "<leader>ml",  group = "[P]links" },
+    { "<leader>ms",  group = "[P]spell" },
     { "<leader>msl", group = "[P]language" },
   },
 })
@@ -1930,7 +1931,7 @@ vim.keymap.set("n", "<M-x>", function()
     vim.notify("Untoggled", vim.log.levels.INFO)
   elseif has_untoggled_index then
     chunk[has_untoggled_index] =
-      removeLabel(chunk[has_untoggled_index]):gsub("`untoggled`", "`" .. label_done .. " " .. timestamp .. "`")
+        removeLabel(chunk[has_untoggled_index]):gsub("`untoggled`", "`" .. label_done .. " " .. timestamp .. "`")
     chunk[1] = bulletToX(chunk[1])
     chunk[1] = removeLabel(chunk[1])
     chunk[1] = insertLabelAfterBracket(chunk[1], "`" .. label_done .. " " .. timestamp .. "`")
@@ -2458,11 +2459,11 @@ local function get_markdown_headings()
   end
   -- Return all values (nil if not found)
   return current_heading and current_heading.line or nil,
-    current_heading and current_heading.level or nil,
-    next_heading and next_heading.line or nil,
-    next_heading and next_heading.level or nil,
-    next_same_heading and next_same_heading.line or nil,
-    next_same_heading and next_same_heading.level or nil
+      current_heading and current_heading.level or nil,
+      next_heading and next_heading.line or nil,
+      next_heading and next_heading.level or nil,
+      next_same_heading and next_same_heading.line or nil,
+      next_same_heading and next_same_heading.level or nil
 end
 
 -- Print details of current markdown heading, next heading and next same level heading
@@ -2776,13 +2777,13 @@ end, { desc = "[P]TODO toggle item done or not" })
 -- Function to update the Markdown TOC with customizable headings
 local function update_markdown_toc(heading2, heading3)
   local path = vim.fn.expand("%") -- Expands the current file name to a full path
-  local bufnr = 0 -- The current buffer number, 0 references the current active buffer
+  local bufnr = 0                 -- The current buffer number, 0 references the current active buffer
   -- Save the current view
   -- If I don't do this, my folds are lost when I run this keymap
   vim.cmd("mkview")
   -- Retrieves all lines from the current buffer
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-  local toc_exists = false -- Flag to check if TOC marker exists
+  local toc_exists = false  -- Flag to check if TOC marker exists
   local frontmatter_end = 0 -- To store the end line number of frontmatter
   -- Check for frontmatter and TOC marker
   for i, line in ipairs(lines) do
@@ -2833,7 +2834,7 @@ local function update_markdown_toc(heading2, heading3)
   -- an argument according to the docs
   -- https://github.com/jonschlinkert/markdown-toc?tab=readme-ov-file#optionsbullets
   vim.fn.system('markdown-toc --bullets "-" -i ' .. path)
-  vim.cmd("edit!") -- Reloads the file to reflect the changes made by markdown-toc
+  vim.cmd("edit!")        -- Reloads the file to reflect the changes made by markdown-toc
   vim.cmd("silent write") -- Silently save the file
   vim.notify("TOC updated and file saved", vim.log.levels.INFO)
   -- -- In case a cleanup is needed, leaving this old code here as a reference
@@ -3031,7 +3032,7 @@ local function delete_current_file()
     if vim.fn.executable("trash") == 0 then
       vim.api.nvim_echo({
         { "- Trash utility not installed. Make sure to install it first\n", "ErrorMsg" },
-        { "- In macOS run `brew install trash`\n", nil },
+        { "- In macOS run `brew install trash`\n",                          nil },
       }, false, {})
       return
     end
@@ -3047,14 +3048,14 @@ local function delete_current_file()
         if success then
           vim.api.nvim_echo({
             { "File deleted from disk:\n", "Normal" },
-            { current_file, "Normal" },
+            { current_file,                "Normal" },
           }, false, {})
           -- Close the buffer after deleting the file
           vim.cmd("bd!")
         else
           vim.api.nvim_echo({
             { "Failed to delete file:\n", "ErrorMsg" },
-            { current_file, "ErrorMsg" },
+            { current_file,               "ErrorMsg" },
           }, false, {})
         end
       else
@@ -3079,8 +3080,8 @@ end, { desc = "[P]Delete current file" })
 -- dynamically add the date below in the [[2024-03-01-Friday]] format
 local function insert_heading_and_date(level)
   local date = os.date("%Y-%m-%d-%A")
-  local heading = string.rep("#", level) .. " " -- Generate heading based on the level
-  local dateLine = "[[" .. date .. "]]" -- Formatted date line
+  local heading = string.rep("#", level) .. " "         -- Generate heading based on the level
+  local dateLine = "[[" .. date .. "]]"                 -- Formatted date line
   local row, _ = unpack(vim.api.nvim_win_get_cursor(0)) -- Get the current row number
   -- Insert both lines: heading and dateLine
   vim.api.nvim_buf_set_lines(0, row, row, false, { heading, dateLine })
@@ -3137,7 +3138,7 @@ local function create_daily_note(date_line)
       vim.cmd("bd!")
       vim.api.nvim_echo({
         { "CREATED DAILY NOTE\n", "WarningMsg" },
-        { full_path, "WarningMsg" },
+        { full_path,              "WarningMsg" },
       }, false, {})
     else
       print("Failed to create file: " .. full_path)
@@ -3457,10 +3458,10 @@ vim.keymap.set("n", "<leader>fN", function()
     -- -- Open neovide in the correct directory, have to cd first for it to work
     -- -- lamw26wmal
     local command = 'bash -c "(cd '
-      .. vim.fn.shellescape(vim.fn.getcwd())
-      .. " && NVIM_APPNAME=neobean Neovide "
-      .. vim.fn.shellescape(vim.fn.expand("%:p"))
-      .. ')"'
+        .. vim.fn.shellescape(vim.fn.getcwd())
+        .. " && NVIM_APPNAME=neobean Neovide "
+        .. vim.fn.shellescape(vim.fn.expand("%:p"))
+        .. ')"'
     -- -- I'm not using the --no-tabs arg, because if I do, my alternate neovim
     -- -- buffer doesn't work
     -- local command = "open -a Neovide --args --no-tabs " .. vim.fn.shellescape(file_path)
@@ -3537,7 +3538,7 @@ end, { desc = "[P]Copy GitHub URL of file to clipboard" })
 -- Function to copy file path to clipboard
 local function copy_filepath_to_clipboard()
   local filePath = vim.fn.expand("%:~") -- Gets the file path relative to the home directory
-  vim.fn.setreg("+", filePath) -- Copy the file path to the clipboard register
+  vim.fn.setreg("+", filePath)          -- Copy the file path to the clipboard register
   vim.notify(filePath, vim.log.levels.INFO)
   vim.notify("Path copied to clipboard: ", vim.log.levels.INFO)
 end
@@ -3574,7 +3575,7 @@ vim.keymap.set("n", "<leader>gC", function()
     end
     -- Check if the repository already exists on GitHub
     local check_repo_command =
-      string.format("gh repo view %s/%s", vim.fn.system("gh api user --jq '.login'"):gsub("%s+", ""), repo_name)
+        string.format("gh repo view %s/%s", vim.fn.system("gh api user --jq '.login'"):gsub("%s+", ""), repo_name)
     local check_repo_result = vim.fn.systemlist(check_repo_command)
     if not string.find(table.concat(check_repo_result), "Could not resolve to a Repository") then
       print("Repository '" .. repo_name .. "' already exists on GitHub.")
@@ -3595,7 +3596,7 @@ vim.keymap.set("n", "<leader>gC", function()
       local init_command = string.format("cd %s && git init", vim.fn.shellescape(cwd))
       vim.fn.system(init_command)
       local create_command =
-        string.format("cd %s && gh repo create %s %s --source=.", vim.fn.shellescape(cwd), repo_name, repo_type_flag)
+          string.format("cd %s && gh repo create %s %s --source=.", vim.fn.shellescape(cwd), repo_name, repo_type_flag)
       local create_result = vim.fn.system(create_command)
       -- Print the result of the repository creation command
       if string.find(create_result, "https://github.com") then
@@ -3622,7 +3623,7 @@ vim.keymap.set("n", "<leader>fz", function()
   else
     vim.api.nvim_echo({
       { "Failed to source ~/.zshrc:", "ErrorMsg" },
-      { output, "ErrorMsg" },
+      { output,                       "ErrorMsg" },
     }, false, {})
   end
 end, { desc = "[P]source ~/.zshrc" })
@@ -3668,5 +3669,49 @@ local function toggle_diagnostics_popup()
 end
 
 vim.keymap.set("n", "<leader>ue", toggle_diagnostics_popup, { desc = "[CE]Toggle diagnostics popup" })
+
+
+
+vim.keymap.set("n", "<leader>lc", function()
+  local path = vim.fn.expand("~/.config/nvim/cheatsheets/lazyvim.md")
+  if vim.fn.filereadable(path) == 0 then
+    vim.notify("Cheatsheet not found: " .. path, vim.log.levels.ERROR)
+    return
+  end
+
+  -- Buffer erstellen
+  local buf = vim.api.nvim_create_buf(false, true)
+  local lines = vim.fn.readfile(path)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
+  vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+  vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+  vim.api.nvim_buf_set_option(buf, "modifiable", false)
+
+  -- Floating Window
+  local width = math.floor(vim.o.columns * 0.8)
+  local height = math.floor(vim.o.lines * 0.8)
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = math.floor((vim.o.columns - width) / 2)
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = "rounded",
+  })
+
+  vim.api.nvim_win_set_option(win, "wrap", true)
+
+  -- Schließen mit q oder Esc
+  vim.keymap.set("n", "q", function()
+    vim.api.nvim_win_close(win, true)
+  end, { buffer = buf, silent = true })
+  vim.keymap.set("n", "<Esc>", function()
+    vim.api.nvim_win_close(win, true)
+  end, { buffer = buf, silent = true })
+end, { desc = "Show LazyVim Cheatsheet" })
 
 return M
