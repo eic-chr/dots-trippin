@@ -109,6 +109,7 @@ in {
       thunderbird
       tree
       unzip
+      lua-language-server
       wget
       which
       zip

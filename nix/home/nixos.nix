@@ -3,6 +3,7 @@
   config,
   lib,
   pkgs,
+  unstable,
   currentUser,
   userConfig,
   userEmail,
@@ -97,12 +98,16 @@
     ferdium
     fzf
     git-crypt
+    glow
     pgadmin4
+    texlive.combined.scheme-small
+    md2pdf
+    pandoc
     signal-desktop
     stow
     teamviewer
     wireshark
-    zed-editor
+    unstable.zed-editor
   ];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
