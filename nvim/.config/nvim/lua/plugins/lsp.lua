@@ -4,8 +4,8 @@ return {
     "jose-elias-alvarez/typescript.nvim",
     init = function()
       require("lazyvim.util").lsp.on_attach(function(_, buffer)
-          -- stylua: ignore
-          vim.keymap.set( "n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
+        -- stylua: ignore
+        vim.keymap.set("n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
         vim.keymap.set("n", "<leader>cR", "TypescriptRenameFile", { desc = "Rename File", buffer = buffer })
       end)
     end,
@@ -19,6 +19,7 @@ return {
       astro = {}, -- das ist der Astro LSP
       marksman = {
         mason = false,
+        wrap = true,
       },
       nil_ls = {
         -- Optional: spezifische Konfiguration für nil

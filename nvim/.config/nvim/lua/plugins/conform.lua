@@ -1,7 +1,8 @@
 return {
   "stevearc/conform.nvim",
-  event = { "BufReadPre", "BufNewFile" },
+  -- LazyVim lädt conform ohnehin früh genug, die events kannst du weglassen
   init = function()
+    -- Keymap ist ok
     vim.keymap.set({ "n", "v" }, "<leader>f", function()
       require("conform").format({
         lsp_fallback = true,
@@ -24,20 +25,5 @@ return {
       lua = { "stylua" },
       python = { "isort", "black" },
     },
-    -- nicht format_on_save hier setzen, LazyVim macht das nicht
   },
-  config = function(_, opts)
-    require("conform").setup(opts)
-    -- Autoformat beim Speichern
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      pattern = "*",
-      callback = function()
-        require("conform").format({
-          async = false,
-          lsp_fallback = true,
-          timeout_ms = 1000,
-        })
-      end,
-    })
-  end,
 }
