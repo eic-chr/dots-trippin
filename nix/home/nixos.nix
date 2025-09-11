@@ -35,6 +35,81 @@
     userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
   };
 
+  wayland.windowManager.hyprland = {
+    enable = true;
+    package = pkgs.hyprland;
+    xwayland.enable = true;
+    systemd.enable = true;
+    settings = {
+      "$terminal" = "kitty";
+      "$fileManager" = "dolphin";
+      "$menu" = "rofi";
+      "$mainMod" = "SUPER";
+      bind = [
+        "$mainMod, Return, exec, kitty"
+        "$mainMod, E, exec, dolphin"
+        "$mainMod, Space, exec, rofi"
+        "$mainMod, Q, killactive,"
+        "$mainMod SHIFT, Q, exit"
+        "$mainMod, F, togglefloating,"
+        "$mainMod, Left, movefocus, l"
+        "$mainMod, Right, movefocus, r"
+        "$mainMod, Up, movefocus, u"
+        "$mainMod, Down, movefocus, d"
+        "$mainMod, 1, workspace, 1"
+        "$mainMod, 2, workspace, 2"
+        "$mainMod, 3, workspace, 3"
+        "$mainMod, 4, workspace, 4"
+      ];
+      bindm = [
+        "$mainMod, mouse:272, movewindow"
+        "$mainMod, mouse:273, resizewindow"
+      ];
+      exec-once = [
+        "waybar"
+      ];
+      decoration = {
+        rounding = 5;
+
+        active_opacity = 1.0;
+        inactive_opacity = 0.99;
+
+        shadow = {
+          enabled = true;
+          range = 4;
+          render_power = 3;
+          color = "rgba(1a1a1aee)";
+        };
+
+        blur = {
+          enabled = true;
+          size = 3;
+          passes = 1;
+          vibrancy = 0.1696;
+        };
+      };
+      input = {
+        kb_layout = "us";
+        kb_variant = "intl";
+
+        follow_mouse = 1;
+
+        sensitivity = 0; # -1.0 - 1.0, 0 means no modification.
+
+          touchpad = {
+            natural_scroll = false;
+          };
+
+        numlock_by_default = true;
+      };
+
+      gestures = {
+        workspace_swipe = true;
+      };
+
+    };
+
+  };
   # Plasma-spezifische Konfiguration nur für Systeme mit KDE
   programs.plasma = lib.mkIf hasPlasma {
     enable = true;

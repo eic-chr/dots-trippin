@@ -111,42 +111,42 @@
         ];
 
         # Search engines
-        search = {
-          default = "DuckDuckGo";
-          engines = {
-            "Nix Packages" = {
-              urls = [{
-                template = "https://search.nixos.org/packages";
-                params = [
-                  { name = "type"; value = "packages"; }
-                  { name = "query"; value = "{searchTerms}"; }
-                ];
-              }];
-              icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = [ "@np" ];
-            };
-            
-            "NixOS Wiki" = {
-              urls = [{
-                template = "https://nixos.wiki/index.php?search={searchTerms}";
-              }];
-              definedAliases = [ "@nw" ];
-            };
-            
-            "GitHub" = {
-              urls = [{
-                template = "https://github.com/search?q={searchTerms}";
-              }];
-              definedAliases = [ "@gh" ];
-            };
-
-            # Disable unwanted search engines
-            "Google".metaData.hidden = true;
-            "Amazon.de".metaData.hidden = true;
-            "Bing".metaData.hidden = true;
-            "eBay".metaData.hidden = true;
-          };
-        };
+        # search = {
+        #   default = "DuckDuckGo";
+        #   engines = {
+        #     "Nix Packages" = {
+        #       urls = [{
+        #         template = "https://search.nixos.org/packages";
+        #         params = [
+        #           { name = "type"; value = "packages"; }
+        #           { name = "query"; value = "{searchTerms}"; }
+        #         ];
+        #       }];
+        #       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+        #       definedAliases = [ "@np" ];
+        #     };
+        #
+        #     "NixOS Wiki" = {
+        #       urls = [{
+        #         template = "https://nixos.wiki/index.php?search={searchTerms}";
+        #       }];
+        #       definedAliases = [ "@nw" ];
+        #     };
+        #
+        #     "GitHub" = {
+        #       urls = [{
+        #         template = "https://github.com/search?q={searchTerms}";
+        #       }];
+        #       definedAliases = [ "@gh" ];
+        #     };
+        #
+        #     # Disable unwanted search engines
+        #     "Google".metaData.hidden = true;
+        #     "Amazon.de".metaData.hidden = true;
+        #     "Bing".metaData.hidden = true;
+        #     "eBay".metaData.hidden = true;
+        #   };
+        # };
 
         # User CSS (userChrome.css)
         userChrome = ''
@@ -237,5 +237,6 @@
     };
   };
 
+home.file.".mozilla/firefox/default/search.json.mozlz4".enable = false;
   # NUR ist jetzt systemweit verfügbar durch das Overlay in common.nix
 }

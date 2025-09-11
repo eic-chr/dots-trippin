@@ -14,6 +14,7 @@ in {
   imports = [
     ./hardware-configuration.nix
     ../common.nix
+    ../hyprland.nix
   ];
 
   # Hostname
@@ -30,7 +31,7 @@ in {
         isNormalUser = true;
         description = userConfigs.${user}.fullName or user;
         extraGroups =
-          ["networkmanager" "audio" "video" "scanner" "lp"]
+          ["networkmanager" "audio" "video" "scanner" "lp" "input" "seat"]
           ++ lib.optionals (isAdmin user) ["wheel"]
           ++ lib.optionals (isDeveloper user) ["docker"];
         shell = pkgs.zsh;
