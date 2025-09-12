@@ -14,6 +14,7 @@ let
 
   # Candidate config directories provided by Hyprland-Dots.
   # We conditionally link only those that exist in the repo version you pin.
+  # Link all provided configs including "hypr" to use JaKooLit's Hyprland setup
   linkable = [
     "hypr"
     "waybar"
@@ -49,6 +50,8 @@ in
     rofi
     waybar
     wlogout
+    swww
+    swaynotificationcenter
 
     # hypr-utils
     hyprlock
@@ -73,6 +76,10 @@ in
 
     # theming that’s commonly used with the dots
     papirus-icon-theme
+
+    # KDE Wallet (KWallet) for secrets storage
+    kdePackages.kwallet
+    kdePackages.kwalletmanager
   ];
 
   # Symlink Hyprland-Dots configs to ~/.config/<name>

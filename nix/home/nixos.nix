@@ -24,7 +24,7 @@
       ./vscode.nix
       ./firefox.nix
     ]
-    ++ lib.optionals (hostname == "offnix") [ ./kool-dots.nix ]
+    ++ lib.optionals (hostname == "offnix") [ ./offnix-kool.nix ]
     ++ lib.optionals (hostname != "offnix") [ ./hyprland.nix ];
 
 # Basis Home-Manager Einstellungen - angepasst für ca

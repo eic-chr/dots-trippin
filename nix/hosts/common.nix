@@ -83,6 +83,12 @@ in {
   # Sudo ohne Passwort für wheel-Gruppe
   security.sudo.wheelNeedsPassword = false;
 
+  # Enable KWallet unlock via PAM for SDDM and TTY login
+  security.pam.services = {
+    sddm.enableKwallet = true;
+    login.enableKwallet = true;
+  };
+
   # Audio mit PipeWire
   security.rtkit.enable = true;
   services.pipewire = {
