@@ -40,6 +40,19 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    # Hyprland (for plugin compatibility pinning)
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+    };
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+    hyprland-dots = {
+      url = "github:JaKooLit/Hyprland-Dots";
+      flake = false;
+    };
+
     # nix-darwin for macOS
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.05";
@@ -157,6 +170,13 @@
         unstable = import inputs.nixpkgs-unstable {
           system = systemConfig.system;
         };
+
+        # Hyprland / plugins through specialArgs for HM modules
+        hyprlandInput = inputs.hyprland;
+        hyprlandPlugins = inputs.hyprland-plugins;
+        hyprlandPluginsPkgs = inputs.hyprland-plugins.packages.${systemConfig.system};
+        hyprlandDots = inputs.hyprland-dots;
+
         # Für Kompatibilität mit bestehenden Modulen
         username = builtins.head systemConfig.users; # Erster User als Standard
       };

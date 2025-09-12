@@ -14,7 +14,7 @@ in {
   imports = [
     ./hardware-configuration.nix
     ../common.nix
-    ../hyprland.nix
+    ../hyprland.nix # system Hyprland setup
   ];
 
   # Hostname
@@ -39,14 +39,8 @@ in {
     })
     users);
 
-  services.xserver = lib.mkForce {
-    enable = true;
-    xkb = {
-      layout = "us";
-      variant = "intl";
-      options = "caps:escape";
-    };
-  };
+  # Use Wayland/Hyprland session; disable X server to avoid conflicts.
+  services.xserver.enable = lib.mkForce false;
 
   # Laptop-spezifische Hardware-Unterstützung
   # services.tlp = {
