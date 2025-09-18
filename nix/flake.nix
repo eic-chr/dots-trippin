@@ -58,6 +58,11 @@
       url = "github:lnl7/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
+    # nixos-hardware for device-specific modules
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -68,6 +73,7 @@
     darwin,
     home-manager,
     plasma-manager,
+    nixos-hardware,
     ...
   }: let
     # Host-zu-User Zuordnung
@@ -176,6 +182,7 @@
         hyprlandPlugins = inputs.hyprland-plugins;
         hyprlandPluginsPkgs = inputs.hyprland-plugins.packages.${systemConfig.system};
         hyprlandDots = inputs.hyprland-dots;
+        hyprlandDotsLocal = let p = ./vendor/hyprland-dots; in if builtins.pathExists p then p else null;
 
         # Für Kompatibilität mit bestehenden Modulen
         username = builtins.head systemConfig.users; # Erster User als Standard
@@ -255,6 +262,7 @@
       system = systems.offnix.system;
       specialArgs = mkSpecialArgs systems.offnix;
       modules = [
+        nixos-hardware.nixosModules."apple-macbook-pro-11-4"
         ./hosts/offnix/configuration.nix
         home-manager.nixosModules.home-manager
         {

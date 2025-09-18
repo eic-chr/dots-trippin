@@ -22,7 +22,22 @@
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
-    userEmail = lib.mkForce userEmail; # Anpassenix/home/vincent.nixteme mit KDE
+    userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
+  };
+
+  programs.plasma = lib.mkIf hasPlasma {
+    enable = true;
+    input = {
+      keyboard = {
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
+      };
+    };
   };
 
   # Zusätzliche NixOS-spezifische Pakete

@@ -44,6 +44,19 @@
       iconTheme = "breeze-dark";
       cursor.theme = "breeze_cursors";
     };
+    # Tastatur-Layout: US International
+    input = {
+      keyboard = {
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
+      };
+    };
+
     # Panel-Konfiguration
     panels = [
       {

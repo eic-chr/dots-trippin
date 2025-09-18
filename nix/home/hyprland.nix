@@ -10,7 +10,43 @@
     xfce.thunar
     wlogout
     jq
+    kdePackages.kwallet
+    kdePackages.kwalletmanager
+    wayvnc
   ];
+
+  systemd.user.services.kwalletd6 = {
+    Unit = {
+      Description = "KWallet daemon (kwalletd6) for non-Plasma sessions";
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "graphical-session.target" "hyprland-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.kdePackages.kwallet}/bin/kwalletd6";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install = {
+      WantedBy = [ "hyprland-session.target" ];
+    };
+  };
+
+  systemd.user.services.wayvnc = {
+    Unit = {
+      Description = "WayVNC server for Hyprland";
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "graphical-session.target" "hyprland-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.wayvnc}/bin/wayvnc --config %h/.config/wayvnc/config";
+      Restart = "on-failure";
+      RestartSec = 2;
+      Environment = "XDG_RUNTIME_DIR=%t";
+    };
+    Install = {
+      WantedBy = [ "hyprland-session.target" ];
+    };
+  };
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -36,12 +72,17 @@
 
       plugin.hyprexpo = {
         columns = 3;
+        rows = 2;
         gap_size = 5;
         workspace_method = "center current";
         enable_gesture = true;
-        gesture_fingers = 3;
+        gesture_fingers = 4;
         gesture_distance = 300;
         gesture_positive = true;
+      };
+
+      gestures = {
+        gesture = "3, horizontal, workspace";
       };
 
       xwayland.force_zero_scaling = true;
@@ -51,6 +92,7 @@
         "ALT SHIFT, TAB, exec, ~/.config/hypr/cycle_window.sh prev"
 
         "$mainMod, Space, hyprexpo:expo, toggle"
+        "$mainMod SHIFT, Space, togglefloating,"
         "$mainMod, Return, exec, $terminal"
 
         "$mainMod SHIFT, F, exec, $fileManager"
@@ -142,7 +184,6 @@
       exec-once = [
         "hyprpaper"
         "waybar"
-        "kwalletd6"
       ];
     };
   };
@@ -166,6 +207,17 @@
         next=$(( (idx + 1) % ''${#wins[@]} ))
       fi
       hyprctl dispatch focuswindow address:''${wins[$next]}
+    '';
+  };
+  home.file.".config/wayvnc/config" = {
+    text = ''
+      # WayVNC config generated via Home Manager
+      address=127.0.0.1
+      enable_auth=true
+      username=guacuser
+      password=change-me
+      # Optional: pick a fixed port (default 5900)
+      # port=5900
     '';
   };
 }

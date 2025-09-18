@@ -7,6 +7,7 @@
   users,
   userConfigs,
   hasPlasma,
+  unstable,
   ...
 }: let
   # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
@@ -40,11 +41,11 @@ in {
   services.xserver = {
     enable = true;
     xkb = {
-      layout = "de";
+      layout = "us";
+      variant = "intl";
     };
   };
 
-  # Display Manager - Neue separate Konfiguration
   # Display Manager - Neue separate Konfiguration
   services.displayManager.sddm = {
     enable = true;
@@ -61,6 +62,10 @@ in {
     ];
   };
 
+  boot.extraModulePackages = [ pkgs.linuxPackages.broadcom_sta ];
+  boot.blacklistedKernelModules = [
+    "b43" "bcma" "brcmsmac" "ssb" "brcmfmac"
+  ];
   # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
   # Netzwerk
@@ -140,6 +145,7 @@ in {
 
       # Browser
       chromium
+      wayvnc
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
     ]
@@ -180,6 +186,9 @@ in {
   nixpkgs.overlays = [
     nur.overlay
   ];
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "code" "vscode" "vscode-fhs" "vscode-with-extensions" "visual-studio-code" "vscode-insiders" "vscode-extension-ms-vsliveshare-vsliveshare" "vscode-extension-ms-vscode-remote-remote-containers" "discord" "teamviewer" "broadcom-sta" "postman" ];
+
+ nixpkgs.config.allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
   # Firewall
   networking.firewall = {
     enable = false;

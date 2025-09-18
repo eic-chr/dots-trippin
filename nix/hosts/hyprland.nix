@@ -31,7 +31,13 @@
     login.enableKwallet = true;
   };
 
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages =
+    let
+      # placeholder to align with external list; extend if needed
+      python-packages = [];
+    in
+    (with pkgs; [
+    # Existing essentials
     pyprland
     hyprpicker
     hyprcursor
@@ -40,11 +46,74 @@
     hyprpaper
     hyprsunset
     hyprpolkitagent
-    rofi
+
+    # KooL-Dots aligned packages (translated to nixpkgs)
+    bc
+    btrfs-progs
+    clang
+    curl
+    duf
+
+    findutils
+    ffmpeg
+    glib
+    gsettings-qt
+    git
+    psmisc # provides killall
+    libappindicator-gtk3
+    libnotify
+    openssl
+    pciutils
+    vim
+    wget
+    xdg-user-dirs
+    xdg-utils
+
+    fastfetch
+    (mpv.override { scripts = [ mpvScripts.mpris ]; })
+    btop
+    brightnessctl
+    cava
+    cliphist
+    loupe
+    gnome-system-monitor
+    grim
+    gtk-engine-murrine
+    imagemagick
+    inxi
+    jq
+    kitty
+    libsForQt5.qtstyleplugin-kvantum
+    networkmanagerapplet
+    nwg-displays
+    nwg-look
+    nvtopPackages.intel
+    pamixer
+    pavucontrol
+    playerctl
+    polkit_gnome
+    libsForQt5.qt5ct
+    kdePackages.qt6ct
+    qt6.qtwayland
+    kdePackages.qtstyleplugin-kvantum
+    rofi-wayland
+    slurp
+    swappy
+    swaynotificationcenter
+    swww
+    unzip
+    wallust
+    wl-clipboard
+    wlogout
+    xarchiver
+    yad
+    yt-dlp
+
+    # Keep previous essentials
     waybar
     samba
     cifs-utils
-  ];
+  ]) ++ python-packages;
   # Create mount points for CIFS templates
   systemd.tmpfiles.rules = [
     "d /mnt/share-guest 0755 root root -"

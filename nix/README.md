@@ -58,3 +58,35 @@ Please refer to the `rich-demo` folder for more details:
 - [rich-demo/scripts/darwin_set_proxy.py](/rich-demo/scripts/darwin_set_proxy.py)
 - [rich-demo/Makefile](/rich-demo/Makefile)
 - [rich-demo - homebrew's mirror settings](/rich-demo/modules/homebrew-mirror.nix)
+
+## Hyprland-Dots (JaKooLit) – isoliert einbinden
+
+Diese Repo kann JaKooLits Hyprland-Dots entweder direkt aus dem Flake-Input oder isoliert aus einem vendorten Pfad nutzen.
+
+Varianten:
+- Standard: Flake-Input `inputs.hyprland-dots` (siehe `flake.nix`)
+- Isoliert (empfohlen): Vendore die Dots nach `nix/vendor/hyprland-dots` – dieser Pfad wird automatisch bevorzugt
+
+Vorgehen (isoliert):
+1. Als Submodule einbinden:
+   - git submodule add https://github.com/JaKooLit/Hyprland-Dots nix/vendor/hyprland-dots
+   - git submodule update --init --recursive
+   Alternativ: Repo nach `nix/vendor/hyprland-dots` kopieren.
+2. Rebuild:
+   - sudo nixos-rebuild switch --flake .#HOST
+   - oder: home-manager switch --flake .#USER
+
+Nutzung im Home-Manager:
+- Minimal nur die Dots verlinken:
+  - Importiere `nix/home/kool-dots.nix` in dein Home-Profile.
+- Komplett isoliert mit System-Hyprland und ohne HM-Hyprland:
+  - Importiere `nix/home/offnix-kool.nix` (dieses Modul deaktiviert HM’s Hyprland und verlinkt die Dots).
+
+Was passiert:
+- `kool-dots.nix` symlinkt die Config-Verzeichnisse aus `Hyprland-Dots/config` nach `~/.config` (z. B. `hypr`, `waybar`, `rofi`, …).
+- Falls `nix/vendor/hyprland-dots` existiert, wird dieser Pfad automatisch statt des Flake-Inputs verwendet.
+- Laufzeitabhängigkeiten (rofi, waybar, hypr*-Tools, swww, Screenshots, Thunar, Papirus, …) werden als `home.packages` installiert.
+
+Hinweise:
+- KWallet wird automatisch installiert; systemweit ist PAM-Entsperren für SDDM/TTY aktiviert.
+- Für KDE/Plasma ist die Tastaturbelegung “US intl” per plasma-manager konfiguriert (siehe `nix/home/nixos.nix`).

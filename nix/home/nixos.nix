@@ -19,13 +19,14 @@
       ./git.nix
       ./shell.nix
       ./starship.nix
-      ./kitty.nix
+
       ./thunderbird.nix
       ./vscode.nix
       ./firefox.nix
-    ]
-    ++ lib.optionals (hostname == "offnix") [ ./offnix-kool.nix ]
-    ++ lib.optionals (hostname != "offnix") [ ./hyprland.nix ];
+      ./offnix-kool.nix
+    ];
+    # ++ lib.optionals (hostname != "offnix") [ ./hyprland.nix ./kitty.nix ]
+    # ++ lib.optionals (hostname == "offnix") [ ./offnix-kool.nix ];
 
 # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
@@ -41,7 +42,7 @@
 
   programs.rofi = lib.mkIf (hostname != "offnix") {
     enable = true;
-    package = pkgs.rofi;
+    package = pkgs.rofi-wayland;
     terminal = "kitty";
     theme = "~/.config/rofi/themes/catppuccin-mocha.rasi";
     extraConfig = {
@@ -68,6 +69,15 @@
     };
     kwin.scripts.polonium.enable = false;
     input = {
+      keyboard = {
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
+      };
       touchpads = [
       {
         enable = true;
@@ -110,8 +120,9 @@
   };
 
 # Zusätzliche NixOS-spezifische Pakete
-  home.packages = with pkgs; [
+  home.packages = (with pkgs; [
 # Browser (falls nicht system-weit installiert)
+    ags
     ansible
       ansible-lint
       discord
@@ -129,7 +140,7 @@
       wireshark
       waybar
       unstable.zed-editor
-  ];
+  ]) ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {

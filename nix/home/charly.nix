@@ -42,6 +42,19 @@
       cursor.theme = "breeze_cursors";
     };
 
+    # Tastatur-Layout: US International
+    input = {
+      keyboard = {
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
+      };
+    };
+
     # Gleiche Panel-Konfiguration wie der Hauptbenutzer
     panels = [
       {
