@@ -110,24 +110,24 @@ in {
       btop
       cifs-utils
       curl
-      file
+
       git
       htop
       keepassxc
       libreoffice
       nextcloud-client
-      python3
+
       thunderbird
-      tree
-      unzip
+
+
       lua-language-server
-      wget
-      which
-      zip
+
+
+
 
       # Netzwerk-Tools
       dig
-      nmap
+
       traceroute
 
       # Development
@@ -137,15 +137,14 @@ in {
       pkg-config
       markdownlint-cli2
 
-      wl-clipboard
+
       # Multimedia
       vlc
       gimp
       inkscape
 
       # Browser
-      chromium
-      wayvnc
+      firefox
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
     ]

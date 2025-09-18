@@ -23,10 +23,9 @@
       ./thunderbird.nix
       ./vscode.nix
       ./firefox.nix
-      ./offnix-kool.nix
-    ];
-    # ++ lib.optionals (hostname != "offnix") [ ./hyprland.nix ./kitty.nix ]
-    # ++ lib.optionals (hostname == "offnix") [ ./offnix-kool.nix ];
+    ]
+    ++ lib.optionals (hostname != "offnix") [ ./kitty.nix ]
+    ++ lib.optionals (hostname == "offnix") [ ./offnix-kool.nix ];
 
 # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
@@ -40,21 +39,21 @@
   };
 
 
-  programs.rofi = lib.mkIf (hostname != "offnix") {
-    enable = true;
-    package = pkgs.rofi-wayland;
-    terminal = "kitty";
-    theme = "~/.config/rofi/themes/catppuccin-mocha.rasi";
-    extraConfig = {
-      modi = "drun,run,window";
-      show-icons = true;
-      icon-theme = "Papirus-Dark";
-      drun-display-format = "{icon} {name}";
-      display-drun = "Apps";
-      display-run = "Run";
-      display-window = "Windows";
-    };
-  };
+  # programs.rofi = lib.mkIf (hostname != "offnix") {
+  #   enable = true;
+  #   package = pkgs.rofi-wayland;
+  #   terminal = "kitty";
+  #   theme = "~/.config/rofi/themes/catppuccin-mocha.rasi";
+  #   extraConfig = {
+  #     modi = "drun,run,window";
+  #     show-icons = true;
+  #     icon-theme = "Papirus-Dark";
+  #     drun-display-format = "{icon} {name}";
+  #     display-drun = "Apps";
+  #     display-run = "Run";
+  #     display-window = "Windows";
+  #   };
+  # };
 
 # Plasma-spezifische Konfiguration nur für Systeme mit KDE
   programs.plasma = lib.mkIf hasPlasma {

@@ -37,80 +37,22 @@
       python-packages = [];
     in
     (with pkgs; [
-    # Existing essentials
-    pyprland
-    hyprpicker
-    hyprcursor
-    hyprlock
-    hypridle
-    hyprpaper
-    hyprsunset
-    hyprpolkitagent
-
-    # KooL-Dots aligned packages (translated to nixpkgs)
-    bc
-    btrfs-progs
-    clang
-    curl
-    duf
-
-    findutils
-    ffmpeg
-    glib
-    gsettings-qt
-    git
-    psmisc # provides killall
+    # Hyprland session essentials kept system-wide (others via Home Manager)
+    polkit_gnome
+    networkmanagerapplet
     libappindicator-gtk3
     libnotify
-    openssl
-    pciutils
-    vim
-    wget
+    qt6.qtwayland
+
+    # Runtime tools used by non-offnix HM config (exec-once)
+    hyprpaper
+    waybar
+
+    # XDG helpers
     xdg-user-dirs
     xdg-utils
 
-    fastfetch
-    (mpv.override { scripts = [ mpvScripts.mpris ]; })
-    btop
-    brightnessctl
-    cava
-    cliphist
-    loupe
-    gnome-system-monitor
-    grim
-    gtk-engine-murrine
-    imagemagick
-    inxi
-    jq
-    kitty
-    libsForQt5.qtstyleplugin-kvantum
-    networkmanagerapplet
-    nwg-displays
-    nwg-look
-    nvtopPackages.intel
-    pamixer
-    pavucontrol
-    playerctl
-    polkit_gnome
-    libsForQt5.qt5ct
-    kdePackages.qt6ct
-    qt6.qtwayland
-    kdePackages.qtstyleplugin-kvantum
-    rofi-wayland
-    slurp
-    swappy
-    swaynotificationcenter
-    swww
-    unzip
-    wallust
-    wl-clipboard
-    wlogout
-    xarchiver
-    yad
-    yt-dlp
-
-    # Keep previous essentials
-    waybar
+    # CIFS tools used by mounts below
     samba
     cifs-utils
   ]) ++ python-packages;

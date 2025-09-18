@@ -40,7 +40,7 @@ in {
   # VM-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
     # Development Tools für VM
-    vscode-fhs
+
     docker
     docker-compose
     postman

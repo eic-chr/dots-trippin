@@ -4,10 +4,10 @@
   hasPlasma ? false,
   ...
 }: {
-  nixpkgs.config.allowUnfree = true;
+
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode;
+    package = pkgs.vscodium;
 
     # Extensions
     extensions = with pkgs.vscode-extensions; [
@@ -210,7 +210,5 @@
     asciidoctor
 
     # Other useful tools
-    ripgrep # Fast grep for VSCode search
-    fd # Fast find alternative
   ];
 }

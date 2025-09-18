@@ -90,3 +90,60 @@ Was passiert:
 Hinweise:
 - KWallet wird automatisch installiert; systemweit ist PAM-Entsperren für SDDM/TTY aktiviert.
 - Für KDE/Plasma ist die Tastaturbelegung “US intl” per plasma-manager konfiguriert (siehe `nix/home/nixos.nix`).
+
+## Paket-Policy: Pakete platzieren und Duplikate vermeiden
+
+Ziel: klare Zuständigkeiten, weniger Build-Zeit, keine Mehrfach-Installationen.
+
+- Systemweit (NixOS)
+  - Ort: `nix/hosts/common.nix` → `environment.systemPackages` (gemeinsam), plus host-spezifisch unter `nix/hosts/<host>/configuration.nix`.
+  - Inhalt: nur, was wirklich systemweit gebraucht wird:
+    - Treiber/Firmware (z. B. `broadcom-sta`), Systemservices, Display-Manager/Plasma-Komponenten.
+    - Runtimes/Tray-Integrationen, die Sitzungen bereitstellen (z. B. `polkit_gnome`, `networkmanagerapplet`, `qt6.qtwayland`).
+    - Host-spezifische Tools (z. B. VM-Tools, Druckertreiber).
+  - Nicht systemweit: reine User-CLI-Tools (z. B. `ripgrep`, `fd`, `bat`, `eza`, `fzf`, `zoxide`, `jq`).
+
+- Desktop/Hyprland
+  - Systemmodul: `nix/hosts/hyprland.nix` definiert die Session (Hyprland, env vars, minimale Laufzeit-Tools).
+  - Userseitig: Wayland-/Hyprland-Begleittools via Home Manager (siehe unten). Keine doppelte Installation systemweit UND im Home.
+
+- Home Manager (Benutzer-Pakete)
+  - Ort: `nix/home/core.nix` (CLI-Basics), profilspezifisch `nix/home/nixos.nix`, `nix/home/charly.nix`, `nix/home/vincent.nix`, etc.
+  - Inhalt: User-CLI, LSPs, Formatter, Editoren, Wayland/Hyprland-Begleittools (rofi, waybar, wl-clipboard, grim, slurp, swappy, Thunar, …).
+  - Hyprland-Dots:
+    - Nur Dots verlinken: `nix/home/kool-dots.nix`
+    - Offnix-Variante ohne HM-Hyprland (verhindert Kollisionen): `nix/home/offnix-kool.nix`
+    - Standard-Hyprland via HM: `nix/home/hyprland.nix`
+
+- Editor-Strategie
+  - Bevorzugt: VSCodium über Home Manager (`programs.vscode.package = pkgs.vscodium;`).
+  - Vermeiden: systemweites `vscode-fhs` (doppelt/unnötig) – stattdessen HM + Extensions.
+  - Unfree vermeiden, wo möglich (VSCodium statt `code`). Falls doch nötig, gezielt whitelisten.
+
+- Browser-Strategie
+  - Entscheide dich systemweit für einen Browser (z. B. `firefox`) und vermeide Doppelungen (nicht zusätzlich `chromium`).
+
+- Unfreie Pakete
+  - Ort: `nix/hosts/common.nix` → `nixpkgs.config.allowUnfreePredicate`.
+  - Halte die Liste minimal (z. B. `code`, `postman`, `discord`, `teamviewer`, `broadcom-sta`). Wenn du vollständig auf VSCodium umgestiegen bist, kann `code` später entfallen.
+
+- Deduplizierungs-Checkliste (vor jedem Paket-Add)
+  1. Suchen: Kommt das Paket bereits in `nix/**` vor?
+  2. Entscheidung:
+     - User-Tool → Home Manager (`nix/home/**`).
+     - System-/Service-/Treiber-bezogen → systemweit (`nix/hosts/**`).
+     - Desktop-Laufzeit (rofi/waybar/…): bevorzugt Home Manager.
+  3. Keine Doppelinstallation (z. B. nicht gleichzeitig systemweit und im Home).
+  4. Host-spezifisch? Dann ins passende `nix/hosts/<host>/configuration.nix`.
+  5. Bei Dots: Entweder HM-Hyprland ODER Dots-Hyprland, nicht beides.
+
+- Hinweise zur aktuellen Repo-Struktur (vereinheitlicht)
+  - VSCode: auf VSCodium umgestellt (HM), `vscode-fhs` aus devnix entfernt.
+  - Hyprland systemweit verschlankt; Wayland-/User-Tools in HM ausgelagert.
+  - `wayvnc` in HM (nicht systemweit).
+  - Browser: auf `firefox` vereinheitlicht.
+
+- Testen/Prüfen
+  - Flake prüfen/formatieren: `nix flake check`, `nix fmt`
+  - Host bauen: `sudo nixos-rebuild switch --flake .#<host>`
+  - HM anwenden: `home-manager switch --flake .#<user>@<host>`
