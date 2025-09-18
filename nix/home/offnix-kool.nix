@@ -15,8 +15,7 @@
   # No imports here; KooL Hyprland-Dots are managed via stow
 
   # Disable the Home-Manager Hyprland module to avoid config collisions with KooL-Dots
-  wayland.windowManager.hyprland.enable = lib.mkForce false;
-  home.sessionVariables.HYPRLAND_PLUGINS = "${hyprlandPluginsPkgs.hyprexpo}/lib/libhyprexpo.so";
+  wayland.windowManager.hyprland.enable = lib.mkForce false; home.sessionVariables.HYPRLAND_PLUGINS = "${hyprlandPluginsPkgs.hyprexpo}/lib/libhyprexpo.so";
 
   # Optional: disable HM rofi module since Dots ship their own rofi configs
   programs.rofi.enable = lib.mkForce false;

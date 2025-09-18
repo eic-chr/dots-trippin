@@ -96,22 +96,22 @@ in
   # - make sure the XDG base dirs exist
   xdg.enable = true;
 
-  home.activation.fixShebangsInDotConfigs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    set -eu
-    replace='#!/usr/bin/env bash'
-
-    for d in hypr waybar rofi kitty wlogout swaync ags dunst swww hyprlock hypridle hyprpaper; do
-      dir="$HOME/.config/$d"
-      [ -d "$dir" ] || continue
-
-      while IFS= read -r -d '' file; do
-        if head -n1 "$file" | grep -q '^#!/usr/bin/env bash'; then
-          sed -i "1s|^#!/usr/bin/env bash|$replace|" "$file"
-          chmod +x "$file" || true
-        fi
-      done < <(find "$dir" -type f -print0)
-    done
-  '';
+  # home.activation.fixShebangsInDotConfigs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  #   set -eu
+  #   replace='#!/usr/bin/env bash'
+  #
+  #   for d in hypr waybar rofi kitty wlogout swaync ags dunst swww hyprlock hypridle hyprpaper; do
+  #     dir="$HOME/.config/$d"
+  #     [ -d "$dir" ] || continue
+  #
+  #     while IFS= read -r -d '' file; do
+  #       if head -n1 "$file" | grep -q '^#!/usr/bin/env bash'; then
+  #         sed -i "1s|^#!/usr/bin/env bash|$replace|" "$file"
+  #         chmod +x "$file" || true
+  #       fi
+  #     done <<(find "$dir" -type f -print0)
+  #   done
+  # '';
 
   # If you keep your own HM Hyprland module enabled, it may conflict with these external dotfiles.
   # Prefer one or the other for Hypr config ownership to avoid surprises.
