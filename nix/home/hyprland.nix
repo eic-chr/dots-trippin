@@ -1,5 +1,9 @@
-{ pkgs, hyprlandInput, hyprlandPluginsPkgs, ... }:
 {
+  pkgs,
+  hyprlandInput,
+  hyprlandPluginsPkgs,
+  ...
+}: {
   home.packages = with pkgs; [
     brightnessctl
     playerctl
@@ -18,8 +22,8 @@
   systemd.user.services.kwalletd6 = {
     Unit = {
       Description = "KWallet daemon (kwalletd6) for non-Plasma sessions";
-      PartOf = [ "hyprland-session.target" ];
-      After = [ "graphical-session.target" "hyprland-session.target" ];
+      PartOf = ["hyprland-session.target"];
+      After = ["graphical-session.target" "hyprland-session.target"];
     };
     Service = {
       ExecStart = "${pkgs.kdePackages.kwallet}/bin/kwalletd6";
@@ -27,15 +31,15 @@
       RestartSec = 2;
     };
     Install = {
-      WantedBy = [ "hyprland-session.target" ];
+      WantedBy = ["hyprland-session.target"];
     };
   };
 
   systemd.user.services.wayvnc = {
     Unit = {
       Description = "WayVNC server for Hyprland";
-      PartOf = [ "hyprland-session.target" ];
-      After = [ "graphical-session.target" "hyprland-session.target" ];
+      PartOf = ["hyprland-session.target"];
+      After = ["graphical-session.target" "hyprland-session.target"];
     };
     Service = {
       ExecStart = "${pkgs.wayvnc}/bin/wayvnc --config %h/.config/wayvnc/config";
@@ -44,14 +48,14 @@
       Environment = "XDG_RUNTIME_DIR=%t";
     };
     Install = {
-      WantedBy = [ "hyprland-session.target" ];
+      WantedBy = ["hyprland-session.target"];
     };
   };
 
   wayland.windowManager.hyprland = {
     enable = true;
     package = (builtins.getAttr pkgs.system hyprlandInput.packages).hyprland;
-    plugins = [ hyprlandPluginsPkgs.hyprexpo ];
+    plugins = [hyprlandPluginsPkgs.hyprexpo];
     xwayland.enable = true;
     systemd.enable = true;
 

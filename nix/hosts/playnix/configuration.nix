@@ -42,14 +42,11 @@ in {
   };
   services.blueman.enable = true;
   services.xserver.videoDrivers = ["amdgpu"];
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport32Bit = true;
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
   programs.steam.enable = true;
   # Laptop-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
-    mesa
-    vulkan-tools
-    vulkan-loader
     # Laptop-spezifische Tools
     acpi
     powertop

@@ -20,9 +20,8 @@
     # Use different nixpkgs for different systems
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-     # Unstable für einzelne Pakete
+    # Unstable für einzelne Pakete
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-
 
     # home-manager for user configuration management
     home-manager = {
@@ -59,10 +58,8 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     # nixos-hardware for device-specific modules
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -172,7 +169,7 @@
         inherit (systemConfig) hostname hasPlasma users;
         inherit userConfigs hostUsers;
 
-# nixpkgs-unstable importieren und durchreichen
+        # nixpkgs-unstable importieren und durchreichen
         unstable = import inputs.nixpkgs-unstable {
           system = systemConfig.system;
         };
@@ -182,7 +179,12 @@
         hyprlandPlugins = inputs.hyprland-plugins;
         hyprlandPluginsPkgs = inputs.hyprland-plugins.packages.${systemConfig.system};
         hyprlandDots = inputs.hyprland-dots;
-        hyprlandDotsLocal = let p = ./vendor/hyprland-dots; in if builtins.pathExists p then p else null;
+        hyprlandDotsLocal = let
+          p = ./vendor/hyprland-dots;
+        in
+          if builtins.pathExists p
+          then p
+          else null;
 
         # Für Kompatibilität mit bestehenden Modulen
         username = builtins.head systemConfig.users; # Erster User als Standard

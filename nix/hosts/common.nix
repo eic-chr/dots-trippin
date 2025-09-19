@@ -62,9 +62,13 @@ in {
     ];
   };
 
-  boot.extraModulePackages = [ pkgs.linuxPackages.broadcom_sta ];
+  boot.extraModulePackages = [pkgs.linuxPackages.broadcom_sta];
   boot.blacklistedKernelModules = [
-    "b43" "bcma" "brcmsmac" "ssb" "brcmfmac"
+    "b43"
+    "bcma"
+    "brcmsmac"
+    "ssb"
+    "brcmfmac"
   ];
   # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
@@ -117,13 +121,9 @@ in {
       libreoffice
       nextcloud-client
 
-      thunderbird
 
 
       lua-language-server
-
-
-
 
       # Netzwerk-Tools
       dig
@@ -137,14 +137,13 @@ in {
       pkg-config
       markdownlint-cli2
 
-
       # Multimedia
       vlc
       gimp
       inkscape
 
       # Browser
-      firefox
+
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
     ]
@@ -183,11 +182,11 @@ in {
   };
   # Nixpkgs-Konfiguration mit NUR
   nixpkgs.overlays = [
-    nur.overlay
+    nur.overlays.default
   ];
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "code" "vscode" "vscode-fhs" "vscode-with-extensions" "visual-studio-code" "vscode-insiders" "vscode-extension-ms-vsliveshare-vsliveshare" "vscode-extension-ms-vscode-remote-remote-containers" "discord" "teamviewer" "broadcom-sta" "postman" ];
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["code" "vscode" "vscode-fhs" "vscode-with-extensions" "visual-studio-code" "vscode-insiders" "vscode-extension-ms-vsliveshare-vsliveshare" "vscode-extension-ms-vscode-remote-remote-containers" "discord" "teamviewer" "broadcom-sta" "postman"];
 
- nixpkgs.config.allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
+  nixpkgs.config.allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) ["broadcom-sta"];
   # Firewall
   networking.firewall = {
     enable = false;

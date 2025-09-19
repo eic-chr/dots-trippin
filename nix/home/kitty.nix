@@ -16,8 +16,8 @@
     # KEYBOARD SHORTCUTS (leer - alles über extraConfig)
     keybindings =
       {
-    # Keybindings
-    "ctrl+shift+f2" = "edit_config_file";
+        # Keybindings
+        "ctrl+shift+f2" = "edit_config_file";
         "ctrl+shift+f5" = "load_config_file";
         # === FENSTER NAVIGATION (vim-style) ===
         "alt+h" = "neighboring_window left";

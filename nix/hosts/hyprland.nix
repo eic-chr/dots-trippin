@@ -1,4 +1,3 @@
-
 {
   pkgs,
   hyprlandInput,
@@ -31,32 +30,23 @@
     login.enableKwallet = true;
   };
 
-  environment.systemPackages =
-    let
-      # placeholder to align with external list; extend if needed
-      python-packages = [];
-    in
+  environment.systemPackages = let
+    # placeholder to align with external list; extend if needed
+    python-packages = [];
+  in
     (with pkgs; [
-    # Hyprland session essentials kept system-wide (others via Home Manager)
-    polkit_gnome
-    networkmanagerapplet
-    libappindicator-gtk3
-    libnotify
-    qt6.qtwayland
-    rofi-wayland
+      # Hyprland session essentials kept system-wide (others via Home Manager)
+      polkit_gnome
+      networkmanagerapplet
+      libappindicator-gtk3
+      libnotify
+      qt6.qtwayland
 
-    # Runtime tools used by non-offnix HM config (exec-once)
-    hyprpaper
-    waybar
+      # XDG helpers
+      xdg-user-dirs
+      xdg-utils
 
-    # XDG helpers
-    xdg-user-dirs
-    xdg-utils
-
-    # CIFS tools used by mounts below
-    samba
-    cifs-utils
-  ]) ++ python-packages;
+    ]) ++ python-packages;
   # Create mount points for CIFS templates
   systemd.tmpfiles.rules = [
     "d /mnt/share-guest 0755 root root -"

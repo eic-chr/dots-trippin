@@ -4,13 +4,12 @@
   hasPlasma ? false,
   ...
 }: {
-
   programs.vscode = {
     enable = true;
     package = pkgs.vscodium;
 
     # Extensions
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       # Vim Integration
       vscodevim.vim
 
@@ -49,7 +48,7 @@
     # Entferne den problematischen marketplace-Block erstmal
 
     # VSCode Settings
-    userSettings =
+    profiles.default.userSettings =
       {
         # Vim Configuration
         "vim.easymotion" = true;
@@ -265,7 +264,7 @@
       );
 
     # Keybindings (zusätzlich zu Vim-Mappings)
-    keybindings = [
+    profiles.default.keybindings = [
       # Terminal shortcuts
       {
         "key" =

@@ -53,11 +53,8 @@ in {
 
     docker
     docker-compose
-    postman
-    mosh
 
     # VM Tools
-    open-vm-tools # VMware Tools
   ];
 
   # Docker für Development

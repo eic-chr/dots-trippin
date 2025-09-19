@@ -1,19 +1,31 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
-{ config, lib, pkgs, unstable, currentUser, userConfig, userEmail, userFullName
-, hasPlasma, hostname, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  unstable,
+  currentUser,
+  userConfig,
+  userEmail,
+  userFullName,
+  hasPlasma,
+  hostname,
+  ...
+}: {
   # Importiere deine bestehenden Module
-  imports = [
-    ./core.nix
-    ./git.nix
-    ./shell.nix
-    ./starship.nix
+  imports =
+    [
+      ./core.nix
+      ./git.nix
+      ./shell.nix
+      ./starship.nix
 
-    ./thunderbird.nix
-    ./vscode.nix
-    ./firefox.nix
-  ] ++ lib.optionals (hostname != "offnix") [ ./kitty.nix ];
-    # ++ lib.optionals (hostname == "offnix" || hostname == "devnix")
-    # [ ./offnix-kool.nix ];
+      ./thunderbird.nix
+      ./vscode.nix
+      ./firefox.nix
+    ]
+    ++ lib.optionals (hostname != "offnix") [./kitty.nix]
+    ++ lib.optionals (hostname == "offnix") [./offnix-kool.nix];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
@@ -24,7 +36,7 @@
 
   home.activation.fixSmbCredsPerms =
     lib.mkIf (hostname == "offnix" || hostname == "devnix")
-    (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    (lib.hm.dag.entryAfter ["writeBoundary"] ''
       if [ -f "$HOME/.smb_crd" ]; then
         chown "$USER":"$USER" "$HOME/.smb_crd" || true
         chmod 600 "$HOME/.smb_crd" || true
@@ -73,28 +85,32 @@
           variant = "intl";
         }];
       };
-      touchpads = [{
-        enable = true;
-        name = "Apple Inc. Apple Internal Keyboard / Trackpad";
-        vendorId = "05ac"; # Apple Vendor ID
-        productId = "0263"; # Dein MacBook Trackpad
-        naturalScroll = true; # Traditionelles Scrolling!
-        tapToClick = true;
-        rightClickMethod = "twoFingers";
-      }];
+      touchpads = [
+        {
+          enable = true;
+          name = "Apple Inc. Apple Internal Keyboard / Trackpad";
+          vendorId = "05ac"; # Apple Vendor ID
+          productId = "0263"; # Dein MacBook Trackpad
+          naturalScroll = true; # Traditionelles Scrolling!
+          tapToClick = true;
+          rightClickMethod = "twoFingers";
+        }
+      ];
     };
     # Panel-Konfiguration
-    panels = [{
-      location = "bottom";
-      widgets = [
-        "org.kde.plasma.kickoff"
-        "org.kde.plasma.pager"
-        "org.kde.plasma.icontasks"
-        "org.kde.plasma.marginsseparator"
-        "org.kde.plasma.systemtray"
-        "org.kde.plasma.digitalclock"
-      ];
-    }];
+    panels = [
+      {
+        location = "bottom";
+        widgets = [
+          "org.kde.plasma.kickoff"
+          "org.kde.plasma.pager"
+          "org.kde.plasma.icontasks"
+          "org.kde.plasma.marginsseparator"
+          "org.kde.plasma.systemtray"
+          "org.kde.plasma.digitalclock"
+        ];
+      }
+    ];
 
     # Shortcuts
     shortcuts = {
@@ -109,34 +125,34 @@
   };
 
   # Zusätzliche NixOS-spezifische Pakete
-  home.packages = (with pkgs; [
-    # Browser (falls nicht system-weit installiert)
-    ags
-    ansible
-    ansible-lint
-    discord
-    ferdium
-    fzf
-    git-crypt
-    glow
-    pgadmin4
-    remmina
-    texlive.combined.scheme-small
-    md2pdf
-    pandoc
-    signal-desktop
-    stow
-    teamviewer
-    wireshark
-    waybar
-    unstable.zed-editor
-  ]) ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
+  home.packages =
+    (with pkgs; [
+      # Browser (falls nicht system-weit installiert)
+      ags
+      ansible
+      ansible-lint
+      discord
+      fzf
+      git-crypt
+      glow
+      pgadmin4
+      remmina
+      texlive.combined.scheme-small
+      md2pdf
+      pandoc
+      signal-desktop
+      stow
+      teamviewer
+      waybar
+      unstable.zed-editor
+    ])
+    ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {
     enable = true;
     enableSshSupport = false;
-    pinentryPackage = pkgs.pinentry-curses; # QT-Version für KDE
+    pinentry.package = pkgs.pinentry-curses; # QT-Version für KDE
     defaultCacheTtl = 28800; # 8 Stunden
     maxCacheTtl = 86400; # 24 Stunden
   };
