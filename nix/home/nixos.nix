@@ -32,19 +32,20 @@
   home.homeDirectory = "/home/${currentUser}";
   home.stateVersion = "25.05";
 
-  systemd.user.mounts = [
-    {
-      # entspricht ~/.config/systemd/user/mnt-share.mount
-      Unit.Description = "SMB Share Mount";
 
-      Mount.What = "//nas1/home";
-      Mount.Where = "%h/nas_home"; # automatisch /home/username/mnt/share
-      Mount.Type = "cifs";
-      Mount.Options = "credentials=%h/.smbcredentials,uid=%U,gid=%G,iocharset=utf8,vers=3.0";
 
-      Install.WantedBy = [ "default.target" ];
-    }
-  ];
+
+
+# Fix ~/.smb_crd permissions
+
+  home.activation.fixSmbCredsPerms =
+    lib.mkIf (hostname == "offnix" || hostname == "devnix")
+      (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if [ -f "$HOME/.smb_crd" ]; then
+          chown "$USER":"$USER" "$HOME/.smb_crd" || true
+          chmod 600 "$HOME/.smb_crd" || true
+        fi
+      '');
 
 # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {

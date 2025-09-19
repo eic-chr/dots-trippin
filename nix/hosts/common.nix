@@ -226,6 +226,30 @@ in {
     };
   };
 
+  # CIFS mount for christian on offnix/devnix
+  fileSystems."/home/christian/nas_home" = lib.mkIf (builtins.elem config.networking.hostName ["offnix" "devnix"]) {
+    device = "//nas1/home";
+    fsType = "cifs";
+    options = [
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=600"
+      "_netdev"
+      "vers=3.0"
+      "uid=1000"
+      "gid=1000"
+      "file_mode=0600"
+      "dir_mode=0700"
+      "credentials=/home/christian/.smb_crd"
+      "nofail"
+      "nosuid"
+      "nodev"
+    ];
+  };
+
+  systemd.tmpfiles.rules = lib.mkIf (builtins.elem config.networking.hostName ["offnix" "devnix"]) [
+    "d /home/christian/nas_home 0700 christian christian -"
+  ];
+
   # System State Version
   system.stateVersion = "25.05";
 }
