@@ -1,4 +1,10 @@
-{ config, lib, pkgs, hyprlandPluginsPkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  hyprlandPluginsPkgs,
+  ...
+}:
 # Home-Manager profile variant for offnix users:
 # - Does NOT import ./kool-dots.nix; use stow-managed Dots instead
 # - Explicitly disables the local HM Hyprland module to avoid conflicts
@@ -15,7 +21,8 @@
   # No imports here; KooL Hyprland-Dots are managed via stow
 
   # Disable the Home-Manager Hyprland module to avoid config collisions with KooL-Dots
-  wayland.windowManager.hyprland.enable = lib.mkForce false; home.sessionVariables.HYPRLAND_PLUGINS = "${hyprlandPluginsPkgs.hyprexpo}/lib/libhyprexpo.so";
+  wayland.windowManager.hyprland.enable = lib.mkForce false;
+  home.sessionVariables.HYPRLAND_PLUGINS = "${hyprlandPluginsPkgs.hyprexpo}/lib/libhyprexpo.so";
 
   # Optional: disable HM rofi module since Dots ship their own rofi configs
   programs.rofi.enable = lib.mkForce false;
@@ -28,8 +35,8 @@
   systemd.user.services.wayvnc = {
     Unit = {
       Description = "WayVNC server for Wayland/Hyprland";
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
+      PartOf = ["graphical-session.target"];
+      After = ["graphical-session.target"];
     };
     Service = {
       ExecStart = "${pkgs.wayvnc}/bin/wayvnc --config %h/.config/wayvnc/config";
@@ -38,7 +45,7 @@
       Environment = "XDG_RUNTIME_DIR=%t";
     };
     Install = {
-      WantedBy = [ "graphical-session.target" ];
+      WantedBy = ["graphical-session.target"];
     };
   };
 
@@ -260,7 +267,7 @@
     '';
   };
 
-  home.activation.hyprLocalInclude = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.hyprLocalInclude = lib.hm.dag.entryAfter ["writeBoundary"] ''
     conf="$HOME/.config/hypr/hyprland.conf"
     include="source = ~/.config/hypr/zz-local.conf"
     mkdir -p "$HOME/.config/hypr"

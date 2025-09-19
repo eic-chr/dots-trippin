@@ -1,18 +1,18 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
 {
   config,
-    lib,
-    pkgs,
-    unstable,
-    currentUser,
-    userConfig,
-    userEmail,
-    userFullName,
-    hasPlasma,
-    hostname,
-    ...
+  lib,
+  pkgs,
+  unstable,
+  currentUser,
+  userConfig,
+  userEmail,
+  userFullName,
+  hasPlasma,
+  hostname,
+  ...
 }: {
-# Importiere deine bestehenden Module
+  # Importiere deine bestehenden Module
   imports =
     [
       ./core.nix
@@ -24,35 +24,30 @@
       ./vscode.nix
       ./firefox.nix
     ]
-    ++ lib.optionals (hostname != "offnix") [ ./kitty.nix ]
-    ++ lib.optionals (hostname == "offnix") [ ./offnix-kool.nix ];
+    ++ lib.optionals (hostname != "offnix") [./kitty.nix]
+    ++ lib.optionals (hostname == "offnix") [./offnix-kool.nix];
 
-# Basis Home-Manager Einstellungen - angepasst für ca
+  # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
   home.homeDirectory = "/home/${currentUser}";
   home.stateVersion = "25.05";
 
-
-
-
-
-# Fix ~/.smb_crd permissions
+  # Fix ~/.smb_crd permissions
 
   home.activation.fixSmbCredsPerms =
     lib.mkIf (hostname == "offnix" || hostname == "devnix")
-      (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if [ -f "$HOME/.smb_crd" ]; then
-          chown "$USER":"$USER" "$HOME/.smb_crd" || true
-          chmod 600 "$HOME/.smb_crd" || true
-        fi
-      '');
+    (lib.hm.dag.entryAfter ["writeBoundary"] ''
+      if [ -f "$HOME/.smb_crd" ]; then
+        chown "$USER":"$USER" "$HOME/.smb_crd" || true
+        chmod 600 "$HOME/.smb_crd" || true
+      fi
+    '');
 
-# Git-Konfiguration für ca (überschreibt die aus git.nix)
+  # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
-      userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
+    userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
   };
-
 
   # programs.rofi = lib.mkIf (hostname != "offnix") {
   #   enable = true;
@@ -70,11 +65,11 @@
   #   };
   # };
 
-# Plasma-spezifische Konfiguration nur für Systeme mit KDE
+  # Plasma-spezifische Konfiguration nur für Systeme mit KDE
   programs.plasma = lib.mkIf hasPlasma {
     enable = true;
 
-# Desktop-Einstellungen
+    # Desktop-Einstellungen
     workspace = {
       lookAndFeel = "org.kde.breezedark.desktop";
       colorScheme = "BreezeDark";
@@ -93,33 +88,33 @@
         ];
       };
       touchpads = [
-      {
-        enable = true;
-        name = "Apple Inc. Apple Internal Keyboard / Trackpad";
-        vendorId = "05ac"; # Apple Vendor ID
+        {
+          enable = true;
+          name = "Apple Inc. Apple Internal Keyboard / Trackpad";
+          vendorId = "05ac"; # Apple Vendor ID
           productId = "0263"; # Dein MacBook Trackpad
           naturalScroll = true; # Traditionelles Scrolling!
           tapToClick = true;
-        rightClickMethod = "twoFingers";
-      }
+          rightClickMethod = "twoFingers";
+        }
       ];
     };
-# Panel-Konfiguration
+    # Panel-Konfiguration
     panels = [
-    {
-      location = "bottom";
-      widgets = [
-        "org.kde.plasma.kickoff"
+      {
+        location = "bottom";
+        widgets = [
+          "org.kde.plasma.kickoff"
           "org.kde.plasma.pager"
           "org.kde.plasma.icontasks"
           "org.kde.plasma.marginsseparator"
           "org.kde.plasma.systemtray"
           "org.kde.plasma.digitalclock"
-      ];
-    }
+        ];
+      }
     ];
 
-# Shortcuts
+    # Shortcuts
     shortcuts = {
       ksmserver = {
         "Lock Session" = ["Screensaver" "Meta+L"];
@@ -133,11 +128,12 @@
     };
   };
 
-# Zusätzliche NixOS-spezifische Pakete
-  home.packages = (with pkgs; [
-# Browser (falls nicht system-weit installiert)
-    ags
-    ansible
+  # Zusätzliche NixOS-spezifische Pakete
+  home.packages =
+    (with pkgs; [
+      # Browser (falls nicht system-weit installiert)
+      ags
+      ansible
       ansible-lint
       discord
       ferdium
@@ -155,14 +151,15 @@
       wireshark
       waybar
       unstable.zed-editor
-  ]) ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
+    ])
+    ++ lib.optionals (hostname == "offnix") [pkgs.kitty];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {
     enable = true;
     enableSshSupport = false;
     pinentryPackage = pkgs.pinentry-curses; # QT-Version für KDE
-      defaultCacheTtl = 28800; # 8 Stunden
-      maxCacheTtl = 86400; # 24 Stunden
+    defaultCacheTtl = 28800; # 8 Stunden
+    maxCacheTtl = 86400; # 24 Stunden
   };
 }

@@ -1,4 +1,11 @@
-{ config, lib, pkgs, hyprlandDots, hyprlandDotsLocal ? null, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  hyprlandDots,
+  hyprlandDotsLocal ? null,
+  ...
+}:
 # Home-Manager module that links JaKooLit's Hyprland-Dots into ~/.config
 #
 # Usage:
@@ -37,19 +44,18 @@ let
   ];
 
   # Build an xdg.configFile fragment for each existing directory in the dots repo.
-  mkConfigLinks =
-    lib.mkMerge (map
-      (name:
+  mkConfigLinks = lib.mkMerge (map
+    (
+      name:
         lib.optionalAttrs (builtins.pathExists "${cfgRoot}/${name}") {
           "${name}" = {
             source = "${cfgRoot}/${name}";
             recursive = true;
           };
         }
-      )
-      linkable);
-in
-{
+    )
+    linkable);
+in {
   # Common tools the dots use (adjust as needed)
   home.packages = with pkgs; [
     # launchers / bars / session
