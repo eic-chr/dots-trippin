@@ -32,6 +32,20 @@
   home.homeDirectory = "/home/${currentUser}";
   home.stateVersion = "25.05";
 
+  systemd.user.mounts = [
+    {
+      # entspricht ~/.config/systemd/user/mnt-share.mount
+      Unit.Description = "SMB Share Mount";
+
+      Mount.What = "//nas1/home";
+      Mount.Where = "%h/nas_home"; # automatisch /home/username/mnt/share
+      Mount.Type = "cifs";
+      Mount.Options = "credentials=%h/.smbcredentials,uid=%U,gid=%G,iocharset=utf8,vers=3.0";
+
+      Install.WantedBy = [ "default.target" ];
+    }
+  ];
+
 # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
@@ -130,6 +144,7 @@
       git-crypt
       glow
       pgadmin4
+      remmina
       texlive.combined.scheme-small
       md2pdf
       pandoc
