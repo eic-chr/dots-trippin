@@ -14,6 +14,7 @@ in {
   imports = [
     ./hardware-configuration.nix
     ../common.nix
+    ../hyprland.nix # system Hyprland setup
   ];
 
   # Hostname
@@ -53,6 +54,7 @@ in {
     docker
     docker-compose
     postman
+    mosh
 
     # VM Tools
     open-vm-tools # VMware Tools

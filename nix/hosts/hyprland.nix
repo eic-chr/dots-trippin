@@ -43,6 +43,7 @@
     libappindicator-gtk3
     libnotify
     qt6.qtwayland
+    rofi-wayland
 
     # Runtime tools used by non-offnix HM config (exec-once)
     hyprpaper

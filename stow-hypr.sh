@@ -4,7 +4,7 @@ set -euo pipefail
 
 # Vom Repo-Root aus ausführen
 # Passe die Liste nach Bedarf an (weitere Kandidaten: ags quickshell wallust swappy btop cava fastfetch qt5ct qt6ct Kvantum nvim dunst swww hyprlock hypridle hyprpaper)
-packages=(waybar Kvantum hypr rofi wlogout swaync kitty wallust ags quickshell swappy btop cava fastfetch qt5ct qt6ct dunst swww hyprlock hypridle hyprpaper)
+packages=(waybar Kvantum hypr rofi wlogout swaync wallust ags quickshell swappy btop cava fastfetch qt5ct qt6ct dunst swww hyprlock hypridle hyprpaper)
 
 for pkg in "${packages[@]}"; do
   src="./hyprland-dots/config/$pkg"
