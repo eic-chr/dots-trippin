@@ -42,19 +42,11 @@
       libnotify
       qt6.qtwayland
 
-      # Runtime tools used by non-offnix HM config (exec-once)
-      hyprpaper
-      waybar
-
       # XDG helpers
       xdg-user-dirs
       xdg-utils
 
-      # CIFS tools used by mounts below
-      samba
-      cifs-utils
-    ])
-    ++ python-packages;
+    ]) ++ python-packages;
   # Create mount points for CIFS templates
   systemd.tmpfiles.rules = [
     "d /mnt/share-guest 0755 root root -"

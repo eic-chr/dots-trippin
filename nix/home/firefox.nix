@@ -18,14 +18,16 @@
         name = "default";
 
         # Extensions installieren
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-          ublock-origin
-          bitwarden
-          privacy-badger
-          clearurls
-          decentraleyes
-          darkreader
-        ];
+        extensions = {
+          packages = with pkgs.nur.repos.rycee.firefox-addons; [
+            ublock-origin
+            bitwarden
+            privacy-badger
+            clearurls
+            decentraleyes
+            darkreader
+          ];
+        };
 
         # about:config Einstellungen
         settings =
@@ -87,38 +89,41 @@
           );
 
         # Bookmarks
-        bookmarks = [
-          {
-            name = "Development";
-            bookmarks = [
-              {
-                name = "GitHub";
-                url = "https://github.com";
-              }
-              {
-                name = "NixOS Wiki";
-                url = "https://nixos.wiki";
-              }
-              {
-                name = "Nix Package Search";
-                url = "https://search.nixos.org/packages";
-              }
-            ];
-          }
-          {
-            name = "Tools";
-            bookmarks = [
-              {
-                name = "Regex101";
-                url = "https://regex101.com";
-              }
-              {
-                name = "JSON Formatter";
-                url = "https://jsonformatter.org";
-              }
-            ];
-          }
-        ];
+        bookmarks = {
+          force = true;
+          settings = [
+            {
+              name = "Development";
+              bookmarks = [
+                {
+                  name = "GitHub";
+                  url = "https://github.com";
+                }
+                {
+                  name = "NixOS Wiki";
+                  url = "https://nixos.wiki";
+                }
+                {
+                  name = "Nix Package Search";
+                  url = "https://search.nixos.org/packages";
+                }
+              ];
+            }
+            {
+              name = "Tools";
+              bookmarks = [
+                {
+                  name = "Regex101";
+                  url = "https://regex101.com";
+                }
+                {
+                  name = "JSON Formatter";
+                  url = "https://jsonformatter.org";
+                }
+              ];
+            }
+          ];
+        };
 
         # Search engines
         # search = {
@@ -218,11 +223,13 @@
           "network.cookie.cookieBehavior" = 1; # Block third-party cookies
         };
 
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-          ublock-origin
-          privacy-badger
-          clearurls
-        ];
+        extensions = {
+          packages = with pkgs.nur.repos.rycee.firefox-addons; [
+            ublock-origin
+            privacy-badger
+            clearurls
+          ];
+        };
       };
     };
 

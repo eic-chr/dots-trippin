@@ -121,7 +121,7 @@ in {
       libreoffice
       nextcloud-client
 
-      thunderbird
+
 
       lua-language-server
 
@@ -143,7 +143,7 @@ in {
       inkscape
 
       # Browser
-      firefox
+
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
     ]
@@ -182,7 +182,7 @@ in {
   };
   # Nixpkgs-Konfiguration mit NUR
   nixpkgs.overlays = [
-    nur.overlay
+    nur.overlays.default
   ];
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["code" "vscode" "vscode-fhs" "vscode-with-extensions" "visual-studio-code" "vscode-insiders" "vscode-extension-ms-vsliveshare-vsliveshare" "vscode-extension-ms-vscode-remote-remote-containers" "discord" "teamviewer" "broadcom-sta" "postman"];
 

@@ -59,31 +59,23 @@ Please refer to the `rich-demo` folder for more details:
 - [rich-demo/Makefile](/rich-demo/Makefile)
 - [rich-demo - homebrew's mirror settings](/rich-demo/modules/homebrew-mirror.nix)
 
-## Hyprland-Dots (JaKooLit) – isoliert einbinden
+## Hyprland-Dots (JaKooLit) – Integration über offnix-kool.nix
 
-Diese Repo kann JaKooLits Hyprland-Dots entweder direkt aus dem Flake-Input oder isoliert aus einem vendorten Pfad nutzen.
+Diese Repo integriert JaKooLits Hyprland-Dots über das Home-Manager Modul `nix/home/offnix-kool.nix`. Ein vendorter Pfad unter `nix/vendor/hyprland-dots` wird automatisch bevorzugt, sonst wird das Flake-Input verwendet.
 
-Varianten:
-- Standard: Flake-Input `inputs.hyprland-dots` (siehe `flake.nix`)
-- Isoliert (empfohlen): Vendore die Dots nach `nix/vendor/hyprland-dots` – dieser Pfad wird automatisch bevorzugt
+Vorgehen:
+- Importiere `nix/home/offnix-kool.nix` in dein Home-Profile auf Hosts mit Hyprland.
+- Optional: Lege die Dots unter `nix/vendor/hyprland-dots` ab; dieser Pfad wird automatisch verwendet, andernfalls das Flake-Input.
 
-Vorgehen (isoliert):
-1. Als Submodule einbinden:
-   - git submodule add https://github.com/JaKooLit/Hyprland-Dots nix/vendor/hyprland-dots
-   - git submodule update --init --recursive
-   Alternativ: Repo nach `nix/vendor/hyprland-dots` kopieren.
-2. Rebuild:
-   - sudo nixos-rebuild switch --flake .#HOST
-   - oder: home-manager switch --flake .#USER
+Rebuild:
+- sudo nixos-rebuild switch --flake .#HOST
+- oder: home-manager switch --flake .#USER
 
 Nutzung im Home-Manager:
-- Minimal nur die Dots verlinken:
-  - Importiere `nix/home/kool-dots.nix` in dein Home-Profile.
-- Komplett isoliert mit System-Hyprland und ohne HM-Hyprland:
-  - Importiere `nix/home/offnix-kool.nix` (dieses Modul deaktiviert HM’s Hyprland und verlinkt die Dots).
+- Empfohlen: Importiere `nix/home/offnix-kool.nix` (deaktiviert HM’s Hyprland und verlinkt die Dots).
 
 Was passiert:
-- `kool-dots.nix` symlinkt die Config-Verzeichnisse aus `Hyprland-Dots/config` nach `~/.config` (z. B. `hypr`, `waybar`, `rofi`, …).
+- `offnix-kool.nix` verlinkt die Config-Verzeichnisse aus `Hyprland-Dots/config` nach `~/.config` (z. B. `hypr`, `waybar`, `rofi`, …).
 - Falls `nix/vendor/hyprland-dots` existiert, wird dieser Pfad automatisch statt des Flake-Inputs verwendet.
 - Laufzeitabhängigkeiten (rofi, waybar, hypr*-Tools, swww, Screenshots, Thunar, Papirus, …) werden als `home.packages` installiert.
 
@@ -111,9 +103,8 @@ Ziel: klare Zuständigkeiten, weniger Build-Zeit, keine Mehrfach-Installationen.
   - Ort: `nix/home/core.nix` (CLI-Basics), profilspezifisch `nix/home/nixos.nix`, `nix/home/charly.nix`, `nix/home/vincent.nix`, etc.
   - Inhalt: User-CLI, LSPs, Formatter, Editoren, Wayland/Hyprland-Begleittools (rofi, waybar, wl-clipboard, grim, slurp, swappy, Thunar, …).
   - Hyprland-Dots:
-    - Nur Dots verlinken: `nix/home/kool-dots.nix`
-    - Offnix-Variante ohne HM-Hyprland (verhindert Kollisionen): `nix/home/offnix-kool.nix`
-    - Standard-Hyprland via HM: `nix/home/hyprland.nix`
+    - Empfohlen: `nix/home/offnix-kool.nix` (verlinkt Dots, deaktiviert HM-Hyprland; bevorzugt vendorten Pfad, sonst Flake-Input)
+    - Alternative: Standard-Hyprland via HM: `nix/home/hyprland.nix` (ohne externe Dots)
 
 - Editor-Strategie
   - Bevorzugt: VSCodium über Home Manager (`programs.vscode.package = pkgs.vscodium;`).

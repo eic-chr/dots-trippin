@@ -136,7 +136,6 @@
       ansible
       ansible-lint
       discord
-      ferdium
       fzf
       git-crypt
       glow
@@ -148,17 +147,16 @@
       signal-desktop
       stow
       teamviewer
-      wireshark
       waybar
       unstable.zed-editor
     ])
-    ++ lib.optionals (hostname == "offnix") [pkgs.kitty];
+    ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {
     enable = true;
     enableSshSupport = false;
-    pinentryPackage = pkgs.pinentry-curses; # QT-Version für KDE
+    pinentry.package = pkgs.pinentry-curses; # QT-Version für KDE
     defaultCacheTtl = 28800; # 8 Stunden
     maxCacheTtl = 86400; # 24 Stunden
   };

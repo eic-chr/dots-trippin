@@ -58,10 +58,8 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     # nixos-hardware for device-specific modules
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {

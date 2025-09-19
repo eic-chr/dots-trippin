@@ -88,7 +88,6 @@
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
     discord
-    ferdium
     fzf
     git-crypt
     signal-desktop
@@ -101,7 +100,7 @@
   services.gpg-agent = {
     enable = true;
     enableSshSupport = false;
-    pinentryPackage = pkgs.pinentry-curses; # QT-Version für KDE
+    pinentry.package = pkgs.pinentry-curses; # QT-Version für KDE
     defaultCacheTtl = 28800; # 8 Stunden
     maxCacheTtl = 86400; # 24 Stunden
   };

@@ -53,9 +53,9 @@
   # MacBook Pro 2014 Hardware-Optimierungen
 
   # Grafik - Intel HD Graphics 4000/5000 Serie
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
     extraPackages = with pkgs; [
       # Defer Intel VAAPI drivers to nixos-hardware (MacBookPro11,4)
       # Keep only translation layers

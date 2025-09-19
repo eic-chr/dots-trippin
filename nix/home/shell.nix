@@ -1,9 +1,9 @@
 {lib, ...}: {
   programs.zsh = {
     enable = true;
-    enableAutosuggestions = true;
+    autosuggestion.enable = true;
     enableCompletion = true; # Wichtig!
-    initExtra = lib.readFile ./initExtra.sh;
+    initContent = lib.readFile ./initExtra.sh;
 
     historySubstringSearch.enable = true;
 

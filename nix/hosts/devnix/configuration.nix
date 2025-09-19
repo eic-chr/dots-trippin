@@ -52,10 +52,8 @@ in {
 
     docker
     docker-compose
-    postman
 
     # VM Tools
-    open-vm-tools # VMware Tools
   ];
 
   # Docker für Development

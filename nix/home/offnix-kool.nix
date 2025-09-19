@@ -6,19 +6,19 @@
   ...
 }:
 # Home-Manager profile variant for offnix users:
-# - Does NOT import ./kool-dots.nix; use stow-managed Dots instead
+# - Single integration approach for JaKooLit's Hyprland-Dots; replaces submodule+stow workflow
 # - Explicitly disables the local HM Hyprland module to avoid conflicts
 #
 # Usage:
 # - Import this module for users on the offnix host instead of (or in addition to) your default HM profile.
-# - Ensure your flake passes `hyprlandDots = inputs.hyprland-dots` via specialArgs (flake.nix already adjusted).
+# - No submodule or stow required; import this module for offnix users to enable the Dots integration.
 #
 # Notes:
 # - This variant relies on system-level Hyprland (nixosPrograms.hyprland) from hosts/hyprland.nix.
 # - Rofi HM module is disabled; the Dots provide their own rofi configs.
 # - If you still import ./hyprland.nix elsewhere, this will override its HM Hyprland enable flag.
 {
-  # No imports here; KooL Hyprland-Dots are managed via stow
+  # This module is the single integration for KooL Hyprland-Dots; stow/submodule is not used
 
   # Disable the Home-Manager Hyprland module to avoid config collisions with KooL-Dots
   wayland.windowManager.hyprland.enable = lib.mkForce false;
@@ -28,9 +28,79 @@
   programs.rofi.enable = lib.mkForce false;
 
   home.packages = with pkgs; [
-    wayvnc
+    # launchers / bars / session
+    rofi-wayland
+    waybar
+    wlogout
+    swww
+    swaynotificationcenter
+    ags
+
+    # hypr-utils
+    hyprlock
+    hypridle
+    hyprpaper
+    hyprpicker
+    jq
+
+    # media / brightness / screenshots
+    brightnessctl
+    playerctl
+    grim
+    slurp
+    wl-clipboard
+    swappy
+
+    # file manager and thumbnail helpers
     xfce.thunar
+    gvfs
+    xfce.tumbler
+    ffmpegthumbnailer
+
+    # theming
+    papirus-icon-theme
+
+    # KWallet
+    kdePackages.kwallet
+    kdePackages.kwalletmanager
+
+    # remote
+    wayvnc
   ];
+
+  # Link Hyprland-Dots configs to ~/.config/*
+  xdg.enable = true;
+  xdg.configFile =
+    let
+      dotsRoot =
+        if hyprlandDotsLocal != null && builtins.pathExists "${hyprlandDotsLocal}/config"
+        then hyprlandDotsLocal
+        else hyprlandDots;
+      cfgRoot = "${dotsRoot}/config";
+      linkable = [
+        "hypr"
+        "waybar"
+        "rofi-wayland"
+        "kitty"
+        "wlogout"
+        "swaync"
+        "ags"
+        "dunst"
+        "swww"
+        "hyprlock"
+        "hypridle"
+        "hyprpaper"
+      ];
+    in
+      lib.mkMerge (map
+        (name:
+          lib.optionalAttrs (builtins.pathExists "${cfgRoot}/${name}") {
+            "${name}" = {
+              source = "${cfgRoot}/${name}";
+              recursive = true;
+            };
+          })
+        linkable);
 
   systemd.user.services.wayvnc = {
     Unit = {
@@ -73,14 +143,10 @@
     plugin = ${hyprlandPluginsPkgs.hyprexpo}/lib/libhyprexpo.so
     plugin {
       hyprexpo {
-        enable_gesture = true
-        gesture_fingers = 4
-        gesture_distance = 300
-        gesture_positive = true
         columns = 3
-        rows = 2
         gap_size = 5
         workspace_method = "center current"
+        gesture_distance = 300
       }
     }
     #
