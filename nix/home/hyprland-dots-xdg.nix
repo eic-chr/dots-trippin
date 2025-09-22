@@ -58,6 +58,25 @@ let
 
   cfgRoot = if dotsRoot != null then "${dotsRoot}/config" else null;
 
+  patchedCfgRoot =
+    if cfg.enable && cfgRoot != null && cfg.patchShebangs
+    then pkgs.runCommandLocal "hyprland-dots-config-patched"
+      {
+        nativeBuildInputs = with pkgs; [ coreutils findutils gnused gnugrep bash ];
+      } ''
+        set -eu
+        mkdir -p "$out"
+        cp -r --preserve=mode "${cfgRoot}/." "$out/"
+        find "$out" -type f -print0 | while IFS= read -r -d $'\0' f; do
+          if head -c 2 "$f" | grep -q '^#!'; then
+            sed -i \
+              -e '1s|^#!/bin/bash|#!${pkgs.bash}/bin/bash|' \
+              "$f" || true
+          fi
+        done
+      ''
+    else cfgRoot;
+
   # Default set based on upstream JaKooLit/Hyprland-Dots "config" tree
   defaultLinkables = [
     "Kvantum"
@@ -87,16 +106,16 @@ let
   toLink = unique (subtractLists (defaultLinkables ++ cfg.linkDirs) cfg.excludeDirs);
 
   linkHypr =
-    cfg.enable && cfgRoot != null && builtins.pathExists "${cfgRoot}/hypr"
+    cfg.enable && patchedCfgRoot != null && builtins.pathExists "${patchedCfgRoot}/hypr"
     && lib.elem "hypr" toLink;
 
   mkConfigFiles =
-    if cfg.enable && cfgRoot != null
+    if cfg.enable && patchedCfgRoot != null
     then lib.mkMerge (map
       (name:
-        lib.optionalAttrs (builtins.pathExists "${cfgRoot}/${name}") {
+        lib.optionalAttrs (builtins.pathExists "${patchedCfgRoot}/${name}") {
           "${name}" = {
-            source = "${cfgRoot}/${name}";
+            source = "${patchedCfgRoot}/${name}";
             recursive = true;
           };
         })
@@ -146,6 +165,16 @@ in
       '';
     };
 
+    patchShebangs = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        Rewrite common shebangs in the Dots' scripts to Nix store interpreter paths
+        before linking (avoids reliance on /bin or /usr/bin/env). This does not modify
+        upstream sources; it operates on a copied output used for linking.
+      '';
+    };
+
     installRuntimePackages = mkOption {
       type = types.bool;
       default = false;
@@ -158,30 +187,31 @@ in
     runtimePackages = mkOption {
       type = types.listOf types.package;
       default = with pkgs; [
-        rofi-wayland
-        waybar
-        wlogout
-        swww
-        swaynotificationcenter
         ags
-        hyprlock
+        brightnessctl
+        ffmpegthumbnailer
+        grim
+        gvfs
         hypridle
+        hyprlock
         hyprpaper
         hyprpicker
         jq
-        brightnessctl
-        playerctl
-        grim
-        slurp
-        wl-clipboard
-        swappy
-        xfce.thunar
-        gvfs
-        xfce.tumbler
-        ffmpegthumbnailer
-        papirus-icon-theme
         kdePackages.kwallet
         kdePackages.kwalletmanager
+        papirus-icon-theme
+        playerctl
+        rofi-wayland
+        slurp
+        swappy
+        swaynotificationcenter
+        swww
+        waybar
+        wl-clipboard
+        wlogout
+        xfce.thunar
+        xfce.tumbler
+        yad
       ];
       description = "Package set to install when installRuntimePackages = true. The default intentionally excludes wayvnc; use enableWayvnc if you need it.";
     };

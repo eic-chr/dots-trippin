@@ -20,6 +20,7 @@
       ./shell.nix
       ./starship.nix
       ./hyprland-dots-xdg.nix
+      ./kwallet.nix
 
       ./thunderbird.nix
       ./vscode.nix
@@ -55,6 +56,11 @@
     installRuntimePackages = true;
     # enableWayvnc disabled
     excludeDirs = [ "hypr" ];
+  };
+
+  # Autostart kwalletd6 for Hyprland hosts
+  programs.kwalletd6 = lib.mkIf (hostname == "offnix" || hostname == "devnix" || hostname == "playnix") {
+    enable = true;
   };
 
   # programs.rofi = lib.mkIf (hostname != "offnix") {

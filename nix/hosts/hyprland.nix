@@ -11,10 +11,6 @@
     package = (builtins.getAttr pkgs.system hyprlandInput.packages).hyprland;
   };
 
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-  environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
-  environment.sessionVariables.HYPRLAND_PLUGINS = "${hyprlandPluginsPkgs.hyprexpo}/lib/libhyprexpo.so";
-
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
   services.avahi = {
