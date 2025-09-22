@@ -16,6 +16,7 @@
     ./git.nix
     ./shell.nix
     ./starship.nix
+    ./hyprland-dots-xdg.nix
     ./kitty.nix
   ];
 
@@ -28,6 +29,13 @@
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
     userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
+  };
+
+  # Enable Hyprland-Dots XDG linking (host-independent)
+  programs.hyprlandDotsXdg = {
+    enable = true;
+    installRuntimePackages = true;
+
   };
 
   # Plasma-Konfiguration (möglicherweise andere Präferenzen als ce)

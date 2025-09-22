@@ -64,8 +64,7 @@
     kdePackages.kwallet
     kdePackages.kwalletmanager
 
-    # remote
-    wayvnc
+
   ];
 
   # Link Hyprland-Dots configs to ~/.config/*
@@ -102,32 +101,9 @@
           })
         linkable);
 
-  systemd.user.services.wayvnc = {
-    Unit = {
-      Description = "WayVNC server for Wayland/Hyprland";
-      PartOf = ["graphical-session.target"];
-      After = ["graphical-session.target"];
-    };
-    Service = {
-      ExecStart = "${pkgs.wayvnc}/bin/wayvnc --config %h/.config/wayvnc/config";
-      Restart = "on-failure";
-      RestartSec = 2;
-      Environment = "XDG_RUNTIME_DIR=%t";
-    };
-    Install = {
-      WantedBy = ["graphical-session.target"];
-    };
-  };
 
-  home.file.".config/wayvnc/config" = {
-    text = ''
-      address=0.0.0.0
-      enable_auth=false
-      username=guacuser
-      password=change-me
-      # port=5900
-    '';
-  };
+
+
 
   # Optional safety assertion (uncomment if you prefer hard failure over mkForce override)
   # assertions = [

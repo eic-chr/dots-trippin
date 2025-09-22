@@ -64,7 +64,7 @@ check_stow_pkg() {
     return 0
   fi
   if [[ ! -d "$dst" ]]; then
-    softwarn "Zielverzeichnis fehlt: $dst (bitte ./stow-hypr.sh ausführen)"
+    softwarn "Zielverzeichnis fehlt: $dst (bitte Nix/Home Manager aktivieren und switch ausführen)"
     return 0
   fi
 
@@ -81,9 +81,9 @@ check_stow_pkg() {
   done < <(find "$dst" -maxdepth 2 -type l -print0 2>/dev/null || true)
 
   if (( count > 0 )); then
-    pass "Stow-Links OK: $name → $dst (mind. 1 Link nach $src gefunden)"
+    pass "Links OK: $name → $dst (mind. 1 Link nach $src gefunden)"
   else
-    softwarn "Keine symlinks von $dst nach $src gefunden. Bitte ./stow-hypr.sh ausführen"
+    softwarn "Keine Links von $dst nach $src gefunden. Bitte Nix/Home Manager (hyprland-dots-xdg) aktivieren und switch ausführen"
   fi
 }
 
@@ -91,7 +91,7 @@ grepf() { grep -E -- "$1" "$2" >/dev/null 2>&1; }
 
 # ------------- checks -------------
 echo
-echo "${BOLD}==> 1) KooL-Dots Verlinkungen per stow${RESET}"
+echo "${BOLD}==> 1) KooL-Dots Verlinkungen (Nix/Home Manager)${RESET}"
 for p in "${STOW_PACKAGES[@]}"; do
   check_stow_pkg "$p"
 done
@@ -197,7 +197,7 @@ if [[ -f "$HYPR_MAIN" ]]; then
     softwarn "zz-local.conf nicht in hyprland.conf inkludiert (Home-Manager Aktivierung evtl. nicht gelaufen)"
   fi
 else
-  softwarn "hyprland.conf fehlt: $HYPR_MAIN (Bitte stow-Hypr ausführen)"
+  softwarn "hyprland.conf fehlt: $HYPR_MAIN (per Nix/Home Manager verlinken; Module aktivieren und switch ausführen)"
 fi
 
 # Optional: prüfen ob UserDecorations die Wallust-Farben sourct
@@ -238,7 +238,10 @@ echo "  Failed: ${RED}${FAILED}${RESET}"
 
 echo
 echo "${BOLD}==> Nächste Schritte (Tipps)${RESET}"
-echo "- Falls Stow-Links fehlen: ${DIM}./stow-hypr.sh${RESET}"
+echo "- Falls Links fehlen: über Nix/Home Manager bauen:"
+echo "    ${DIM}home-manager switch${RESET}  (user)"
+echo "    ${DIM}sudo nixos-rebuild switch${RESET}  (system)"
+echo "  Stelle sicher: programs.hyprlandDotsXdg.enable = true"
 echo "- Wallust-Farben generieren (eine Option):"
 echo "    ${DIM}swww-daemon --format xrgb &${RESET}"
 echo "    ${DIM}swww img ~/Pictures/wallpapers/IRGENDEINBILD.jpg${RESET}"

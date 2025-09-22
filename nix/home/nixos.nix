@@ -19,13 +19,13 @@
       ./git.nix
       ./shell.nix
       ./starship.nix
+      ./hyprland-dots-xdg.nix
 
       ./thunderbird.nix
       ./vscode.nix
       ./firefox.nix
     ]
-    ++ lib.optionals (hostname != "offnix") [./kitty.nix]
-    ++ lib.optionals (hostname == "offnix") [./offnix-kool.nix];
+    ++ lib.optionals (hostname != "offnix") [./kitty.nix];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
@@ -47,6 +47,14 @@
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
     userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
+  };
+
+  # Enable Hyprland-Dots XDG linking for offnix users (replaces stow-based approach)
+  programs.hyprlandDotsXdg = lib.mkIf (hostname == "offnix") {
+    enable = true;
+    installRuntimePackages = true;
+    # enableWayvnc disabled
+    excludeDirs = [ "hypr" ];
   };
 
   # programs.rofi = lib.mkIf (hostname != "offnix") {
@@ -141,7 +149,6 @@
       md2pdf
       pandoc
       signal-desktop
-      stow
       teamviewer
       waybar
       unstable.zed-editor
