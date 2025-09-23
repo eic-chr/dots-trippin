@@ -90,7 +90,6 @@ let
     "hyprlock"
     "hyprpaper"
     "kitty"
-    "nvim"
     "qt5ct"
     "qt6ct"
     "quickshell"
@@ -191,6 +190,7 @@ in
         ags
         brightnessctl
         ffmpegthumbnailer
+        cliphist
         grim
         gvfs
         hypridle
@@ -253,7 +253,7 @@ in
 
     # Optional local include content
     home.file = lib.mkMerge [
-      (mkIf (cfg.localIncludeContent != null && linkHypr) {
+      (mkIf (cfg.localIncludeContent != null) {
         ".config/hypr/zz-local.conf".text = cfg.localIncludeContent;
       })
       (mkIf cfg.enableWayvnc {

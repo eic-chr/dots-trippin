@@ -1,15 +1,14 @@
 {
   pkgs,
   hyprlandInput,
-  hyprlandPluginsPkgs,
   ...
 }: {
-  services.seatd.enable = true;
   programs.hyprland = {
     enable = true;
     withUWSM = true;
     package = (builtins.getAttr pkgs.system hyprlandInput.packages).hyprland;
   };
+
 
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
@@ -42,7 +41,23 @@
       xdg-user-dirs
       xdg-utils
 
+      # Hyprland user tools (previously in HM hyprland.nix)
+      brightnessctl
+      playerctl
+      grim
+      slurp
+      wl-clipboard
+      swappy
+      xfce.thunar
+      wlogout
+      jq
+      nwg-dock-hyprland
+      nwg-drawer
+      pamixer
+      pavucontrol
     ]) ++ python-packages;
+
+  # KWallet is started on-demand via D-Bus (see services.dbus.packages = [ pkgs.kdePackages.kwallet ];)
   # Create mount points for CIFS templates
   systemd.tmpfiles.rules = [
     "d /mnt/share-guest 0755 root root -"

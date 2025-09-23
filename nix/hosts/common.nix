@@ -98,6 +98,47 @@ in {
     login.kwallet.enable = true;
   };
 
+  # Provide D-Bus service for kwalletd6 (Plasma 6)
+  services.dbus.packages = [ pkgs.kdePackages.kwallet ];
+
+  # Ensure plasma-kwallet-pam starts at login
+  systemd.user.services.plasma-kwallet-pam-ensure = {
+    description = "Ensure plasma-kwallet-pam.service is started at login";
+    after = [ "graphical-session.target" "dbus.service" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service";
+      RemainAfterExit = true;
+    };
+  };
+
+  # Sanity-check Secret Service availability at user login (more robust)
+  systemd.user.services.secret-service-sanity = {
+    description = "Sanity-check Secret Service (org.freedesktop.secrets) availability at login";
+    wants = [ "plasma-kwallet-pam.service" ];
+    after = [ "plasma-kwallet-pam.service" "dbus.service" ];
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -lc '\
+for i in {1..10}; do \
+  if busctl --user list | grep -q org.freedesktop.secrets; then \
+    echo \"[OK] Secret Service available\"; exit 0; \
+  fi; \
+  sleep 0.5; \
+done; \
+echo \"[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam\"; \
+${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true; \
+sleep 1; \
+if busctl --user list | grep -q org.freedesktop.secrets; then \
+  echo \"[OK] Secret Service available after start\"; exit 0; \
+else \
+  echo \"[ERROR] Secret Service unavailable\"; exit 1; \
+fi'";
+    };
+  };
+
   # Audio mit PipeWire
   security.rtkit.enable = true;
   services.pipewire = {

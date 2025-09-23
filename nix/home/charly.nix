@@ -17,6 +17,7 @@
     ./shell.nix
     ./starship.nix
     ./hyprland-dots-xdg.nix
+    ./nwg-dock-hyprland.nix
     ./kitty.nix
   ];
 
@@ -36,6 +37,10 @@
     enable = true;
     installRuntimePackages = true;
 
+  };
+
+  programs.nwgDockHyprland = {
+    enable = true;
   };
 
   # Plasma-Konfiguration (möglicherweise andere Präferenzen als ce)
