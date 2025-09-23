@@ -20,7 +20,7 @@
       ./shell.nix
       ./starship.nix
       ./hyprland-dots-xdg.nix
-      ./kwallet.nix
+      # ./kwallet.nix
 
       ./thunderbird.nix
       ./vscode.nix

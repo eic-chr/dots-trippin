@@ -16,23 +16,12 @@
     jq
     kdePackages.kwallet
     kdePackages.kwalletmanager
+    nwg-dock-hyprland
+    pamixer
+    pavucontrol
   ];
 
-  systemd.user.services.kwalletd6 = {
-    Unit = {
-      Description = "KWallet daemon (kwalletd6) for non-Plasma sessions";
-      PartOf = ["hyprland-session.target"];
-      After = ["graphical-session.target" "hyprland-session.target"];
-    };
-    Service = {
-      ExecStart = "${pkgs.kdePackages.kwallet}/bin/kwalletd6";
-      Restart = "on-failure";
-      RestartSec = 2;
-    };
-    Install = {
-      WantedBy = ["hyprland-session.target"];
-    };
-  };
+
 
 
 
@@ -142,10 +131,10 @@
         ", XF86MonBrightnessUp, exec, brightnessctl set +5%"
         ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
 
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ", XF86AudioRaiseVolume, exec, pamixer -i 5"
+        ", XF86AudioLowerVolume, exec, pamixer -d 5"
+        ", XF86AudioMute, exec, pamixer -t"
+        ", XF86AudioMicMute, exec, pamixer --default-source -t"
 
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
@@ -172,6 +161,7 @@
       exec-once = [
         "hyprpaper"
         "waybar"
+        "~/.config/nwg-dock-hyprland/launch.sh"
       ];
     };
   };

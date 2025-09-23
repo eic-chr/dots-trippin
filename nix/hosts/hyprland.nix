@@ -22,8 +22,8 @@
   services.tumbler.enable = true;
 
   security.pam.services = {
-    sddm.enableKwallet = true;
-    login.enableKwallet = true;
+    sddm.kwallet.enable = true;
+    login.kwallet.enable = true;
   };
 
   environment.systemPackages = let

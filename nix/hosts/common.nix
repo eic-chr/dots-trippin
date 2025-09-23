@@ -94,8 +94,8 @@ in {
 
   # Enable KWallet unlock via PAM for SDDM and TTY login
   security.pam.services = {
-    sddm.enableKwallet = true;
-    login.enableKwallet = true;
+    sddm.kwallet.enable = true;
+    login.kwallet.enable = true;
   };
 
   # Audio mit PipeWire

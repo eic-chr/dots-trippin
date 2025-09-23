@@ -95,6 +95,7 @@ let
     "qt6ct"
     "quickshell"
     "rofi"
+    "nwg-dock-hyprland"
     "swww"
     "swappy"
     "swaync"
@@ -201,7 +202,10 @@ in
         kdePackages.kwalletmanager
         papirus-icon-theme
         playerctl
+        pamixer
+        pavucontrol
         rofi-wayland
+        nwg-dock-hyprland
         slurp
         swappy
         swaynotificationcenter
