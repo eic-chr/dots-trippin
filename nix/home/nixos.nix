@@ -131,7 +131,9 @@
   home.file.".config/hypr/UserConfigs/Keybinds.local.conf".text = ''
     # Toggle sidebar
     unbind = $mainMod, S
-    bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh
+    bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh --init
+    bind = $mainMod CTRL, right, exec, ~/.config/ml4w/scripts/sidepad.sh                      # Open Sidepad
+    bind = $mainMod CTRL, left, exec, ~/.config/ml4w/scripts/sidepad.sh --hide                # Close Sidepad
 
     # Power menu (wlogout)
     unbind = $mainMod SHIFT, E
