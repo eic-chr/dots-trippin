@@ -111,4 +111,56 @@ in {
 
   # Scanner support
   hardware.sane.enable = true;
+
+  # Ensure deep sleep is the default suspend mode
+  boot.kernelParams = [ "mem_sleep_default=deep" ];
+
+  # Disable Wake-on-LAN at boot (prevents unwanted wakeups)
+  systemd.services.disable-wol = {
+    description = "Disable Wake-on-LAN on all ethernet interfaces";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-pre.target" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      set -eu
+      for IFACE in /sys/class/net/*; do
+        NAME="$(basename "$IFACE")"
+        # Only touch physical interfaces
+        if [ -e "$IFACE/device" ]; then
+          ${pkgs.ethtool}/bin/ethtool -s "$NAME" wol d || true
+        fi
+      done
+    '';
+  };
+
+  # Persistently disable PCIe Root Port wake sources (RP03/RP04/RP05)
+  systemd.services.disable-acpi-wakeports = {
+    description = "Disable ACPI wake sources (RP03/RP04/RP05)";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      set -eu
+      for DEV in RP03 RP04 RP05; do
+        if grep -q "^$DEV.*\*enabled" /proc/acpi/wakeup; then
+          echo "$DEV" > /proc/acpi/wakeup
+        fi
+      done
+    '';
+  };
+
+  # Avoid Bluetooth autosuspend by forcing power/control=on for btusb devices
+  systemd.services.bt-usb-power-on = {
+    description = "Force Bluetooth USB devices power/control=on to avoid autosuspend";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "bluetooth.service" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      set -eu
+      for p in /sys/bus/usb/drivers/btusb/*/power/control; do
+        if [ -f "$p" ]; then
+          echo on > "$p" || true
+        fi
+      done
+    '';
+  };
 }

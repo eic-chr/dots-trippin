@@ -171,7 +171,7 @@ fi
 
 # --- Configuration ---
 WINDOW_CLASS="dotfiles-sidepad"
-HIDDEN_LEFT_GAP=10
+HIDDEN_LEFT_GAP=0
 VISIBLE_LEFT_GAP=10
 TARGET_WIDTH=700
 TARGET_WIDTH_MAX=1000
@@ -203,7 +203,7 @@ show_help() {
 }
 
 test_sidepad() {
-    if ! hyprctl clients -j | jq -e --arg class "$WINDOW_CLASS" '.[] | select(.class == $class)' > /dev/null; then
+    if ! hyprctl clients -j | jq -e --arg class "$WINDOW_CLASS" --arg title "$WINDOW_CLASS" '.[] | select((.class == $class) or (.initialClass == $class) or (.title|test($title)) or (.initialTitle|test($title)))' > /dev/null; then
         echo "1"
         return 1
     else
@@ -220,9 +220,9 @@ init_sidepad() {
         else
             eval "$1" &
         fi
-        # Wait for the window to appear, with a timeout
-        for i in {1..50}; do # ~2 seconds timeout
-            if hyprctl clients -j | jq -e --arg class "$WINDOW_CLASS" '.[] | select(.class == $class)' > /dev/null; then
+        # Wait for the window to appear, with a longer timeout (kwallet prompt etc.)
+        for i in {1..200}; do # ~20 seconds timeout
+            if hyprctl clients -j | jq -e --arg class "$WINDOW_CLASS" --arg title "$WINDOW_CLASS" '.[] | select((.class == $class) or (.initialClass == $class) or (.title|test($title)) or (.initialTitle|test($title)))' > /dev/null; then
                 break
             fi
             sleep 0.1
@@ -314,11 +314,11 @@ while [[ $# -gt 0 ]]; do
 done
 
 # --- Get Window and Monitor Info ---
-WINDOW_INFO=$(hyprctl clients -j | jq --arg class "$WINDOW_CLASS" '.[] | select(.class == $class)')
+WINDOW_INFO=$(hyprctl clients -j | jq --arg class "$WINDOW_CLASS" --arg title "$WINDOW_CLASS" '.[] | select((.class == $class) or (.initialClass == $class) or (.title|test($title)) or (.initialTitle|test($title)))')
 MONITOR_INFO=$(hyprctl monitors -j | jq -r '.[] | select(.focused == true)')
 
 if [ -z "$WINDOW_INFO" ]; then
-    echo "Error: Window with class '$WINDOW_CLASS' not found. Is the window open?"
+    echo "Error: Window not found (matching class or title '$WINDOW_CLASS'). Is the app running and unlocked?"
     exit 1
 fi
 
@@ -335,13 +335,12 @@ MONITOR_HEIGHT=$(echo "$MONITOR_INFO" | jq -r '.height')
 if [[ "$HIDE_REQUESTED" -eq 1 ]]; then
     if (( WINDOW_X >= 0 )); then # Only act if it is not already hidden
         echo "--- Hiding window (--hide) ---"
-        PIXELS_TO_MOVE_X=$(( (WINDOW_X * -1) - TARGET_WIDTH + HIDDEN_LEFT_GAP ))
-        WIDTH_CHANGE=$(( TARGET_WIDTH - WINDOW_WIDTH ))
-        PIXELS_TO_MOVE_Y=$(( TOP_GAP - WINDOW_Y ))
-        TARGET_HEIGHT=$(( MONITOR_HEIGHT - TOP_GAP - BOTTOM_GAP ))
-        HEIGHT_CHANGE=$(( TARGET_HEIGHT - WINDOW_HEIGHT ))
+        DESIRED_X=$(( HIDDEN_LEFT_GAP - TARGET_WIDTH ))
+        DESIRED_Y=$(( TOP_GAP ))
+        DESIRED_W=$(( TARGET_WIDTH ))
+        DESIRED_H=$(( MONITOR_HEIGHT - TOP_GAP - BOTTOM_GAP ))
 
-        hyprctl --batch "dispatch resizewindowpixel $WIDTH_CHANGE $HEIGHT_CHANGE,address:$WINDOW_ADDRESS; dispatch movewindowpixel $PIXELS_TO_MOVE_X $PIXELS_TO_MOVE_Y,address:$WINDOW_ADDRESS"
+        hyprctl --batch "dispatch resizewindowpixel exact $DESIRED_W $DESIRED_H,address:$WINDOW_ADDRESS; dispatch movewindowpixel exact $DESIRED_X $DESIRED_Y,address:$WINDOW_ADDRESS"
         echo "Operation completed."
     else
         echo "Window is already hidden."
@@ -352,42 +351,38 @@ fi
 # Case 2: Window is hidden, so show it.
 if (( WINDOW_X < 0 )); then
     echo "--- Showing window ---"
-    PIXELS_TO_MOVE_X=$(( VISIBLE_LEFT_GAP - WINDOW_X ))
-    WIDTH_CHANGE=$(( TARGET_WIDTH - WINDOW_WIDTH ))
-    PIXELS_TO_MOVE_Y=$(( TOP_GAP - WINDOW_Y ))
-    TARGET_HEIGHT=$(( MONITOR_HEIGHT - TOP_GAP - BOTTOM_GAP ))
-    HEIGHT_CHANGE=$(( TARGET_HEIGHT - WINDOW_HEIGHT ))
+    DESIRED_X=$(( VISIBLE_LEFT_GAP ))
+    DESIRED_Y=$(( TOP_GAP ))
+    DESIRED_W=$(( TARGET_WIDTH ))
+    DESIRED_H=$(( MONITOR_HEIGHT - TOP_GAP - BOTTOM_GAP ))
 
-    hyprctl --batch "dispatch resizewindowpixel $WIDTH_CHANGE $HEIGHT_CHANGE,address:$WINDOW_ADDRESS; dispatch movewindowpixel $PIXELS_TO_MOVE_X $PIXELS_TO_MOVE_Y,address:$WINDOW_ADDRESS"
+    hyprctl --batch "dispatch resizewindowpixel exact $DESIRED_W $DESIRED_H,address:$WINDOW_ADDRESS; dispatch movewindowpixel exact $DESIRED_X $DESIRED_Y,address:$WINDOW_ADDRESS"
     echo "Operation completed."
 
 # Case 3: Window is visible, so toggle its width and correct its position.
 else
-    # Ensure vertical position and height are correct
-    PIXELS_TO_MOVE_Y=$(( TOP_GAP - WINDOW_Y ))
-    TARGET_HEIGHT=$(( MONITOR_HEIGHT - TOP_GAP - BOTTOM_GAP ))
-    HEIGHT_CHANGE=$(( TARGET_HEIGHT - WINDOW_HEIGHT ))
+    # Set exact vertical position and height
+    DESIRED_Y=$(( TOP_GAP ))
+    DESIRED_H=$(( MONITOR_HEIGHT - TOP_GAP - BOTTOM_GAP ))
 
-    # Don't move horizontally
-    PIXELS_TO_MOVE_X=0
-
-    # Calculate width change
+    # Keep current X; toggle width exactly
+    DESIRED_X=$WINDOW_X
     if (( WINDOW_WIDTH == TARGET_WIDTH )); then
         echo "--- Expanding width to max ---"
-        WIDTH_CHANGE=$(( TARGET_WIDTH_MAX - WINDOW_WIDTH ))
+        DESIRED_W=$(( TARGET_WIDTH_MAX ))
     else
         echo "--- Shrinking width to default ---"
-        WIDTH_CHANGE=$(( TARGET_WIDTH - WINDOW_WIDTH ))
+        DESIRED_W=$(( TARGET_WIDTH ))
     fi
 
-    hyprctl --batch "dispatch resizewindowpixel $WIDTH_CHANGE $HEIGHT_CHANGE,address:$WINDOW_ADDRESS; dispatch movewindowpixel $PIXELS_TO_MOVE_X $PIXELS_TO_MOVE_Y,address:$WINDOW_ADDRESS"
+    hyprctl --batch "dispatch resizewindowpixel exact $DESIRED_W $DESIRED_H,address:$WINDOW_ADDRESS; dispatch movewindowpixel exact $DESIRED_X $DESIRED_Y,address:$WINDOW_ADDRESS"
     echo "Operation completed."
 fi
 ''; executable = true; };
 
   home.file.".config/sidepad/pads/signal".text = ''
     # Sidepad pad for Signal
-    SIDEPAD_APP="signal-desktop --pasword-store=kwallet6"
+    SIDEPAD_APP="signal-desktop --password-store=kwallet6"
     SIDEPAD_CLASS="Signal"
     SIDEPAD_OPTIONS=""
   '';
@@ -398,9 +393,10 @@ fi
 
   home.file.".config/hypr/UserConfigs/Keybinds.local.conf".text = ''
     # Toggle sidebar
+    unbind = $mainMod, S
     bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh
     # Select pad (rofi)
-    bind = $mainMod, Shift+S, exec, ~/.config/ml4w/scripts/sidepad.sh --select
+    bind = $mainMod, Shift+B, exec, ~/.config/ml4w/scripts/sidepad.sh --select
   '';
 
   # programs.rofi = lib.mkIf (hostname != "offnix") {
