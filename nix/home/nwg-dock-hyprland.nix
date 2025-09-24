@@ -163,22 +163,7 @@ let
     }
   '';
 
-  defaultLaunchSh = ''
-    #!/usr/bin/env bash
-    #    ___           __
-    #   / _ \___  ____/ /__
-    #  / // / _ \/ __/  '_/
-    # /____/\___/\__/_/\_\
-    #
 
-    if [ ! -f $HOME/.config/ml4w/settings/dock-disabled ]; then
-        killall nwg-dock-hyprland
-        sleep 0.5
-        nwg-dock-hyprland -i 32 -w 5 -mb 10 -x -s style.css -c "rofi -show drun"
-    else
-        echo ":: Dock disabled"
-    fi
-  '';
 in
 {
   options.programs.nwgDockHyprland = {
@@ -202,11 +187,7 @@ in
       description = "Content for ~/.config/nwg-dock-hyprland/style.css";
     };
 
-    launchSh = mkOption {
-      type = types.lines;
-      default = defaultLaunchSh;
-      description = "Content for ~/.config/nwg-dock-hyprland/launch.sh (will be marked executable)";
-    };
+
   };
 
   config = mkIf cfg.enable {
@@ -220,7 +201,7 @@ in
     xdg.configFile."nwg-dock-hyprland/style.css".text = cfg.styleCss;
 
     home.file.".config/nwg-dock-hyprland/launch.sh" = {
-      text = cfg.launchSh;
+      source = ../scripts/nwg-dock-hyprland/launch.sh;
       executable = true;
     };
   };

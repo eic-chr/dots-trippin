@@ -1,0 +1,12 @@
+# Sidepad pad for btop++
+# Launches btop in a Kitty terminal. The controller will inject --class dotfiles-sidepad.
+# Requires kitty and btop to be installed.
+
+# Launch command
+SIDEPAD_APP="kitty --hold -e btop"
+
+# Match the injected class from the controller (so Hyprland window rules can target it)
+SIDEPAD_CLASS="dotfiles-sidepad"
+
+# Optional controller options (leave empty if not needed)
+SIDEPAD_OPTIONS=""
