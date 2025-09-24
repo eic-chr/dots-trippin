@@ -1,0 +1,16 @@
+# Sidepad pad for Firefox (XWayland)
+# Forces Firefox to run under XWayland and assigns a unique class via --name
+#
+# Notes:
+# - MOZ_ENABLE_WAYLAND=0 forces X11/XWayland backend on a Wayland session.
+# - --name sets the X11 WM_CLASS, which Hyprland reads as "class" for XWayland windows.
+# - Adjust profile name if you use a different profile than "default".
+
+# Launch command (force XWayland + set unique class)
+SIDEPAD_APP="env MOZ_ENABLE_WAYLAND=0 firefox --no-remote -P default --name dotfiles-sidepad"
+
+# Hyprland window class to match (XWayland WM_CLASS)
+SIDEPAD_CLASS="dotfiles-sidepad"
+
+# Optional controller options (leave empty if not needed)
+SIDEPAD_OPTIONS=""

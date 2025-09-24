@@ -85,6 +85,7 @@
 
     # Ensure the sidebar window (ml4wsidebar) is floating
     windowrulev2 = float, class:^(dotfiles-sidepad|btop-sidepad)$
+    windowrulev2 = float, class:^(io.github.qwersyk.Newelle)$
   '';
 
   home.file.".config/hypr/UserConfigs/Workspaces.local.conf".text = ''
@@ -106,6 +107,10 @@
     executable = true;
   };
 
+  home.file.".config/sidepad/presets" = {
+    source = ../scripts/sidepad/presets;
+    recursive = true;
+  };
   home.file.".config/sidepad/pads" = {
     source = ../scripts/sidepad/pads;
     recursive = true;

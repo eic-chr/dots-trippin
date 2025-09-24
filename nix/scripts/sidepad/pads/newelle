@@ -1,0 +1,17 @@
+# Sidepad pad for Newelle (Flatpak)
+# Ensure Flathub remote is added and Newelle installed:
+#   flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+#   flatpak install flathub io.github.qwersyk.Newelle
+#
+# Hyprland reports (Wayland):
+#   class / initialClass: io.github.qwersyk.Newelle
+#   title: newelle
+
+# Launch command
+SIDEPAD_APP="flatpak run io.github.qwersyk.Newelle"
+
+# Hyprland window class to match
+SIDEPAD_CLASS="io.github.qwersyk.Newelle"
+
+# Optional controller options (e.g., width tuning); leave empty if not needed
+SIDEPAD_OPTIONS=""
