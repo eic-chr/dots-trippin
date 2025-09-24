@@ -115,6 +115,30 @@ in {
   # Scanner support
   hardware.sane.enable = true;
 
+  # Enable Flatpak with Flathub remote
+  services.flatpak.enable = true;
+  systemd.services.flatpak-add-flathub = {
+    description = "Add Flathub Flatpak remote (system-wide)";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      set -eu
+      if ! ${pkgs.flatpak}/bin/flatpak remotes --system | grep -q '^flathub'; then
+        ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
+      fi
+    '';
+  };
+
+  # XDG desktop portals (unique selection to avoid duplicate user units)
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+    ];
+  };
+
   # Ensure XHC1 wake source is enabled (USB wake for BT keyboards)
   systemd.services.enable-xhc1-wakesource = {
     description = "Enable ACPI XHC1 wake source at boot";

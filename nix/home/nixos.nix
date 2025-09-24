@@ -59,6 +59,7 @@
       source = ~/.config/hypr/UserConfigs/WindowRules.local.conf
       source = ~/.config/hypr/UserConfigs/Workspaces.local.conf
       source = ~/.config/hypr/UserConfigs/Keybinds.local.conf
+      source = ~/.config/hypr/UserConfigs/Polkit.local.conf
     '';
   };
 
@@ -83,7 +84,7 @@
     windowrulev2 = workspace 3 silent, class:^(vesktop|discord|Element)$
 
     # Ensure the sidebar window (ml4wsidebar) is floating
-    windowrulev2 = float, class:^(Signal)$
+    windowrulev2 = float, class:^(dotfiles-sidepad|btop-sidepad)$
   '';
 
   home.file.".config/hypr/UserConfigs/Workspaces.local.conf".text = ''
@@ -110,17 +111,30 @@
     recursive = true;
   };
 
-  home.file.".config/ml4w/settings/sidepad-active".text = ''
-    signal
+  home.activation.ensureSidepadActive = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    file="$HOME/.config/ml4w/settings/sidepad-active"
+    mkdir -p "$(dirname "$file")"
+    if [ ! -f "$file" ]; then
+      echo "btop" > "$file"
+    fi
   '';
 
+  home.file.".config/hypr/UserConfigs/Polkit.local.conf".text = ''
+    # Polkit agent for authentication dialogs (needed for logout/power actions)
+    exec-once = lxqt-policykit
+  '';
   home.file.".config/hypr/UserConfigs/Keybinds.local.conf".text = ''
     # Toggle sidebar
     unbind = $mainMod, S
     bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh
+
+    # Power menu (wlogout)
+    unbind = $mainMod SHIFT, E
+    bind = $mainMod SHIFT, E, exec, wlogout
+
     # Expand/shrink handled by toggle when visible (upstream behavior)
     # Select pad (rofi)
-    bind = $mainMod, Shift+B, exec, ~/.config/ml4w/scripts/sidepad.sh --select
+    bind = $mainMod SHIFT, B, exec, ~/.config/ml4w/scripts/sidepad.sh --select
   '';
 
   # programs.rofi = lib.mkIf (hostname != "offnix") {
