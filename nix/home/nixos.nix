@@ -8,6 +8,7 @@
   userFullName,
   hasPlasma,
   hostname,
+  splitMonitorWorkspaces,
   ...
 }: {
   # Importiere deine bestehenden Module
@@ -55,6 +56,7 @@
     excludeDirs = [ "nwg-dock-hyprland" ];
     # enableWayvnc disabled
     localIncludeContent = ''
+      source = ~/.config/hypr/UserConfigs/Plugins.local.conf
       source = ~/.config/hypr/UserConfigs/AutoStart.conf
       source = ~/.config/hypr/UserConfigs/WindowRules.local.conf
       source = ~/.config/hypr/UserConfigs/Workspaces.local.conf
@@ -77,6 +79,10 @@
     exec-once = ~/.config/ml4w/scripts/sidepad.sh --hide
   '';
 
+  home.file.".config/hypr/UserConfigs/Plugins.local.conf".text = ''
+    plugin = ${splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces}/lib/libsplit-monitor-workspaces.so
+  '';
+
   home.file.".config/hypr/UserConfigs/WindowRules.local.conf".text = ''
     # Example: route apps to specific workspaces (silent avoids focus jump)
     windowrulev2 = workspace 1 silent, class:^(code|codium|jetbrains-.*)$
@@ -89,11 +95,41 @@
   '';
 
   home.file.".config/hypr/UserConfigs/Workspaces.local.conf".text = ''
-    # Example persistent workspaces bound to monitors
-    # Find monitor names: hyprctl monitors
-    workspace = 1, monitor:eDP-1, persistent:true
-    workspace = 2, monitor:eDP-1, persistent:true
-    # workspace = 3, monitor:HDMI-A-1, persistent:true
+  plugin {
+    split-monitor-workspaces {
+        count = 5
+        keep_focused = 0
+        enable_notifications = 0
+        enable_persistent_workspaces = 1
+    }
+}
+
+$mainMod = SUPER
+# Switch workspaces with mainMod + [0-5]
+bind = $mainMod, 1, split-workspace, 1
+bind = $mainMod, 2, split-workspace, 2
+bind = $mainMod, 3, split-workspace, 3
+bind = $mainMod, 4, split-workspace, 4
+bind = $mainMod, 5, split-workspace, 5
+
+# Move active window to a workspace with mainMod + SHIFT + [0-5]
+bind = $mainMod SHIFT, 1, split-movetoworkspacesilent, 1
+bind = $mainMod SHIFT, 2, split-movetoworkspacesilent, 2
+bind = $mainMod SHIFT, 3, split-movetoworkspacesilent, 3
+bind = $mainMod SHIFT, 4, split-movetoworkspacesilent, 4
+bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
+# Example persistent workspaces bound to monitors
+# Find monitor names: hyprctl monitors
+# workspace = 1, monitor:eDP-1, persistent:true
+    # workspace = 2, monitor:eDP-1, persistent:true
+    # workspace = 3, monitor:eDP-1, persistent:true
+    # workspace = 4, monitor:eDP-1, persistent:true
+    # workspace = 5, monitor:eDP-1, persistent:true
+    # workspace = 6, monitor:HDMI-A-3, persistent:true
+    # workspace = 7, monitor:HDMI-A-3, persistent:true
+    # workspace = 8, monitor:HDMI-A-3, persistent:true
+    # workspace = 9, monitor:HDMI-A-3, persistent:true
+    # workspace = 0, monitor:HDMI-A-3, persistent:true
   '';
 
   # ml4w sidebar (Variant B) — sidepad scripts, pad, settings, keybinds
@@ -132,8 +168,8 @@
     # Toggle sidebar
     unbind = $mainMod, S
     bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh --init
-    bind = $mainMod CTRL, right, exec, ~/.config/ml4w/scripts/sidepad.sh                      # Open Sidepad
-    bind = $mainMod CTRL, left, exec, ~/.config/ml4w/scripts/sidepad.sh --hide                # Close Sidepad
+    bind = $mainMod CTRL ALT, right, exec, ~/.config/ml4w/scripts/sidepad.sh                      # Open Sidepad
+    bind = $mainMod CTRL ALT, left, exec, ~/.config/ml4w/scripts/sidepad.sh --hide                # Close Sidepad
 
     # Power menu (wlogout)
     unbind = $mainMod SHIFT, E
@@ -241,6 +277,7 @@
       waybar
       nwg-drawer
       inetutils
+      procps
       unstable.zed-editor
     ])
     ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
@@ -253,4 +290,14 @@
     defaultCacheTtl = 28800; # 8 Stunden
     maxCacheTtl = 86400; # 24 Stunden
   };
+  xdg.desktopEntries = {
+      signal = {
+        name = "Signal";
+        # comment = "Meine angepasste Version von Signal";
+        icon = "${pkgs.signal-desktop}/share/icons/hicolor/512x512/apps/signal-desktop.png"; # unverändert
+        exec = "${pkgs.signal-desktop}/bin/signal-desktop --password-store=kwallet6";
+        type = "Application";
+        categories = ["Network" "InstantMessaging"];
+      };
+    };
 }

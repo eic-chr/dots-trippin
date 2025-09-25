@@ -70,6 +70,7 @@ in {
     "ssb"
     "brcmfmac"
   ];
+  boot.supportedFilesystems = [ "cifs" ];
   # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
   # Netzwerk
@@ -244,6 +245,7 @@ fi'";
     };
   };
 
+  services.gvfs.enable = true;
   # Font-Konfiguration
   fonts = {
     packages = with pkgs; [
@@ -275,18 +277,20 @@ fi'";
       "x-systemd.idle-timeout=600"
       "_netdev"
       "vers=3.0"
-      "uid=1000"
-      "gid=1000"
+      "uid=christian"
+      "gid=christian"
       "file_mode=0600"
       "dir_mode=0700"
       "credentials=/home/christian/.smb_crd"
       "nofail"
       "nosuid"
       "nodev"
+      "x-systemd.after=network-online.target"
+      "x-systemd.requires=network-online.target"
     ];
   };
 
-  systemd.tmpfiles.rules = lib.mkIf (builtins.elem config.networking.hostName ["offnix" "devnix"]) [
+  systemd.tmpfiles.rules = lib.optionals (builtins.elem config.networking.hostName ["offnix" "devnix"]) [
     "d /home/christian/nas_home 0700 christian christian -"
   ];
 

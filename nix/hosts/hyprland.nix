@@ -1,12 +1,19 @@
 {
   pkgs,
   hyprlandInput,
+  splitMonitorWorkspaces,
   ...
 }: {
   programs.hyprland = {
     enable = true;
     withUWSM = true;
     package = (builtins.getAttr pkgs.system hyprlandInput.packages).hyprland;
+    # package =
+    #  (builtins.getAttr pkgs.system hyprlandInput.packages).hyprland.override {
+    #    plugins = [
+    #      splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces
+    #    ];
+     # };
   };
 
 

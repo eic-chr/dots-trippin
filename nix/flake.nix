@@ -51,6 +51,10 @@
       url = "github:JaKooLit/Hyprland-Dots";
       flake = false;
     };
+    split-monitor-workspaces = {
+      url = "github:Duckonaut/split-monitor-workspaces";
+      inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
+    };
 
     # nix-darwin for macOS
     darwin = {
@@ -71,6 +75,7 @@
     home-manager,
     plasma-manager,
     nixos-hardware,
+    split-monitor-workspaces,
     ...
   }: let
     # Host-zu-User Zuordnung
@@ -178,6 +183,7 @@
         hyprlandInput = inputs.hyprland;
         hyprlandPlugins = inputs.hyprland-plugins;
         hyprlandPluginsPkgs = inputs.hyprland-plugins.packages.${systemConfig.system};
+        splitMonitorWorkspaces = inputs.split-monitor-workspaces;
         hyprlandDots = inputs.hyprland-dots;
         hyprlandDotsLocal = let
           p = ./vendor/hyprland-dots;
