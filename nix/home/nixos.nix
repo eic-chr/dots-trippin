@@ -53,7 +53,7 @@
   programs.hyprlandDotsXdg = lib.mkIf (hostname == "offnix") {
     enable = true;
     installRuntimePackages = true;
-    excludeDirs = [ "nwg-dock-hyprland" ];
+    excludeDirs = ["nwg-dock-hyprland"];
     # enableWayvnc disabled
     localIncludeContent = ''
       source = ~/.config/hypr/UserConfigs/Plugins.local.conf
@@ -95,41 +95,41 @@
   '';
 
   home.file.".config/hypr/UserConfigs/Workspaces.local.conf".text = ''
-  plugin {
-    split-monitor-workspaces {
-        count = 5
-        keep_focused = 0
-        enable_notifications = 0
-        enable_persistent_workspaces = 1
+      plugin {
+        split-monitor-workspaces {
+            count = 5
+            keep_focused = 0
+            enable_notifications = 0
+            enable_persistent_workspaces = 1
+        }
     }
-}
 
-$mainMod = SUPER
-# Switch workspaces with mainMod + [0-5]
-bind = $mainMod, 1, split-workspace, 1
-bind = $mainMod, 2, split-workspace, 2
-bind = $mainMod, 3, split-workspace, 3
-bind = $mainMod, 4, split-workspace, 4
-bind = $mainMod, 5, split-workspace, 5
+    $mainMod = SUPER
+    # Switch workspaces with mainMod + [0-5]
+    bind = $mainMod, 1, split-workspace, 1
+    bind = $mainMod, 2, split-workspace, 2
+    bind = $mainMod, 3, split-workspace, 3
+    bind = $mainMod, 4, split-workspace, 4
+    bind = $mainMod, 5, split-workspace, 5
 
-# Move active window to a workspace with mainMod + SHIFT + [0-5]
-bind = $mainMod SHIFT, 1, split-movetoworkspacesilent, 1
-bind = $mainMod SHIFT, 2, split-movetoworkspacesilent, 2
-bind = $mainMod SHIFT, 3, split-movetoworkspacesilent, 3
-bind = $mainMod SHIFT, 4, split-movetoworkspacesilent, 4
-bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
-# Example persistent workspaces bound to monitors
-# Find monitor names: hyprctl monitors
-# workspace = 1, monitor:eDP-1, persistent:true
-    # workspace = 2, monitor:eDP-1, persistent:true
-    # workspace = 3, monitor:eDP-1, persistent:true
-    # workspace = 4, monitor:eDP-1, persistent:true
-    # workspace = 5, monitor:eDP-1, persistent:true
-    # workspace = 6, monitor:HDMI-A-3, persistent:true
-    # workspace = 7, monitor:HDMI-A-3, persistent:true
-    # workspace = 8, monitor:HDMI-A-3, persistent:true
-    # workspace = 9, monitor:HDMI-A-3, persistent:true
-    # workspace = 0, monitor:HDMI-A-3, persistent:true
+    # Move active window to a workspace with mainMod + SHIFT + [0-5]
+    bind = $mainMod SHIFT, 1, split-movetoworkspacesilent, 1
+    bind = $mainMod SHIFT, 2, split-movetoworkspacesilent, 2
+    bind = $mainMod SHIFT, 3, split-movetoworkspacesilent, 3
+    bind = $mainMod SHIFT, 4, split-movetoworkspacesilent, 4
+    bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
+    # Example persistent workspaces bound to monitors
+    # Find monitor names: hyprctl monitors
+    # workspace = 1, monitor:eDP-1, persistent:true
+        # workspace = 2, monitor:eDP-1, persistent:true
+        # workspace = 3, monitor:eDP-1, persistent:true
+        # workspace = 4, monitor:eDP-1, persistent:true
+        # workspace = 5, monitor:eDP-1, persistent:true
+        # workspace = 6, monitor:HDMI-A-3, persistent:true
+        # workspace = 7, monitor:HDMI-A-3, persistent:true
+        # workspace = 8, monitor:HDMI-A-3, persistent:true
+        # workspace = 9, monitor:HDMI-A-3, persistent:true
+        # workspace = 0, monitor:HDMI-A-3, persistent:true
   '';
 
   # ml4w sidebar (Variant B) — sidepad scripts, pad, settings, keybinds
@@ -152,7 +152,7 @@ bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
     recursive = true;
   };
 
-  home.activation.ensureSidepadActive = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.ensureSidepadActive = lib.hm.dag.entryAfter ["writeBoundary"] ''
     file="$HOME/.config/ml4w/settings/sidepad-active"
     mkdir -p "$(dirname "$file")"
     if [ ! -f "$file" ]; then
@@ -210,11 +210,13 @@ bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
     kwin.scripts.polonium.enable = false;
     input = {
       keyboard = {
-        layouts = [{
-          displayName = "US intl";
-          layout = "us";
-          variant = "intl";
-        }];
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
       };
       touchpads = [
         {
@@ -245,7 +247,7 @@ bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
 
     # Shortcuts
     shortcuts = {
-      ksmserver = { "Lock Session" = [ "Screensaver" "Meta+L" ]; };
+      ksmserver = {"Lock Session" = ["Screensaver" "Meta+L"];};
       kwin = {
         "Switch to Desktop 1" = "Meta+1";
         "Switch to Desktop 2" = "Meta+2";
@@ -280,7 +282,7 @@ bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
       procps
       unstable.zed-editor
     ])
-    ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
+    ++ lib.optionals (hostname == "offnix") [pkgs.kitty];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {
@@ -291,13 +293,13 @@ bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
     maxCacheTtl = 86400; # 24 Stunden
   };
   xdg.desktopEntries = {
-      signal = {
-        name = "Signal";
-        # comment = "Meine angepasste Version von Signal";
-        icon = "${pkgs.signal-desktop}/share/icons/hicolor/512x512/apps/signal-desktop.png"; # unverändert
-        exec = "${pkgs.signal-desktop}/bin/signal-desktop --password-store=kwallet6";
-        type = "Application";
-        categories = ["Network" "InstantMessaging"];
-      };
+    signal = {
+      name = "Signal";
+      # comment = "Meine angepasste Version von Signal";
+      icon = "${pkgs.signal-desktop}/share/icons/hicolor/512x512/apps/signal-desktop.png"; # unverändert
+      exec = "${pkgs.signal-desktop}/bin/signal-desktop --password-store=kwallet6";
+      type = "Application";
+      categories = ["Network" "InstantMessaging"];
     };
+  };
 }

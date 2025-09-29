@@ -1,6 +1,9 @@
-{ lib, pkgs, config, ... }:
-
-let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}: let
   inherit (lib) mkEnableOption mkOption mkIf types;
 
   cfg = config.programs.nwgDockHyprland;
@@ -162,10 +165,7 @@ let
     	box-shadow: none;
     }
   '';
-
-
-in
-{
+in {
   options.programs.nwgDockHyprland = {
     enable = mkEnableOption "Provision nwg-dock-hyprland config (colors.css, style.css, launch.sh)";
 
@@ -186,15 +186,13 @@ in
       default = defaultStyleCss;
       description = "Content for ~/.config/nwg-dock-hyprland/style.css";
     };
-
-
   };
 
   config = mkIf cfg.enable {
     xdg.enable = true;
 
     # Install runtime package if requested
-    home.packages = mkIf cfg.installPackage [ pkgs.nwg-dock-hyprland ];
+    home.packages = mkIf cfg.installPackage [pkgs.nwg-dock-hyprland];
 
     # Files under ~/.config/nwg-dock-hyprland
     xdg.configFile."nwg-dock-hyprland/colors.css".text = cfg.colorsCss;

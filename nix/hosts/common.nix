@@ -7,6 +7,7 @@
   users,
   userConfigs,
   hasPlasma,
+  hostname,
   unstable,
   ...
 }: let
@@ -18,6 +19,46 @@
         builtins.elem (userConfigs.${user}.profile or "none") trustedProfiles
     )
     users;
+
+  # CIFS options common to most shares
+  cifsCommonOptions = user: [
+    "vers=3.0"
+    "uid=${user}"
+    "gid=users"
+    "file_mode=0600"
+    "dir_mode=0700"
+    "nosuid"
+    "nodev"
+    "_netdev"
+    "x-systemd.automount"
+    "x-systemd.idle-timeout=600"
+    "x-systemd.after=network-online.target"
+    "x-systemd.requires=network-online.target"
+  ];
+  # CIFS shares definition (single source of truth)
+  cifsShares = [
+    rec {
+      name = "Multimedia";
+      what = "//nas1/Multimedia";
+      target = user: "/home/${user}/nas_multimedia";
+      credentials = user: "/home/${user}/.smb_crd";
+      options = user: (cifsCommonOptions user) ++ ["credentials=${credentials user}"];
+    }
+    rec {
+      name = "home";
+      what = "//nas1/home";
+      target = user: "/home/${user}/nas_home";
+      credentials = user: "/home/${user}/.smb_crd";
+      options = user: (cifsCommonOptions user) ++ ["credentials=${credentials user}"];
+    }
+    rec {
+      name = "Scans";
+      what = "//nas1/Scans";
+      target = user: "/home/${user}/nas_scans";
+      credentials = user: "/home/${user}/.smb_crd";
+      options = user: (cifsCommonOptions user) ++ ["credentials=${credentials user}"];
+    }
+  ];
 in {
   # Zeitzone und Lokalisierung
   time.timeZone = "Europe/Berlin";
@@ -70,7 +111,7 @@ in {
     "ssb"
     "brcmfmac"
   ];
-  boot.supportedFilesystems = [ "cifs" ];
+  boot.supportedFilesystems = ["cifs"];
   # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
   # Netzwerk
@@ -100,13 +141,13 @@ in {
   };
 
   # Provide D-Bus service for kwalletd6 (Plasma 6)
-  services.dbus.packages = [ pkgs.kdePackages.kwallet ];
+  services.dbus.packages = [pkgs.kdePackages.kwallet];
 
   # Ensure plasma-kwallet-pam starts at login
   systemd.user.services.plasma-kwallet-pam-ensure = {
     description = "Ensure plasma-kwallet-pam.service is started at login";
-    after = [ "graphical-session.target" "dbus.service" ];
-    wantedBy = [ "graphical-session.target" ];
+    after = ["graphical-session.target" "dbus.service"];
+    wantedBy = ["graphical-session.target"];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service";
@@ -117,26 +158,26 @@ in {
   # Sanity-check Secret Service availability at user login (more robust)
   systemd.user.services.secret-service-sanity = {
     description = "Sanity-check Secret Service (org.freedesktop.secrets) availability at login";
-    wants = [ "plasma-kwallet-pam.service" ];
-    after = [ "plasma-kwallet-pam.service" "dbus.service" ];
-    wantedBy = [ "default.target" ];
+    wants = ["plasma-kwallet-pam.service"];
+    after = ["plasma-kwallet-pam.service" "dbus.service"];
+    wantedBy = ["default.target"];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.bash}/bin/bash -lc '\
-for i in {1..10}; do \
-  if busctl --user list | grep -q org.freedesktop.secrets; then \
-    echo \"[OK] Secret Service available\"; exit 0; \
-  fi; \
-  sleep 0.5; \
-done; \
-echo \"[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam\"; \
-${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true; \
-sleep 1; \
-if busctl --user list | grep -q org.freedesktop.secrets; then \
-  echo \"[OK] Secret Service available after start\"; exit 0; \
-else \
-  echo \"[ERROR] Secret Service unavailable\"; exit 1; \
-fi'";
+                   for i in {1..10}; do \
+                     if busctl --user list | grep -q org.freedesktop.secrets; then \
+                       echo \"[OK] Secret Service available\"; exit 0; \
+                         fi; \
+                         sleep 0.5; \
+                         done; \
+                         echo \"[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam\"; \
+                         ${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true; \
+                         sleep 1; \
+                         if busctl --user list | grep -q org.freedesktop.secrets; then \
+                           echo \"[OK] Secret Service available after start\"; exit 0; \
+                         else \
+                           echo \"[ERROR] Secret Service unavailable\"; exit 1; \
+                             fi'";
     };
   };
 
@@ -163,8 +204,6 @@ fi'";
       libreoffice
       nextcloud-client
 
-
-
       lua-language-server
 
       # Netzwerk-Tools
@@ -185,7 +224,6 @@ fi'";
       inkscape
 
       # Browser
-
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
     ]
@@ -245,6 +283,15 @@ fi'";
     };
   };
 
+  # # Mountpoints erstellen und Rechte setzen
+  # system.activationScripts.mkMountDirs.text = ''
+  #   ${lib.concatStringsSep "\n" (map (user: ''
+  #       mkdir -p /mnt/nas_homes/${user}
+  #       chown ${user}:${user} /mnt/nas_homes/${user}
+  #     '')
+  #     users)}
+  # '';
+
   services.gvfs.enable = true;
   # Font-Konfiguration
   fonts = {
@@ -268,31 +315,46 @@ fi'";
     };
   };
 
-  # CIFS mount for christian on offnix/devnix
-  fileSystems."/home/christian/nas_home" = lib.mkIf (builtins.elem config.networking.hostName ["offnix" "devnix"]) {
-    device = "//nas1/home";
-    fsType = "cifs";
-    options = [
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=600"
-      "_netdev"
-      "vers=3.0"
-      "uid=christian"
-      "gid=christian"
-      "file_mode=0600"
-      "dir_mode=0700"
-      "credentials=/home/christian/.smb_crd"
-      "nofail"
-      "nosuid"
-      "nodev"
-      "x-systemd.after=network-online.target"
-      "x-systemd.requires=network-online.target"
-    ];
-  };
+  # CIFS mount for nas_home moved to hosts/offnix/configuration.nix
 
-  systemd.tmpfiles.rules = lib.optionals (builtins.elem config.networking.hostName ["offnix" "devnix"]) [
-    "d /home/christian/nas_home 0700 christian christian -"
-  ];
+  # systemd.tmpfiles.rules for nas_home moved to hosts/offnix/configuration.nix
+
+  # Autofs configuration removed
+
+  # Removed autofs map file
+
+  # Removed nas_home tmpfiles rule from common
+
+  # Removed activation script cleanup for nas_home units
+
+  # Derive CIFS mounts from cifsShares for offnix/devnix
+  fileSystems = lib.mkIf (builtins.elem config.networking.hostName ["offnix" "devnix"]) (
+    builtins.listToAttrs (
+      builtins.concatLists (map (
+          share:
+            map (user: {
+              name = share.target user;
+              value = {
+                device = share.what;
+                fsType = "cifs";
+                options = share.options user;
+              };
+            })
+            users
+        )
+        cifsShares)
+    )
+  );
+
+  # Ensure mount points and secrets directory exist
+  systemd.tmpfiles.rules = lib.optionals (builtins.elem config.networking.hostName ["offnix" "devnix"]) (
+    ["d /etc/nixos/secrets 0700 root root -"]
+    ++ builtins.concatLists (map (
+        share:
+          map (user: "d ${share.target user} 0700 ${user} ${user} -") users
+      )
+      cifsShares)
+  );
 
   # System State Version
   system.stateVersion = "25.05";

@@ -36,7 +36,6 @@
   programs.hyprlandDotsXdg = {
     enable = true;
     installRuntimePackages = true;
-
   };
 
   programs.nwgDockHyprland = {

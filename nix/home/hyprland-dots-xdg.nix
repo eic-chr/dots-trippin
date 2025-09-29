@@ -1,9 +1,10 @@
-{ lib
-, config
-, pkgs
-, hyprlandDots ? null
-, hyprlandDotsLocal ? null
-, ...
+{
+  lib,
+  config,
+  pkgs,
+  hyprlandDots ? null,
+  hyprlandDotsLocal ? null,
+  ...
 }:
 # Generic Home-Manager module to link JaKooLit Hyprland-Dots into ~/.config via xdg.configFile.
 #
@@ -56,13 +57,17 @@ let
     then hyprlandDots
     else null;
 
-  cfgRoot = if dotsRoot != null then "${dotsRoot}/config" else null;
+  cfgRoot =
+    if dotsRoot != null
+    then "${dotsRoot}/config"
+    else null;
 
   patchedCfgRoot =
     if cfg.enable && cfgRoot != null && cfg.patchShebangs
-    then pkgs.runCommandLocal "hyprland-dots-config-patched"
+    then
+      pkgs.runCommandLocal "hyprland-dots-config-patched"
       {
-        nativeBuildInputs = with pkgs; [ coreutils findutils gnused gnugrep bash ];
+        nativeBuildInputs = with pkgs; [coreutils findutils gnused gnugrep bash];
       } ''
         set -eu
         mkdir -p "$out"
@@ -106,30 +111,32 @@ let
   toLink = unique (subtractLists (defaultLinkables ++ cfg.linkDirs) cfg.excludeDirs);
 
   linkHypr =
-    cfg.enable && patchedCfgRoot != null && builtins.pathExists "${patchedCfgRoot}/hypr"
+    cfg.enable
+    && patchedCfgRoot != null
+    && builtins.pathExists "${patchedCfgRoot}/hypr"
     && lib.elem "hypr" toLink;
 
   mkConfigFiles =
     if cfg.enable && patchedCfgRoot != null
-    then lib.mkMerge (map
-      (name:
-        lib.optionalAttrs (builtins.pathExists "${patchedCfgRoot}/${name}") {
-          "${name}" = {
-            source = "${patchedCfgRoot}/${name}";
-            recursive = true;
-          };
-        })
-      toLink)
-    else { };
-in
-{
+    then
+      lib.mkMerge (map
+        (name:
+          lib.optionalAttrs (builtins.pathExists "${patchedCfgRoot}/${name}") {
+            "${name}" = {
+              source = "${patchedCfgRoot}/${name}";
+              recursive = true;
+            };
+          })
+        toLink)
+    else {};
+in {
   options.programs.hyprlandDotsXdg = {
     enable = mkEnableOption "Link JaKooLit Hyprland-Dots via xdg.configFile (replaces stow)";
 
     linkDirs = mkOption {
       type = types.listOf types.str;
       default = [];
-      example = [ "dunst" "swww" ];
+      example = ["dunst" "swww"];
       description = ''
         Additional subdirectories under the Dots' config/ to link into ~/.config.
         Only existing directories will be linked.
@@ -139,7 +146,7 @@ in
     excludeDirs = mkOption {
       type = types.listOf types.str;
       default = [];
-      example = [ "rofi" "nvim" ];
+      example = ["rofi" "nvim"];
       description = ''
         Subdirectories under the Dots' config/ to NOT link into ~/.config.
         Use this to skip or override parts of the upstream Dots.
@@ -268,8 +275,8 @@ in
     systemd.user.services.wayvnc = mkIf cfg.enableWayvnc {
       Unit = {
         Description = "WayVNC server for Wayland/Hyprland";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
+        PartOf = ["graphical-session.target"];
+        After = ["graphical-session.target"];
       };
       Service = {
         ExecStart = "${pkgs.wayvnc}/bin/wayvnc --config %h/.config/wayvnc/config";
@@ -278,14 +285,14 @@ in
         Environment = "XDG_RUNTIME_DIR=%t";
       };
       Install = {
-        WantedBy = [ "graphical-session.target" ];
+        WantedBy = ["graphical-session.target"];
       };
     };
 
     # wayvnc config now provided via combined home.file mkMerge above
 
     # Ensure hyprland.conf includes our local override file
-    home.activation.hyprLocalInclude = mkIf (cfg.ensureLocalInclude && linkHypr) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.hyprLocalInclude = mkIf (cfg.ensureLocalInclude && linkHypr) (lib.hm.dag.entryAfter ["writeBoundary"] ''
       conf="$HOME/.config/hypr/hyprland.conf"
       include="source = ~/.config/hypr/zz-local.conf"
       mkdir -p "$HOME/.config/hypr"

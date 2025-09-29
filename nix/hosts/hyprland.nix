@@ -13,9 +13,8 @@
     #    plugins = [
     #      splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces
     #    ];
-     # };
+    # };
   };
-
 
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
@@ -62,7 +61,8 @@
       nwg-drawer
       pamixer
       pavucontrol
-    ]) ++ python-packages;
+    ])
+    ++ python-packages;
 
   # KWallet is started on-demand via D-Bus (see services.dbus.packages = [ pkgs.kdePackages.kwallet ];)
   # Create mount points for CIFS templates

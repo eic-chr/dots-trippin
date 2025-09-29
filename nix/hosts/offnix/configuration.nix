@@ -119,9 +119,9 @@ in {
   services.flatpak.enable = true;
   systemd.services.flatpak-add-flathub = {
     description = "Add Flathub Flatpak remote (system-wide)";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
+    wantedBy = ["multi-user.target"];
+    after = ["network-online.target"];
+    wants = ["network-online.target"];
     serviceConfig.Type = "oneshot";
     script = ''
       set -eu
@@ -142,7 +142,7 @@ in {
   # Ensure XHC1 wake source is enabled (USB wake for BT keyboards)
   systemd.services.enable-xhc1-wakesource = {
     description = "Enable ACPI XHC1 wake source at boot";
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     serviceConfig.Type = "oneshot";
     script = ''
       set -eu
@@ -183,7 +183,7 @@ in {
   # Disable LID wake source (LID0) at boot to prevent unintended wakeups
   systemd.services.disable-lid-wakesource = {
     description = "Disable ACPI LID0 wake source";
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     serviceConfig.Type = "oneshot";
     script = ''
       set -eu
@@ -196,8 +196,8 @@ in {
   # Clear RTC wakealarm before each suspend/hibernate to avoid scheduled wakeups
   systemd.services.clear-rtc-wakealarm = {
     description = "Clear RTC wakealarm before suspend/hibernate";
-    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
-    before = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
+    wantedBy = ["suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target"];
+    before = ["suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target"];
     serviceConfig.Type = "oneshot";
     script = ''
       set -eu
@@ -208,13 +208,13 @@ in {
   };
 
   # Ensure deep sleep is the default suspend mode
-  boot.kernelParams = [ "mem_sleep_default=s2idle" ];
+  boot.kernelParams = ["mem_sleep_default=s2idle"];
 
   # Disable Wake-on-LAN at boot (prevents unwanted wakeups)
   systemd.services.disable-wol = {
     description = "Disable Wake-on-LAN on all ethernet interfaces";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network-pre.target" ];
+    wantedBy = ["multi-user.target"];
+    after = ["network-pre.target"];
     serviceConfig.Type = "oneshot";
     script = ''
       set -eu
@@ -231,7 +231,7 @@ in {
   # Persistently disable PCIe Root Port wake sources (RP03/RP04/RP05)
   systemd.services.disable-acpi-wakeports = {
     description = "Disable ACPI wake sources (RP03/RP04/RP05)";
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     serviceConfig.Type = "oneshot";
     script = ''
       set -eu
@@ -246,8 +246,8 @@ in {
   # Avoid Bluetooth autosuspend by forcing power/control=on for btusb devices
   systemd.services.bt-usb-power-on = {
     description = "Force Bluetooth USB devices power/control=on to avoid autosuspend";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "bluetooth.service" ];
+    wantedBy = ["multi-user.target"];
+    after = ["bluetooth.service"];
     serviceConfig.Type = "oneshot";
     script = ''
       set -eu
@@ -263,4 +263,25 @@ in {
       done
     '';
   };
+  # Explicit systemd automount + mount units for nas_home
+  systemd.automounts = builtins.map (user: {
+    where = "/home/${user}/nas_home";
+    automountConfig.TimeoutIdleSec = "10min";
+    wantedBy = ["multi-user.target"];
+  })
+  users;
+
+  systemd.mounts = builtins.map (user: {
+    what = "//nas1/home";
+    where = "/home/${user}/nas_home";
+    type = "cifs";
+    options = "vers=3.0,uid=${user},gid=users,file_mode=0600,dir_mode=0700,credentials=/home/${user}/.smb_crd,nosuid,nodev,_netdev";
+    after = ["network-online.target"];
+    requires = ["network-online.target"];
+  })
+  users;
+
+  systemd.tmpfiles.rules =
+    ["d /etc/nixos/secrets 0700 root root -"]
+    ++ builtins.map (user: "d /home/${user}/nas_home 0700 ${user} ${user} -") users;
 }
