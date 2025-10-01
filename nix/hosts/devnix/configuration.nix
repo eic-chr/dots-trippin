@@ -1,6 +1,4 @@
-# NixOS Konfiguration für devnix VM
 {
-  config,
   pkgs,
   lib,
   hostname,
@@ -15,6 +13,7 @@ in {
     ./hardware-configuration.nix
     ../common.nix
     ../hyprland.nix # system Hyprland setup
+    ../shares.nix
   ];
 
   # Hostname

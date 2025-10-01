@@ -1,14 +1,11 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
 {
-  config,
   nur,
   pkgs,
   lib,
   users,
   userConfigs,
   hasPlasma,
-  hostname,
-  unstable,
   ...
 }: let
   # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
@@ -19,46 +16,6 @@
         builtins.elem (userConfigs.${user}.profile or "none") trustedProfiles
     )
     users;
-
-  # CIFS options common to most shares
-  cifsCommonOptions = user: [
-    "vers=3.0"
-    "uid=${user}"
-    "gid=users"
-    "file_mode=0600"
-    "dir_mode=0700"
-    "nosuid"
-    "nodev"
-    "_netdev"
-    "x-systemd.automount"
-    "x-systemd.idle-timeout=600"
-    "x-systemd.after=network-online.target"
-    "x-systemd.requires=network-online.target"
-  ];
-  # CIFS shares definition (single source of truth)
-  cifsShares = [
-    rec {
-      name = "Multimedia";
-      what = "//nas1/Multimedia";
-      target = user: "/home/${user}/nas_multimedia";
-      credentials = user: "/home/${user}/.smb_crd";
-      options = user: (cifsCommonOptions user) ++ ["credentials=${credentials user}"];
-    }
-    rec {
-      name = "home";
-      what = "//nas1/home";
-      target = user: "/home/${user}/nas_home";
-      credentials = user: "/home/${user}/.smb_crd";
-      options = user: (cifsCommonOptions user) ++ ["credentials=${credentials user}"];
-    }
-    rec {
-      name = "Scans";
-      what = "//nas1/Scans";
-      target = user: "/home/${user}/nas_scans";
-      credentials = user: "/home/${user}/.smb_crd";
-      options = user: (cifsCommonOptions user) ++ ["credentials=${credentials user}"];
-    }
-  ];
 in {
   # Zeitzone und Lokalisierung
   time.timeZone = "Europe/Berlin";
@@ -75,24 +32,11 @@ in {
     LC_TIME = "de_DE.UTF-8";
   };
 
-  # Console Keymap
   console.keyMap = "us";
 
-  # X11 und Desktop Environment (KDE Plasma)
-  services.xserver = {
-    enable = true;
-    xkb = {
-      layout = "us";
-      variant = "intl";
-    };
-  };
-
-  # Display Manager - Neue separate Konfiguration
   services.displayManager.sddm = {
     enable = true;
-    # Für MacBook Pro 2014: X11 ist stabiler
   };
-  # Desktop Manager - Neue separate Konfiguration
   services.desktopManager.plasma6.enable = true;
 
   # XDG Portal für KDE
@@ -121,17 +65,7 @@ in {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Benutzer werden in host-spezifischen Configs definiert
-  # (entfernt um Konflikte zu vermeiden)
-
   programs.zsh.enable = true;
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-
-  # List services that you want to enable:
-
-  # Sudo ohne Passwort für wheel-Gruppe
   security.sudo.wheelNeedsPassword = false;
 
   # Enable KWallet unlock via PAM for SDDM and TTY login
@@ -283,15 +217,6 @@ in {
     };
   };
 
-  # # Mountpoints erstellen und Rechte setzen
-  # system.activationScripts.mkMountDirs.text = ''
-  #   ${lib.concatStringsSep "\n" (map (user: ''
-  #       mkdir -p /mnt/nas_homes/${user}
-  #       chown ${user}:${user} /mnt/nas_homes/${user}
-  #     '')
-  #     users)}
-  # '';
-
   services.gvfs.enable = true;
   # Font-Konfiguration
   fonts = {
@@ -314,47 +239,6 @@ in {
       hinting.style = "slight";
     };
   };
-
-  # CIFS mount for nas_home moved to hosts/offnix/configuration.nix
-
-  # systemd.tmpfiles.rules for nas_home moved to hosts/offnix/configuration.nix
-
-  # Autofs configuration removed
-
-  # Removed autofs map file
-
-  # Removed nas_home tmpfiles rule from common
-
-  # Removed activation script cleanup for nas_home units
-
-  # Derive CIFS mounts from cifsShares for offnix/devnix
-  fileSystems = lib.mkIf (builtins.elem config.networking.hostName ["offnix" "devnix"]) (
-    builtins.listToAttrs (
-      builtins.concatLists (map (
-          share:
-            map (user: {
-              name = share.target user;
-              value = {
-                device = share.what;
-                fsType = "cifs";
-                options = share.options user;
-              };
-            })
-            users
-        )
-        cifsShares)
-    )
-  );
-
-  # Ensure mount points and secrets directory exist
-  systemd.tmpfiles.rules = lib.optionals (builtins.elem config.networking.hostName ["offnix" "devnix"]) (
-    ["d /etc/nixos/secrets 0700 root root -"]
-    ++ builtins.concatLists (map (
-        share:
-          map (user: "d ${share.target user} 0700 ${user} ${user} -") users
-      )
-      cifsShares)
-  );
 
   # System State Version
   system.stateVersion = "25.05";

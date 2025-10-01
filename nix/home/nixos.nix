@@ -65,16 +65,14 @@
     '';
   };
 
-  programs.nwgDockHyprland = lib.mkIf (hostname == "offnix") {
-    enable = true;
-  };
+  programs.nwgDockHyprland.enable = true;
 
   home.file.".config/hypr/UserConfigs/AutoStart.conf".text = ''
     exec-once = $HOME/.config/nwg-dock-hyprland/launch.sh
-    exec-once = hyprctl dispatch renameworkspace 1 Dev
-    exec-once = hyprctl dispatch renameworkspace 2 Web
-    exec-once = hyprctl dispatch renameworkspace 3 Messenger
-    exec-once = hyprctl dispatch renameworkspace 4 Mail
+    # exec-once = hyprctl dispatch renameworkspace 1 Dev
+    # exec-once = hyprctl dispatch renameworkspace 2 Web
+    # exec-once = hyprctl dispatch renameworkspace 3 Messenger
+    # exec-once = hyprctl dispatch renameworkspace 4 Mail
     exec-once = ~/.config/ml4w/scripts/sidepad.sh --init
     exec-once = ~/.config/ml4w/scripts/sidepad.sh --hide
   '';

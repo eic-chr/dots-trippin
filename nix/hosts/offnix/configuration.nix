@@ -1,6 +1,5 @@
 # NixOS Konfiguration für offnix Laptop
 {
-  config,
   pkgs,
   lib,
   hostname,
@@ -15,6 +14,7 @@ in {
     ./hardware-configuration.nix
     ../common.nix
     ../hyprland.nix # system Hyprland setup
+    ../shares.nix
   ];
 
   # Hostname
@@ -41,25 +41,6 @@ in {
 
   # Use Wayland/Hyprland session; disable X server to avoid conflicts.
   services.xserver.enable = lib.mkForce false;
-
-  # Laptop-spezifische Hardware-Unterstützung
-  # services.tlp = {
-  #   enable = true;
-  #   settings = {
-  #     CPU_SCALING_GOVERNOR_ON_AC = "performance";
-  #     CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-  #
-  #     # Battery charge thresholds (falls unterstützt)
-  #     START_CHARGE_THRESH_BAT0 = 40;
-  #     STOP_CHARGE_THRESH_BAT0 = 80;
-  #
-  #     # CPU frequency scaling
-  #     CPU_MIN_PERF_ON_AC = 0;
-  #     CPU_MAX_PERF_ON_AC = 100;
-  #     CPU_MIN_PERF_ON_BAT = 0;
-  #     CPU_MAX_PERF_ON_BAT = 30;
-  #   };
-  # };
 
   # Bluetooth
   hardware.bluetooth = {
@@ -96,10 +77,6 @@ in {
 
   # Hardware-spezifische Services
   services.thermald.enable = true; # Intel thermal management
-  # services.auto-cpufreq.enable = true;  # Automatische CPU-Frequenz-Anpassung
-
-  # Backlight control
-  # hardware.brightnessctl.enable = true;
 
   # Printing support
   services.printing = {
@@ -263,25 +240,4 @@ in {
       done
     '';
   };
-  # Explicit systemd automount + mount units for nas_home
-  systemd.automounts = builtins.map (user: {
-    where = "/home/${user}/nas_home";
-    automountConfig.TimeoutIdleSec = "10min";
-    wantedBy = ["multi-user.target"];
-  })
-  users;
-
-  systemd.mounts = builtins.map (user: {
-    what = "//nas1/home";
-    where = "/home/${user}/nas_home";
-    type = "cifs";
-    options = "vers=3.0,uid=${user},gid=users,file_mode=0600,dir_mode=0700,credentials=/home/${user}/.smb_crd,nosuid,nodev,_netdev";
-    after = ["network-online.target"];
-    requires = ["network-online.target"];
-  })
-  users;
-
-  systemd.tmpfiles.rules =
-    ["d /etc/nixos/secrets 0700 root root -"]
-    ++ builtins.map (user: "d /home/${user}/nas_home 0700 ${user} ${user} -") users;
 }
