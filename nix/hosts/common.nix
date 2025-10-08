@@ -131,6 +131,13 @@ in {
       btop
       cifs-utils
       curl
+      ntfs3g      # NTFS-Support (Lesen/Schreiben)
+      dosfstools  # FAT/FAT32/ExFAT Tools (mkfs.vfat usw.)
+      exfatprogs  # ExFAT Support
+      screen
+      minicom
+      picocom    # minimalistisch
+      tio        # modern & angenehm
 
       git
       htop
@@ -139,6 +146,7 @@ in {
       nextcloud-client
 
       lua-language-server
+      gparted
 
       # Netzwerk-Tools
       dig

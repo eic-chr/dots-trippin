@@ -98,7 +98,7 @@ let
     "qt5ct"
     "qt6ct"
     "quickshell"
-    "rofi"
+    # "rofi"
     "nwg-dock-hyprland"
     "swww"
     "swappy"
@@ -211,7 +211,8 @@ in {
         playerctl
         pamixer
         pavucontrol
-        rofi-wayland
+        # rofi-wayland
+        # rofi-calc
         nwg-dock-hyprland
         slurp
         swappy

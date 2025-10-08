@@ -44,6 +44,7 @@
       slurp
       wl-clipboard
       swappy
+      rofi-calc
       xfce.thunar
       wlogout
       jq

@@ -163,6 +163,9 @@
     exec-once = lxqt-policykit
   '';
   home.file.".config/hypr/UserConfigs/Keybinds.local.conf".text = ''
+    # Toggle Rofi
+
+    bind = $mainMod, D, exec, pkill rofi || true && rofi -show drun -modi drun,filebrowser,run,window,calc # Main Menu (APP Launcher)
     # Toggle sidebar
     unbind = $mainMod, S
     bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh --init
@@ -178,21 +181,25 @@
     bind = $mainMod SHIFT, B, exec, ~/.config/ml4w/scripts/sidepad.sh --select
   '';
 
-  # programs.rofi = lib.mkIf (hostname != "offnix") {
-  #   enable = true;
-  #   package = pkgs.rofi-wayland;
-  #   terminal = "kitty";
-  #   theme = "~/.config/rofi/themes/catppuccin-mocha.rasi";
-  #   extraConfig = {
-  #     modi = "drun,run,window";
-  #     show-icons = true;
-  #     icon-theme = "Papirus-Dark";
-  #     drun-display-format = "{icon} {name}";
-  #     display-drun = "Apps";
-  #     display-run = "Run";
-  #     display-window = "Windows";
-  #   };
-  # };
+  programs.rofi = {
+    enable = true;
+    package = pkgs.rofi-wayland;
+		plugins = with pkgs; [
+			(rofi-calc.override { rofi-unwrapped = rofi-wayland-unwrapped; })
+		];
+    terminal = "kitty";
+    theme = "~/.config/rofi/themes/KooL_style-10-Fancy.rasi";
+    extraConfig = {
+      modi = "drun,run,window,calc";
+      show-icons = true;
+      icon-theme = "Papirus-Dark";
+      drun-display-format = "{icon} {name}";
+      display-drun = "Apps";
+      display-run = "Run";
+      display-window = "Windows";
+      display-calc = "Calculator";
+    };
+  };
 
   # Plasma-spezifische Konfiguration nur für Systeme mit KDE
   programs.plasma = lib.mkIf hasPlasma {

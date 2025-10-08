@@ -31,7 +31,7 @@ in {
         isNormalUser = true;
         description = userConfigs.${user}.fullName or user;
         extraGroups =
-          ["networkmanager" "audio" "video" "scanner" "lp" "input" "seat"]
+          ["dialout" "networkmanager" "audio" "video" "scanner" "lp" "input" "seat"]
           ++ lib.optionals (isAdmin user) ["wheel"]
           ++ lib.optionals (isDeveloper user) ["docker"];
         shell = pkgs.zsh;

@@ -16,6 +16,7 @@
 
     # Multimedia
     imagemagick
+    exiftool
     clipgrab
     # Search & text processing
     ripgrep # recursively searches directories for a regex pattern
