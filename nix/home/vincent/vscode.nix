@@ -4,13 +4,12 @@
   hasPlasma ? false,
   ...
 }: {
-  nixpkgs.config.allowUnfree = true;
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode;
+    package = pkgs.vscodium;
 
     # Extensions
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       # Vim Integration
 
       # Git
@@ -48,7 +47,7 @@
     # Entferne den problematischen marketplace-Block erstmal
 
     # VSCode Settings
-    userSettings =
+    profiles.default.userSettings =
       {
         # Editor Settings
         "editor.fontSize" = 14;
@@ -147,7 +146,7 @@
       );
 
     # Keybindings (zusätzlich zu Vim-Mappings)
-    keybindings = [
+    profiles.default.keybindings = [
       # Terminal shortcuts
       {
         "key" =
@@ -210,7 +209,5 @@
     asciidoctor
 
     # Other useful tools
-    ripgrep # Fast grep for VSCode search
-    fd # Fast find alternative
   ];
 }

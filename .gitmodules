@@ -1,0 +1,3 @@
+[submodule "hyprland-dots"]
+	path = hyprland-dots
+	url = https://github.com/JaKooLit/Hyprland-Dots

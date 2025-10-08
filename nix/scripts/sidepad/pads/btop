@@ -1,0 +1,12 @@
+# Sidepad pad for btop++
+# Launches btop in a Kitty terminal. Sets kitty class directly to avoid controller injection.
+# Requires kitty and btop to be installed.
+
+# Launch command
+SIDEPAD_APP="kitty --class btop-sidepad --hold -e btop --config ../presets/btop.conf --preset 2"
+
+# Match the kitty class set above (so Hyprland window rules can target it)
+SIDEPAD_CLASS="btop-sidepad"
+
+# Optional controller options (leave empty if not needed)
+SIDEPAD_OPTIONS="--width 1000"

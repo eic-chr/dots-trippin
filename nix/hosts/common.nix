@@ -1,6 +1,5 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
 {
-  config,
   nur,
   pkgs,
   lib,
@@ -33,24 +32,11 @@ in {
     LC_TIME = "de_DE.UTF-8";
   };
 
-  # Console Keymap
   console.keyMap = "us";
 
-  # X11 und Desktop Environment (KDE Plasma)
-  services.xserver = {
-    enable = true;
-    xkb = {
-      layout = "de";
-    };
-  };
-
-  # Display Manager - Neue separate Konfiguration
-  # Display Manager - Neue separate Konfiguration
   services.displayManager.sddm = {
     enable = true;
-    # Für MacBook Pro 2014: X11 ist stabiler
   };
-  # Desktop Manager - Neue separate Konfiguration
   services.desktopManager.plasma6.enable = true;
 
   # XDG Portal für KDE
@@ -61,6 +47,15 @@ in {
     ];
   };
 
+  boot.extraModulePackages = [pkgs.linuxPackages.broadcom_sta];
+  boot.blacklistedKernelModules = [
+    "b43"
+    "bcma"
+    "brcmsmac"
+    "ssb"
+    "brcmfmac"
+  ];
+  boot.supportedFilesystems = ["cifs"];
   # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
   # Netzwerk
@@ -70,18 +65,55 @@ in {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Benutzer werden in host-spezifischen Configs definiert
-  # (entfernt um Konflikte zu vermeiden)
-
   programs.zsh.enable = true;
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-
-  # List services that you want to enable:
-
-  # Sudo ohne Passwort für wheel-Gruppe
   security.sudo.wheelNeedsPassword = false;
+
+  # Enable KWallet unlock via PAM for SDDM and TTY login
+  security.pam.services = {
+    sddm.kwallet.enable = true;
+    login.kwallet.enable = true;
+  };
+
+  # Provide D-Bus service for kwalletd6 (Plasma 6)
+  services.dbus.packages = [pkgs.kdePackages.kwallet];
+
+  # Ensure plasma-kwallet-pam starts at login
+  systemd.user.services.plasma-kwallet-pam-ensure = {
+    description = "Ensure plasma-kwallet-pam.service is started at login";
+    after = ["graphical-session.target" "dbus.service"];
+    wantedBy = ["graphical-session.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service";
+      RemainAfterExit = true;
+    };
+  };
+
+  # Sanity-check Secret Service availability at user login (more robust)
+  systemd.user.services.secret-service-sanity = {
+    description = "Sanity-check Secret Service (org.freedesktop.secrets) availability at login";
+    wants = ["plasma-kwallet-pam.service"];
+    after = ["plasma-kwallet-pam.service" "dbus.service"];
+    wantedBy = ["default.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -lc '\
+                   for i in {1..10}; do \
+                     if busctl --user list | grep -q org.freedesktop.secrets; then \
+                       echo \"[OK] Secret Service available\"; exit 0; \
+                         fi; \
+                         sleep 0.5; \
+                         done; \
+                         echo \"[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam\"; \
+                         ${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true; \
+                         sleep 1; \
+                         if busctl --user list | grep -q org.freedesktop.secrets; then \
+                           echo \"[OK] Secret Service available after start\"; exit 0; \
+                         else \
+                           echo \"[ERROR] Secret Service unavailable\"; exit 1; \
+                             fi'";
+    };
+  };
 
   # Audio mit PipeWire
   security.rtkit.enable = true;
@@ -99,24 +131,26 @@ in {
       btop
       cifs-utils
       curl
-      file
+      ntfs3g      # NTFS-Support (Lesen/Schreiben)
+      dosfstools  # FAT/FAT32/ExFAT Tools (mkfs.vfat usw.)
+      exfatprogs  # ExFAT Support
+      screen
+      minicom
+      picocom    # minimalistisch
+      tio        # modern & angenehm
+
       git
       htop
       keepassxc
       libreoffice
       nextcloud-client
-      python3
-      thunderbird
-      tree
-      unzip
+
       lua-language-server
-      wget
-      which
-      zip
+      gparted
 
       # Netzwerk-Tools
       dig
-      nmap
+
       traceroute
 
       # Development
@@ -126,14 +160,12 @@ in {
       pkg-config
       markdownlint-cli2
 
-      wl-clipboard
       # Multimedia
       vlc
       gimp
       inkscape
 
       # Browser
-      chromium
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
     ]
@@ -172,8 +204,11 @@ in {
   };
   # Nixpkgs-Konfiguration mit NUR
   nixpkgs.overlays = [
-    nur.overlay
+    nur.overlays.default
   ];
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["code" "vscode" "vscode-fhs" "vscode-with-extensions" "visual-studio-code" "vscode-insiders" "vscode-extension-ms-vsliveshare-vsliveshare" "vscode-extension-ms-vscode-remote-remote-containers" "discord" "teamviewer" "broadcom-sta" "postman"];
+
+  nixpkgs.config.allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) ["broadcom-sta"];
   # Firewall
   networking.firewall = {
     enable = false;
@@ -190,15 +225,19 @@ in {
     };
   };
 
+  services.gvfs.enable = true;
   # Font-Konfiguration
   fonts = {
     packages = with pkgs; [
+      font-awesome
+      material-design-icons
       noto-fonts
       noto-fonts-emoji
       liberation_ttf
       fira-code
       fira-code-symbols
-      # (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
     ];
 
     fontconfig = {

@@ -1,6 +1,4 @@
-# NixOS Konfiguration für devnix VM
 {
-  config,
   pkgs,
   lib,
   hostname,
@@ -14,10 +12,21 @@ in {
   imports = [
     ./hardware-configuration.nix
     ../common.nix
+    ../hyprland.nix # system Hyprland setup
+    ../shares.nix
   ];
 
   # Hostname
   networking.hostName = hostname;
+
+  # Bootloader: use GRUB for BIOS (no EFI on this VM)
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
+  boot.loader.grub = {
+    enable = true;
+    device = "/dev/sda";
+    useOSProber = false;
+  };
 
   # Dynamische Benutzer-Erstellung basierend auf hostUsers
   users.users = builtins.listToAttrs (map (user: {
@@ -40,13 +49,11 @@ in {
   # VM-spezifische System-Pakete
   environment.systemPackages = with pkgs; [
     # Development Tools für VM
-    vscode-fhs
+
     docker
     docker-compose
-    postman
 
     # VM Tools
-    open-vm-tools # VMware Tools
   ];
 
   # Docker für Development

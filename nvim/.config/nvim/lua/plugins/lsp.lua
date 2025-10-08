@@ -31,6 +31,15 @@ return {
           },
         },
       },
+      yamlls = {
+        settings = {
+          yaml = {
+            format = {
+              enable = false,   -- << Formatter von yamlls aus
+            },
+          },
+        },
+      },
       lua_ls = {
         mason = false, -- 🔴 Verhindert, dass Mason lua_ls verwendet!
         settings = {

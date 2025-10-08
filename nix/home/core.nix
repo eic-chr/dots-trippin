@@ -16,6 +16,7 @@
 
     # Multimedia
     imagemagick
+    exiftool
     clipgrab
     # Search & text processing
     ripgrep # recursively searches directories for a regex pattern
@@ -27,7 +28,7 @@
     cargo
     lazygit # Git-UI
     nil # Nix LSP
-    nixfmt # Nix-Formatter
+    nixfmt-classic # Nix-Formatter
     nodejs
     marksman # Markdown LSP
     python3 # Entwicklungsumgebung

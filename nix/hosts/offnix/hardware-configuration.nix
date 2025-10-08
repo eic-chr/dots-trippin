@@ -16,50 +16,18 @@
   boot.initrd.kernelModules = [];
 
   # MacBook Pro 2014 spezifische Kernel-Module
+  # WiFi is handled by nixos-hardware (brcmfmac via broadcom-43xx); do not use wl here
   boot.kernelModules = [
     "kvm-intel"
-    # WiFi: Versuche proprietären Treiber statt brcmfmac
-    "wl" # Broadcom proprietärer Treiber
     "applesmc" # Apple System Management Controller
     "coretemp" # CPU-Temperatur
+    "ftdi_sio" 
+    "pl2303" 
+    "ch341"
   ];
 
-  # Proprietärer Broadcom-Treiber für bessere WiFi-Kompatibilität
-  boot.extraModulePackages = [config.boot.kernelPackages.broadcom_sta];
-
-  # Blacklist konkurrierende Treiber
-  boot.blacklistedKernelModules = [
-    "brcmfmac"
-    "brcmsmac"
-    "bcma"
-    "ssb"
-  ];
-
-  # Firmware für MacBook-Hardware
+  # Firmware handled by nixos-hardware; keep redistributable firmware enabled
   hardware.enableRedistributableFirmware = true;
-  hardware.firmware = with pkgs; [
-    linux-firmware # Enthält Broadcom WiFi-Firmware
-    broadcom-bt-firmware # Bluetooth-Firmware
-  ];
-
-  nixpkgs.config = {
-    allowUnfree = true;
-    allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
-    # permittedInsecurePackages = [
-    #   "broadcom-sta"
-    # ];
-  };
-  # MacBook-spezifische Kernel-Parameter
-  boot.kernelParams = [
-    # WiFi-Stabilität
-    "pcie_aspm=off"
-    # Bessere macOS-Kompatibilität
-    "acpi_osi=Darwin"
-    # Apple-Tastatur Funktionstasten
-    "hid_apple.fnmode=1"
-    # Cmd/Alt Tausch auf Hardware-Ebene
-    "hid_apple.swap_opt_cmd=1"
-  ];
 
   # Dateisysteme (von nixos-generate-config)
   fileSystems."/" = {
@@ -88,57 +56,16 @@
   # MacBook Pro 2014 Hardware-Optimierungen
 
   # Grafik - Intel HD Graphics 4000/5000 Serie
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
     extraPackages = with pkgs; [
-      intel-media-driver # VA-API für Intel
-      vaapiIntel # Hardware-Beschleunigung
+      # Defer Intel VAAPI drivers to nixos-hardware (MacBookPro11,4)
+      # Keep only translation layers
       vaapiVdpau
       libvdpau-va-gl
     ];
   };
-
-  # Bluetooth für MacBook Pro 2014 - Erweiterte Konfiguration
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    package = pkgs.bluez;
-    settings = {
-      General = {
-        Enable = "Source,Sink,Media,Socket";
-        Experimental = true;
-        # MacBook-spezifische Bluetooth-Einstellungen
-        ControllerMode = "dual";
-        FastConnectable = true;
-        ReconnectAttempts = 7;
-        ReconnectIntervals = "1, 2, 4, 8, 16, 32, 64";
-      };
-
-      Policy = {
-        AutoEnable = true;
-        ReconnectUUIDs = "00001108-0000-1000-8000-00805f9b34fb,0000111e-0000-1000-8000-00805f9b34fb,0000110a-0000-1000-8000-00805f9b34fb,0000110b-0000-1000-8000-00805f9b34fb";
-      };
-    };
-  };
-
-  # Bluetooth-Services
-  services.blueman.enable = true;
-
-  # Zusätzliche Bluetooth-Unterstützung
-  environment.systemPackages = with pkgs; [
-    bluez-tools
-    bluez-alsa # Für Audio über Bluetooth
-  ];
-
-  # Energieverwaltung: TLP entfernt wegen Konflikt mit power-profiles-daemon
-  # services.tlp = { ... };  # Entfernt - Konflikt mit power-profiles-daemon
-
-  # Alternative Energieverwaltung für MacBook (falls gewünscht)
-  # services.power-profiles-daemon.enable = true;  # Wird meist automatisch aktiviert
-
-  # Hintergrundbeleuchtung für MacBook - manuell konfiguriert
-  # hardware.brightnessctl.enable = true;  # Entfernt - nicht verfügbar
 
   # udev-Regeln für MacBook-spezifische Hardware
   services.udev.extraRules = ''

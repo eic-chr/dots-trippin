@@ -16,6 +16,8 @@
     ./git.nix
     ./shell.nix
     ./starship.nix
+    ./hyprland-dots-xdg.nix
+    ./nwg-dock-hyprland.nix
     ./kitty.nix
   ];
 
@@ -30,6 +32,16 @@
     userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
   };
 
+  # Enable Hyprland-Dots XDG linking (host-independent)
+  programs.hyprlandDotsXdg = {
+    enable = true;
+    installRuntimePackages = true;
+  };
+
+  programs.nwgDockHyprland = {
+    enable = true;
+  };
+
   # Plasma-Konfiguration (möglicherweise andere Präferenzen als ce)
   programs.plasma = lib.mkIf hasPlasma {
     enable = true;
@@ -40,6 +52,19 @@
       colorScheme = "BreezeLight";
       iconTheme = "breeze";
       cursor.theme = "breeze_cursors";
+    };
+
+    # Tastatur-Layout: US International
+    input = {
+      keyboard = {
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
+      };
     };
 
     # Gleiche Panel-Konfiguration wie der Hauptbenutzer

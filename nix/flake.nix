@@ -20,9 +20,8 @@
     # Use different nixpkgs for different systems
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-     # Unstable für einzelne Pakete
+    # Unstable für einzelne Pakete
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-
 
     # home-manager for user configuration management
     home-manager = {
@@ -40,11 +39,31 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    # Hyprland (for plugin compatibility pinning)
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+    };
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+    hyprland-dots = {
+      url = "github:JaKooLit/Hyprland-Dots";
+      flake = false;
+    };
+    split-monitor-workspaces = {
+      url = "github:Duckonaut/split-monitor-workspaces";
+      inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
+    };
+
     # nix-darwin for macOS
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
+    # nixos-hardware for device-specific modules
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -55,6 +74,8 @@
     darwin,
     home-manager,
     plasma-manager,
+    nixos-hardware,
+    split-monitor-workspaces,
     ...
   }: let
     # Host-zu-User Zuordnung
@@ -153,10 +174,24 @@
         inherit (systemConfig) hostname hasPlasma users;
         inherit userConfigs hostUsers;
 
-# nixpkgs-unstable importieren und durchreichen
+        # nixpkgs-unstable importieren und durchreichen
         unstable = import inputs.nixpkgs-unstable {
           system = systemConfig.system;
         };
+
+        # Hyprland / plugins through specialArgs for HM modules
+        hyprlandInput = inputs.hyprland;
+        hyprlandPlugins = inputs.hyprland-plugins;
+        hyprlandPluginsPkgs = inputs.hyprland-plugins.packages.${systemConfig.system};
+        splitMonitorWorkspaces = inputs.split-monitor-workspaces;
+        hyprlandDots = inputs.hyprland-dots;
+        hyprlandDotsLocal = let
+          p = ./vendor/hyprland-dots;
+        in
+          if builtins.pathExists p
+          then p
+          else null;
+
         # Für Kompatibilität mit bestehenden Modulen
         username = builtins.head systemConfig.users; # Erster User als Standard
       };
@@ -235,6 +270,7 @@
       system = systems.offnix.system;
       specialArgs = mkSpecialArgs systems.offnix;
       modules = [
+        nixos-hardware.nixosModules."apple-macbook-pro-11-4"
         ./hosts/offnix/configuration.nix
         home-manager.nixosModules.home-manager
         {

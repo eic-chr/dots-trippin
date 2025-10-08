@@ -22,14 +22,28 @@
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
-    userEmail = lib.mkForce userEmail; # Anpassenix/home/vincent.nixteme mit KDE
+    userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
+  };
+
+  programs.plasma = lib.mkIf hasPlasma {
+    enable = true;
+    input = {
+      keyboard = {
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
+      };
+    };
   };
 
   # Zusätzliche NixOS-spezifische Pakete
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
     discord
-    ferdium
     fzf
     git-crypt
     signal-desktop
@@ -40,7 +54,7 @@
   services.gpg-agent = {
     enable = true;
     enableSshSupport = false;
-    pinentryPackage = pkgs.pinentry-curses; # QT-Version für KDE
+    pinentry.package = pkgs.pinentry-curses; # QT-Version für KDE
     defaultCacheTtl = 28800; # 8 Stunden
     maxCacheTtl = 86400; # 24 Stunden
   };

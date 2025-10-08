@@ -1,6 +1,7 @@
 # just is a command runner, Justfile is very similar to Makefile, but simpler.
 # TODO update hostname here!
 hostname := "MacBookPro"
+elevate := "sudo"
 # Variablen
 flake_path := justfile_directory()
 current_system := `uname -s`
@@ -24,7 +25,7 @@ rebuild-switch:
 [group('darwin')]
 build-and-switch:
   nix build .#darwinConfigurations.{{hostname}}.system
-  sudo darwin-rebuild switch --flake .
+  {{elevate}} darwin-rebuild switch --flake .
 
 ############################################################################
 #
@@ -62,13 +63,13 @@ repl:
 # on darwin, you may need to switch to root user to run this command
 [group('nix')]
 clean:
-  sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
+  {{elevate}} nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
 
 # Garbage collect all unused nix store entries
 [group('nix')]
 gc:
   # garbage collect all unused nix store entries(system-wide)
-  sudo nix-collect-garbage --delete-older-than 7d
+  {{elevate}} nix-collect-garbage --delete-older-than 7d
   # garbage collect all unused nix store entries(for the user - home-manager)
   # https://github.com/NixOS/nix/issues/8508
   nix-collect-garbage --delete-older-than 7d
@@ -94,11 +95,71 @@ gcroot:
 
 [group('nixos')]
 build-devnix:
-  sudo nixos-rebuild switch --flake .#devnix
+  {{elevate}} nixos-rebuild switch --flake .#devnix
 
 [group('nixos')]
 build-offnix:
-  sudo nixos-rebuild switch --flake .#offnix
+  {{elevate}} nixos-rebuild switch --flake .#offnix
 [group('nixos')]
 build-playnix:
   sudo nixos-rebuild switch --flake .#playnix
+
+[group('report')]
+report-offnix:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p nix/reports
+  out="nix/reports/packages-offnix.md"
+  sys=$(nix build .#nixosConfigurations.offnix.config.system.build.toplevel --no-link --print-out-paths)
+  {
+    echo "# offnix package report"
+    echo
+    date -Iseconds | sed 's/^/Generated: /'
+    echo
+    echo '```'
+    nix path-info -rSh "$sys" | sort -h
+    echo '```'
+  } > "$out"
+  echo "Wrote $out"
+
+[group('report')]
+report-devnix:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p nix/reports
+  out="nix/reports/packages-devnix.md"
+  sys=$(nix build .#nixosConfigurations.devnix.config.system.build.toplevel --no-link --print-out-paths)
+  {
+    echo "# devnix package report"
+    echo
+    date -Iseconds | sed 's/^/Generated: /'
+    echo
+    echo '```'
+    nix path-info -rSh "$sys" | sort -h
+    echo '```'
+  } > "$out"
+  echo "Wrote $out"
+
+[group('report')]
+report-playnix:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p nix/reports
+  out="nix/reports/packages-playnix.md"
+  sys=$(nix build .#nixosConfigurations.playnix.config.system.build.toplevel --no-link --print-out-paths)
+  {
+    echo "# playnix package report"
+    echo
+    date -Iseconds | sed 's/^/Generated: /'
+    echo
+    echo '```'
+    nix path-info -rSh "$sys" | sort -h
+    echo '```'
+  } > "$out"
+  echo "Wrote $out"
+
+[group('report')]
+report-all:
+  just report-offnix
+  just report-devnix
+  just report-playnix
