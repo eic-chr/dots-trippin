@@ -1,79 +1,80 @@
-# Simplified agenix RULES (explicit, no helper functions)
+# nix/secrets/secrets.nix
 #
-# This file declares each secret explicitly with its recipients.
-# It avoids Nix functions so that agenix can eval to JSON reliably.
+# Regeln für agenix: Welche öffentlichen Schlüssel (Recipients) dürfen die
+# jeweiligen .age-Dateien entschlüsseln.
 #
-# Paths are relative to this file (secrets repo root).
+# Nutzung:
+# - Am besten aus diesem Verzeichnis ausführen:
+#     cd nix/secrets
+#     agenix -e ssh/christian/id_ed25519.age
+#   (agenix nimmt automatisch ./secrets.nix als RULES-Datei)
 #
-# Conventions:
-# - Place SSH private keys as encrypted .age files next to this rules file under:
-#   ssh/<user>/shared/<basename>.age         # shared across all hosts
-#   ssh/<user>/<hostname>/<basename>.age     # only for a specific host
+# - Alternativ aus dem Repo-Root:
+#     RULES=nix/secrets/secrets.nix agenix -e nix/secrets/ssh/christian/id_ed25519.age
 #
-# After changing recipients, run:  agenix --rekey
+# Öffentliche Schlüssel eintragen:
+# - User-Keys: z.B. Inhalt von ~/.ssh/id_ed25519.pub
+# - Host-Keys: von Zielsystemen (NixOS-Hosts) mit: ssh-keyscan <hostname-or-ip>
+#
+# Wichtig:
+# - Bitte die untenstehenden "REPLACE_WITH_..." Platzhalter durch echte
+#   öffentliche SSH-Schlüssel ersetzen (Zeilen beginnen mit "ssh-ed25519 ..." oder "ssh-rsa ...").
 
 let
-  # User public keys
-  christian_pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de";
-  # charly_pub   = "ssh-ed25519 AAAA... charly@host";
-  # vincent_pub  = "ssh-ed25519 AAAA... vincent@host";
-  # victoria_pub = "ssh-ed25519 AAAA... victoria@host";
+  # ===========================
+  # User Public Keys (Recipients)
+  # ===========================
+  christian_personal =
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de";
+  # Optional: zusätzliche User
+  # charly_personal    = "REPLACE_WITH_CHARLY_PUBLIC_KEY";
+  # vincent_personal   = "REPLACE_WITH_VINCENT_PUBLIC_KEY";
+  # victoria_personal  = "REPLACE_WITH_VICTORIA_PUBLIC_KEY";
 
-  # Host (system) public keys
-  offnix_host_pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBbIb9P4phSXKAksHgNwOmnSyMHSxRC3u7iA+BLARrZ+ root@offnix";
-  devnix_host_pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPe/+rUbeMTV0Lne4mfGBXixGxbVkl8VqLmAhvf9k7W root@nixos";
-  # playnix_host_pub   = "ssh-ed25519 AAAA... root@playnix";
-  # macbookpro_host_pub= "ssh-ed25519 AAAA... root@MacBookPro";
-in
-{
-  # ==========================================
-  # christian's SSH secrets
-  # ==========================================
-
-  # Shared across all hosts
-  "ssh/christian/shared/info_ewolutions_de.age".publicKeys = [
-    christian_pub
-    offnix_host_pub
-    devnix_host_pub
-    # playnix_host_pub
-    # macbookpro_host_pub
+  users = [
+    christian_personal
+    # charly_personal
+    # vincent_personal
+    # victoria_personal
   ];
 
-  # Host-specific
-  "ssh/christian/offnix/id_ed25519.age".publicKeys = [
-    christian_pub
-    offnix_host_pub
+  # ===========================
+  # Host Public Keys (Recipients)
+  #   Tipp: ssh-keyscan offnix | grep ed25519
+  # ===========================
+  offnix_host =
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBbIb9P4phSXKAksHgNwOmnSyMHSxRC3u7iA+BLARrZ+";
+  devnix_host =
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPe/+rUbeMTV0Lne4mfGBXixGxbVkl8VqLmAhvf9k7W";
+  # Optional: macOS host (falls verwendet)
+  # macbookpro_host = "REPLACE_WITH_MACBOOKPRO_HOST_ED25519_KEY";
+
+  systems = [
+    offnix_host
+    devnix_host
+    # macbookpro_host
   ];
 
-  "ssh/christian/devnix/id_ed25519.age".publicKeys  = [
-    christian_pub
-    devnix_host_pub
-  ];
-
-  # ==========================================
-  # Examples for additional users/hosts
-  # ==========================================
-  # "ssh/vincent/shared/github.age".publicKeys = [
-  #   vincent_pub
-  #   offnix_host_pub
-  #   devnix_host_pub
-  #   # playnix_host_pub
-  # ];
+  # Gemeinsame Empfängerliste für Christians SSH-Keys:
+  christian_recipients = users ++ systems;
+in {
+  # SSH Private Keys für christian
   #
-  # "ssh/vincent/offnix/id_ed25519_offnix.age".publicKeys = [
-  #   vincent_pub
-  #   offnix_host_pub
-  # ];
+  # Diese Dateinamen sind relativ zu diesem Verzeichnis (nix/secrets).
+  # Sie passen zu deiner NixOS-Definition:
+  # - common.nix legt die entschlüsselten Dateien nach /home/christian/.ssh/...
+  # - flake.nix importiert agenix systemweit.
 
-  # ==========================================
-  # Optional: Output in PEM armor format (more readable diffs)
-  # ==========================================
-  # "ssh/christian/shared/info_ewolutions_de.age" = {
-  #   publicKeys = [
-  #     christian_pub
-  #     offnix_host_pub
-  #     devnix_host_pub
-  #   ];
+  "ssh/christian/id_ed25519.age".publicKeys = christian_recipients;
+
+  "ssh/christian/info_ewolutions_de.age".publicKeys = christian_recipients;
+
+  # Beispiel für weitere Secrets (auskommentiert):
+  # "ssh/christian/another_key.age".publicKeys = christian_recipients;
+
+  # Optional: Rausgeben in ARMOR/PEM-Format (lesbarere Diffs)
+  # "ssh/christian/id_ed25519.age" = {
+  #   publicKeys = christian_recipients;
   #   armor = true;
   # };
 }
