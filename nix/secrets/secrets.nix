@@ -41,8 +41,8 @@ let
   # Host Public Keys (Recipients)
   #   Tipp: ssh-keyscan offnix | grep ed25519
   # ===========================
-  offnix_host  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBbIb9P4phSXKAksHgNwOmnSyMHSxRC3u7iA+BLARrZ+";
-  devnix_host  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPe/+rUbeMTV0Lne4mfGBXixGxbVkl8VqLmAhvf9k7W";
+  offnix_host  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBbIb9P4phSXKAksHgNwOmnSyMHSxRC3u7iA+BLARrZ+ root@offnix";
+  devnix_host  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPe/+rUbeMTV0Lne4mfGBXixGxbVkl8VqLmAhvf9k7W root@nixos";
   # Optional: macOS host (falls verwendet)
   # macbookpro_host = "REPLACE_WITH_MACBOOKPRO_HOST_ED25519_KEY";
 

@@ -42,6 +42,103 @@
         chmod 600 "$HOME/.smb_crd" || true
       fi
     '');
+  programs.ssh = {
+    enable = true;
+    addKeysToAgent = "yes";
+    matchBlocks = {
+      "hzcloud" = {
+        hostname = "116.203.216.54";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzservices" = {
+        hostname = "10.0.1.13";
+        port = 22;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+
+      };
+      "hzdev" = {
+        hostname = "95.216.188.70";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzdev2" = {
+        hostname = "116.203.251.11";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzdev3" = {
+        hostname = "116.203.252.89";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzdemo-stadt" = {
+        hostname = "195.201.30.184";
+        port = 22;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzdemo2-stadt" = {
+        hostname = "116.203.241.240";
+        port = 22;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzflo" = {
+        hostname = "78.46.243.187";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzflo2" = {
+        hostname = "159.69.181.109";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzflo3" = {
+        hostname = "78.47.110.69";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzflo4" = {
+        hostname = "116.203.28.150";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzTerraTest" = {
+        hostname = "94.130.185.45";
+        port = 22;
+        user = "serviceusr";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzUnifi" = {
+        hostname = "unifi.ewolutions.hzlan";
+        port = 22;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzlandevewolutions" = {
+        hostname = "116.203.16.119";
+        port = 678;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+      "hzlanprometheus" = {
+        hostname = "prometheus.ewolutions.hzlan";
+        port = 22;
+        user = "root";
+        identityFile = "~/.ssh/info_ewolutions_de";
+      };
+    };
+  };
 
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {

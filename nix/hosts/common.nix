@@ -1,5 +1,6 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
 {
+  agenix,
   nur,
   pkgs,
   lib,
@@ -159,6 +160,8 @@ in {
       just
       pkg-config
       markdownlint-cli2
+      # Secrets tooling
+      agenix.packages."${system}".default
 
       # Multimedia
       vlc
@@ -250,4 +253,31 @@ in {
 
   # System State Version
   system.stateVersion = "25.05";
+
+  # agenix: deploy christian's SSH private keys when available
+  age.secrets = lib.mkMerge [
+    (lib.optionalAttrs (builtins.elem "christian" users && builtins.pathExists ../../secrets/ssh/christian/id_ed25519.age) {
+      "ssh-christian-id_ed25519" = {
+        file = ../../secrets/ssh/christian/id_ed25519.age;
+        owner = "christian";
+        group = "christian";
+        mode = "600";
+        path = "/home/christian/.ssh/id_ed25519";
+      };
+    })
+    (lib.optionalAttrs (builtins.elem "christian" users && builtins.pathExists ../../secrets/ssh/christian/info_ewolutions_de.age) {
+      "ssh-christian-info_ewolutions_de" = {
+        file = ../../secrets/ssh/christian/info_ewolutions_de.age;
+        owner = "christian";
+        group = "christian";
+        mode = "600";
+        path = "/home/christian/.ssh/info_ewolutions_de";
+      };
+    })
+  ];
+
+  # ensure ~/.ssh exists with correct permissions
+  systemd.tmpfiles.rules = lib.optionals (builtins.elem "christian" users) [
+    "d /home/christian/.ssh 0700 christian christian -"
+  ];
 }
