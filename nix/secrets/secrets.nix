@@ -1,78 +1,90 @@
 # nix/secrets/secrets.nix
 #
-# Regeln für agenix: Welche öffentlichen Schlüssel (Recipients) dürfen die
-# jeweiligen .age-Dateien entschlüsseln.
+# Dynamische agenix-RULES:
+# - Scannt ssh/<user>/ nach *.age
+# - Weist pro User-Ordner Recipients (user's pubkey ++ hosts) zu
 #
 # Nutzung:
-# - Am besten aus diesem Verzeichnis ausführen:
-#     cd nix/secrets
-#     agenix -e ssh/christian/id_ed25519.age
-#   (agenix nimmt automatisch ./secrets.nix als RULES-Datei)
+#   cd nix/secrets
+#   agenix -e ssh/<user>/<dateiname>.age
 #
-# - Alternativ aus dem Repo-Root:
-#     RULES=nix/secrets/secrets.nix agenix -e nix/secrets/ssh/christian/id_ed25519.age
-#
-# Öffentliche Schlüssel eintragen:
-# - User-Keys: z.B. Inhalt von ~/.ssh/id_ed25519.pub
-# - Host-Keys: von Zielsystemen (NixOS-Hosts) mit: ssh-keyscan <hostname-or-ip>
-#
-# Wichtig:
-# - Bitte die untenstehenden "REPLACE_WITH_..." Platzhalter durch echte
-#   öffentliche SSH-Schlüssel ersetzen (Zeilen beginnen mit "ssh-ed25519 ..." oder "ssh-rsa ...").
+# Hinweise:
+# - Trage unten eure User-/Host-Public-Keys ein.
+# - Alle gefundenen Dateien unter ssh/<user>/*.age bekommen automatisch die Default-Recipients.
 
 let
   # ===========================
-  # User Public Keys (Recipients)
+  # User Public Keys (per user)
   # ===========================
-  christian_personal = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de";
-  # Optional: zusätzliche User
-  # charly_personal    = "REPLACE_WITH_CHARLY_PUBLIC_KEY";
-  # vincent_personal   = "REPLACE_WITH_VINCENT_PUBLIC_KEY";
-  # victoria_personal  = "REPLACE_WITH_VICTORIA_PUBLIC_KEY";
-
-  users = [
-    christian_personal
-    # charly_personal
-    # vincent_personal
-    # victoria_personal
-  ];
+  userPubs = {
+    christian = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de";
+  };
 
   # ===========================
   # Host Public Keys (Recipients)
-  #   Tipp: ssh-keyscan offnix | grep ed25519
+  #   Tipp: ssh-keyscan -t ed25519 <hostname> | awk '{print $2" "$3}'
   # ===========================
   offnix_host  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBbIb9P4phSXKAksHgNwOmnSyMHSxRC3u7iA+BLARrZ+ root@offnix";
   devnix_host  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPe/+rUbeMTV0Lne4mfGBXixGxbVkl8VqLmAhvf9k7W root@nixos";
-  # Optional: macOS host (falls verwendet)
-  # macbookpro_host = "REPLACE_WITH_MACBOOKPRO_HOST_ED25519_KEY";
+  # macbookpro_host = "ssh-ed25519 AAAA... root@MacBookPro";
 
-  systems = [
-    offnix_host
-    devnix_host
-    # macbookpro_host
-  ];
+  # Per-user recipients: user's pubkey (if defined) + systems
+  systemPubs = {
+    offnix = offnix_host;
+    devnix = devnix_host;
+    # macbookpro = macbookpro_host;
+  };
 
-  # Gemeinsame Empfängerliste für Christians SSH-Keys:
-  christian_recipients = users ++ systems;
+  allSystemPublicKeys = builtins.attrValues systemPubs;
+
+  recipientsForShared = user:
+    let userPubKey = userPubs.${user} or null;
+    in (if userPubKey != null then [ userPubKey ] else []) ++ allSystemPublicKeys;
+
+  recipientsForHost = user: host:
+    let
+      userPubKey = userPubs.${user} or null;
+      hostPublicKey = systemPubs.${host} or null;
+    in
+      if hostPublicKey == null then []
+      else (if userPubKey != null then [ userPubKey ] else []) ++ [ hostPublicKey ];
+
+  # ===========================
+  # Dynamische Erzeugung der Regeln aus ssh/<user>/{shared,<host>}/*.age
+  # ===========================
+  sshRoot = ./ssh;
+  sshDirectoryEntries = builtins.readDir sshRoot;
+  userDirectoryNames = builtins.filter (entryName: (sshDirectoryEntries.${entryName} or null) == "directory") (builtins.attrNames sshDirectoryEntries);
+
+  filesIn = directoryPath: let
+    dirEntries = if builtins.pathExists directoryPath then builtins.readDir directoryPath else {};
+  in
+    builtins.filter (fileName: (builtins.hasAttr fileName dirEntries) && dirEntries.${fileName} == "regular" && builtins.match ".*\\.age$" fileName != null) (builtins.attrNames dirEntries);
+
+  hostDirsFor = user: let
+    userDirEntries = if builtins.pathExists "${sshRoot}/${user}" then builtins.readDir "${sshRoot}/${user}" else {};
+  in
+    builtins.filter (entryName: (userDirEntries.${entryName} or null) == "directory" && entryName != "shared") (builtins.attrNames userDirEntries);
+
+  sharedEntriesFor = user: let
+    sharedDirPath = "${sshRoot}/${user}/shared";
+  in
+    builtins.map (fileName: {
+      name = "ssh/${user}/shared/${fileName}";
+      value = { publicKeys = recipientsForShared user; };
+    }) (filesIn sharedDirPath);
+
+  hostEntriesFor = user:
+    builtins.concatMap (host:
+      let hostPublicKey = systemPubs.${host} or null; in
+      if hostPublicKey == null then []
+      else builtins.map (fileName: {
+        name = "ssh/${user}/${host}/${fileName}";
+        value = { publicKeys = recipientsForHost user host; };
+      }) (filesIn "${sshRoot}/${user}/${host}")
+    ) (hostDirsFor user);
+
+  entries =
+    builtins.concatMap (userName: (sharedEntriesFor userName) ++ (hostEntriesFor userName)) userDirectoryNames;
 in
-{
-  # SSH Private Keys für christian
-  #
-  # Diese Dateinamen sind relativ zu diesem Verzeichnis (nix/secrets).
-  # Sie passen zu deiner NixOS-Definition:
-  # - common.nix legt die entschlüsselten Dateien nach /home/christian/.ssh/...
-  # - flake.nix importiert agenix systemweit.
-
-  "ssh/christian/id_ed25519.age".publicKeys = christian_recipients;
-
-  "ssh/christian/info_ewolutions_de.age".publicKeys = christian_recipients;
-
-  # Beispiel für weitere Secrets (auskommentiert):
-  # "ssh/christian/another_key.age".publicKeys = christian_recipients;
-
-  # Optional: Rausgeben in ARMOR/PEM-Format (lesbarere Diffs)
-  # "ssh/christian/id_ed25519.age" = {
-  #   publicKeys = christian_recipients;
-  #   armor = true;
-  # };
-}
+builtins.listToAttrs entries

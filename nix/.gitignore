@@ -1,2 +1,7 @@
 result
 result/
+secrets/**
+!secrets/**/*.age
+!secrets/**/*.pub
+!secrets/README.md
+!secrets/secrets.nix

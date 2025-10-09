@@ -7,6 +7,7 @@
   users,
   userConfigs,
   hasPlasma,
+  hostname,
   ...
 }: let
   # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
@@ -252,32 +253,45 @@ in {
   };
 
   # System State Version
+  age.identityPaths = [
+    "/etc/ssh/ssh_host_ed25519_key"
+  ];
   system.stateVersion = "25.05";
 
-  # agenix: deploy christian's SSH private keys when available
-  age.secrets = lib.mkMerge [
-    (lib.optionalAttrs (builtins.elem "christian" users && builtins.pathExists ../../secrets/ssh/christian/id_ed25519.age) {
-      "ssh-christian-id_ed25519" = {
-        file = ../../secrets/ssh/christian/id_ed25519.age;
-        owner = "christian";
-        group = "christian";
-        mode = "600";
-        path = "/home/christian/.ssh/id_ed25519";
+  # agenix: deploy per-user SSH private keys when available
+  # Scan nix/secrets/ssh/<user>/{shared,<hostname>} for *.age; host-specific overrides shared; copy into ~/.ssh (no symlinks)
+  age.secrets = let
+    mkUserEntries = user: let
+      baseDir = ../secrets/ssh/${user};
+      sharedDir = "${builtins.toString baseDir}/shared";
+      hostDir = "${builtins.toString baseDir}/${hostname}";
+      # collect .age files from shared and host-specific dirs
+      readNames = dir: if builtins.pathExists dir then
+        builtins.filter (n: let t = (builtins.readDir dir).${n} or null; in t == "regular" && builtins.match ".*\\.age$" n != null)
+          (builtins.attrNames (builtins.readDir dir))
+      else [];
+      sharedNames = readNames sharedDir;
+      hostNames = readNames hostDir;
+      # build mappings baseName -> filePath (host overrides shared)
+      toMap = dir: names: builtins.listToAttrs (map (n: { name = builtins.replaceStrings [".age"] [""] n; value = "${dir}/${n}"; }) names);
+      mapping = (toMap sharedDir sharedNames) // (toMap hostDir hostNames);
+      bases = builtins.attrNames mapping;
+      mkOne = base: {
+        name = "ssh-${user}-${base}";
+        value = {
+          file = mapping.${base};
+          owner = user;
+          group = "users";
+          mode = "600";
+          path = "/home/${user}/.ssh/${base}";
+          symlink = false;
+        };
       };
-    })
-    (lib.optionalAttrs (builtins.elem "christian" users && builtins.pathExists ../../secrets/ssh/christian/info_ewolutions_de.age) {
-      "ssh-christian-info_ewolutions_de" = {
-        file = ../../secrets/ssh/christian/info_ewolutions_de.age;
-        owner = "christian";
-        group = "christian";
-        mode = "600";
-        path = "/home/christian/.ssh/info_ewolutions_de";
-      };
-    })
-  ];
+    in map mkOne bases;
+    entries = lib.concatLists (map mkUserEntries users);
+  in
+    builtins.listToAttrs entries;
 
-  # ensure ~/.ssh exists with correct permissions
-  systemd.tmpfiles.rules = lib.optionals (builtins.elem "christian" users) [
-    "d /home/christian/.ssh 0700 christian christian -"
-  ];
+  # ensure ~/.ssh exists with correct permissions for all users
+  systemd.tmpfiles.rules = map (u: "d /home/${u}/.ssh 0700 ${u} users -") users;
 }
