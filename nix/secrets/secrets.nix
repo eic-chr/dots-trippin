@@ -1,28 +1,20 @@
 # nix/secrets/secrets.nix
 #
-# Regeln für agenix: Welche öffentlichen Schlüssel (Recipients) dürfen die
-# jeweiligen .age-Dateien entschlüsseln.
+# Dynamische agenix-RULES:
+# - Scannt ssh/<user>/ nach *.age
+# - Weist pro User-Ordner Recipients (user's pubkey ++ hosts) zu
 #
 # Nutzung:
-# - Am besten aus diesem Verzeichnis ausführen:
-#     cd nix/secrets
-#     agenix -e ssh/christian/id_ed25519.age
-#   (agenix nimmt automatisch ./secrets.nix als RULES-Datei)
+#   cd nix/secrets
+#   agenix -e ssh/<user>/<dateiname>.age
 #
-# - Alternativ aus dem Repo-Root:
-#     RULES=nix/secrets/secrets.nix agenix -e nix/secrets/ssh/christian/id_ed25519.age
-#
-# Öffentliche Schlüssel eintragen:
-# - User-Keys: z.B. Inhalt von ~/.ssh/id_ed25519.pub
-# - Host-Keys: von Zielsystemen (NixOS-Hosts) mit: ssh-keyscan <hostname-or-ip>
-#
-# Wichtig:
-# - Bitte die untenstehenden "REPLACE_WITH_..." Platzhalter durch echte
-#   öffentliche SSH-Schlüssel ersetzen (Zeilen beginnen mit "ssh-ed25519 ..." oder "ssh-rsa ...").
+# Hinweise:
+# - Trage unten eure User-/Host-Public-Keys ein.
+# - Alle gefundenen Dateien unter ssh/<user>/*.age bekommen automatisch die Default-Recipients.
 
 let
   # ===========================
-  # User Public Keys (Recipients)
+  # User Public Keys (per user)
   # ===========================
   christian_personal =
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de";
@@ -40,7 +32,7 @@ let
 
   # ===========================
   # Host Public Keys (Recipients)
-  #   Tipp: ssh-keyscan offnix | grep ed25519
+  #   Tipp: ssh-keyscan -t ed25519 <hostname> | awk '{print $2" "$3}'
   # ===========================
   offnix_host =
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBbIb9P4phSXKAksHgNwOmnSyMHSxRC3u7iA+BLARrZ+";
@@ -49,11 +41,12 @@ let
   # Optional: macOS host (falls verwendet)
   # macbookpro_host = "REPLACE_WITH_MACBOOKPRO_HOST_ED25519_KEY";
 
-  systems = [
-    offnix_host
-    devnix_host
-    # macbookpro_host
-  ];
+  # Per-user recipients: user's pubkey (if defined) + systems
+  systemPubs = {
+    offnix = offnix_host;
+    devnix = devnix_host;
+    # macbookpro = macbookpro_host;
+  };
 
   # Gemeinsame Empfängerliste für Christians SSH-Keys:
   christian_recipients = users ++ systems;
