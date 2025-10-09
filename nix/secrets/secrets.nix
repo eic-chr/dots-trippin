@@ -46,13 +46,13 @@ let
       userPubKey = userPubs.${user} or null;
       hostPublicKey = systemPubs.${host} or null;
     in
-      if hostPublicKey == null then []
-      else (if userPubKey != null then [ userPubKey ] else []) ++ [ hostPublicKey ];
+      (if userPubKey != null then [ userPubKey ] else [])
+      ++ (if hostPublicKey != null then [ hostPublicKey ] else []);
 
   # ===========================
   # Dynamische Erzeugung der Regeln aus ssh/<user>/{shared,<host>}/*.age
   # ===========================
-  sshRoot = ./ssh;
+  sshRoot = (builtins.toString ./. ) + "/ssh";
   sshDirectoryEntries = builtins.readDir sshRoot;
   userDirectoryNames = builtins.filter (entryName: (sshDirectoryEntries.${entryName} or null) == "directory") (builtins.attrNames sshDirectoryEntries);
 
@@ -76,9 +76,7 @@ let
 
   hostEntriesFor = user:
     builtins.concatMap (host:
-      let hostPublicKey = systemPubs.${host} or null; in
-      if hostPublicKey == null then []
-      else builtins.map (fileName: {
+      builtins.map (fileName: {
         name = "ssh/${user}/${host}/${fileName}";
         value = { publicKeys = recipientsForHost user host; };
       }) (filesIn "${sshRoot}/${user}/${host}")
