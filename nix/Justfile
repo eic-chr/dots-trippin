@@ -5,6 +5,7 @@ elevate := "sudo"
 # Variablen
 flake_path := justfile_directory()
 current_system := `uname -s`
+secrets_repo := "/home/christian/projects/ceickhoff/nix-secrets"
 
 # List all the just commands
 default:
@@ -98,11 +99,23 @@ build-devnix:
   {{elevate}} nixos-rebuild switch --flake .#devnix
 
 [group('nixos')]
+build-devnix-local-secrets:
+  {{elevate}} nixos-rebuild switch --override-input secrets "path:{{secrets_repo}}" --flake .#devnix
+
+[group('nixos')]
 build-offnix:
   {{elevate}} nixos-rebuild switch --flake .#offnix
+
+[group('nixos')]
+build-offnix-local-secrets:
+  {{elevate}} nixos-rebuild switch --override-input secrets "path:{{secrets_repo}}" --flake .#offnix
 [group('nixos')]
 build-playnix:
   sudo nixos-rebuild switch --flake .#playnix
+
+[group('nixos')]
+build-playnix-local-secrets:
+  sudo nixos-rebuild switch --override-input secrets "path:{{secrets_repo}}" --flake .#playnix
 
 [group('report')]
 report-offnix:
@@ -163,3 +176,14 @@ report-all:
   just report-offnix
   just report-devnix
   just report-playnix
+
+[group('secrets')]
+secrets-edit target:
+  RULES={{secrets_repo}}/secrets.nix agenix -e {{secrets_repo}}/{{target}}
+
+[group('secrets')]
+secrets-rekey:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  cd {{secrets_repo}}
+  RULES=secrets.nix agenix --rekey

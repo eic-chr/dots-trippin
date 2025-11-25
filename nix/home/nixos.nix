@@ -166,23 +166,35 @@
 
   home.file.".config/hypr/UserConfigs/AutoStart.conf".text = ''
     exec-once = $HOME/.config/nwg-dock-hyprland/launch.sh
-    # exec-once = hyprctl dispatch renameworkspace 1 Dev
-    # exec-once = hyprctl dispatch renameworkspace 2 Web
-    # exec-once = hyprctl dispatch renameworkspace 3 Messenger
-    # exec-once = hyprctl dispatch renameworkspace 4 Mail
+    exec-once = hyprctl dispatch renameworkspace 1 Docs
+    exec-once = hyprctl dispatch renameworkspace 2 Media
+    exec-once = hyprctl dispatch renameworkspace 3 Messenger
+    exec-once = hyprctl dispatch renameworkspace 4 Files
+    exec-once = hyprctl dispatch renameworkspace 5 Mail
+    exec-once = hyprctl dispatch renameworkspace 6 Browser
+    exec-once = hyprctl dispatch renameworkspace 7 IDE
+    exec-once = hyprctl dispatch renameworkspace 8 Terminals
+    exec-once = hyprctl dispatch renameworkspace 9 System
+    exec-once = hyprctl dispatch renameworkspace 10 Misc
     exec-once = ~/.config/ml4w/scripts/sidepad.sh --init
     exec-once = ~/.config/ml4w/scripts/sidepad.sh --hide
   '';
 
   home.file.".config/hypr/UserConfigs/Plugins.local.conf".text = ''
-    plugin = ${splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces}/lib/libsplit-monitor-workspaces.so
+  #   plugin = ${splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces}/lib/libsplit-monitor-workspaces.so
   '';
 
   home.file.".config/hypr/UserConfigs/WindowRules.local.conf".text = ''
     # Example: route apps to specific workspaces (silent avoids focus jump)
-    windowrulev2 = workspace 1 silent, class:^(code|codium|jetbrains-.*)$
-    windowrulev2 = workspace 2 silent, class:^(firefox|librewolf|zen)$
-    windowrulev2 = workspace 3 silent, class:^(vesktop|discord|Element)$
+    windowrulev2 = workspace 1 silent, class:^([Oo]kular)$
+    windowrulev2 = workspace 3 silent, class:^(vesktop|discord|Element|[Ss]ignal)$
+    windowrulev2 = workspace 5 silent, class:^(thunderbird)$
+    windowrulev2 = workspace 4, class:^([Tt]hunar|[Dd]olphin)$
+    windowrulev2 = workspace 6, class:^(firefox|librewolf|zen)$
+    windowrulev2 = workspace 7, class:^(code|codium|jetbrains-.*)$
+    windowrulev2 = workspace 9 silent, class:^(com.nextcloud.*|org.keepassxc.*)$
+
+    windowrulev2 = float,class:^(com.nextcloud.*)$
 
     # Ensure the sidebar window (ml4wsidebar) is floating
     windowrulev2 = float, class:^(dotfiles-sidepad|btop-sidepad)$
@@ -190,29 +202,28 @@
   '';
 
   home.file.".config/hypr/UserConfigs/Workspaces.local.conf".text = ''
-      plugin {
-        split-monitor-workspaces {
-            count = 5
-            keep_focused = 0
-            enable_notifications = 0
-            enable_persistent_workspaces = 1
-        }
-    }
-
+    #   plugin {
+    #     split-monitor-workspaces {
+    #         count = 5
+    #         keep_focused = 0
+    #         enable_notifications = 1
+    #         enable_persistent_workspaces = 1
+    #     }
+    # }
     $mainMod = SUPER
     # Switch workspaces with mainMod + [0-5]
-    bind = $mainMod, 1, split-workspace, 1
-    bind = $mainMod, 2, split-workspace, 2
-    bind = $mainMod, 3, split-workspace, 3
-    bind = $mainMod, 4, split-workspace, 4
-    bind = $mainMod, 5, split-workspace, 5
+    bind = $mainMod, 1, workspace, 1
+    bind = $mainMod, 2, workspace, 2
+    bind = $mainMod, 3, workspace, 3
+    bind = $mainMod, 4, workspace, 4
+    bind = $mainMod, 5, workspace, 5
 
     # Move active window to a workspace with mainMod + SHIFT + [0-5]
-    bind = $mainMod SHIFT, 1, split-movetoworkspacesilent, 1
-    bind = $mainMod SHIFT, 2, split-movetoworkspacesilent, 2
-    bind = $mainMod SHIFT, 3, split-movetoworkspacesilent, 3
-    bind = $mainMod SHIFT, 4, split-movetoworkspacesilent, 4
-    bind = $mainMod SHIFT, 5, split-movetoworkspacesilent, 5
+    bind = $mainMod SHIFT, 1, movetoworkspacesilent, 1
+    bind = $mainMod SHIFT, 2, movetoworkspacesilent, 2
+    bind = $mainMod SHIFT, 3, movetoworkspacesilent, 3
+    bind = $mainMod SHIFT, 4, movetoworkspacesilent, 4
+    bind = $mainMod SHIFT, 5, movetoworkspacesilent, 5
     # Example persistent workspaces bound to monitors
     # Find monitor names: hyprctl monitors
     # workspace = 1, monitor:eDP-1, persistent:true
@@ -263,6 +274,7 @@
     # Toggle Rofi
 
     bind = $mainMod, D, exec, pkill rofi || true && rofi -show drun -modi drun,filebrowser,run,window,calc # Main Menu (APP Launcher)
+    bind = $mainMod CTRL, Tab, exec, pkill rofi || true && rofi -show window -modi window
     # Toggle sidebar
     unbind = $mainMod, S
     bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh --init
@@ -365,7 +377,8 @@
       # Browser (falls nicht system-weit installiert)
       ags
       ansible
-      ansible-lint
+      # ansible-lint
+      cryptomator
       discord
       fzf
       git-crypt

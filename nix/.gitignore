@@ -1,7 +1,18 @@
+# Build outputs
 result
 result/
+
+# Ignore everything under secrets by default
 secrets/**
+
+# Re-include the secrets directory and all subdirectories so negations below can match
+!secrets/
+!secrets/**/
+
+# Track rule files and docs
+!secrets/secrets.nix
+!secrets/README.md
+
+# Track encrypted secrets and public keys
 !secrets/**/*.age
 !secrets/**/*.pub
-!secrets/README.md
-!secrets/secrets.nix

@@ -65,6 +65,9 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
 
+    # external secrets repo (flake)
+    secrets.url = "git+ssh://git@gitlab.dev.ewolutions.de/eickhoff/nix-secrets.git?ref=feat/first";
+
     # agenix for secrets management
     agenix = {
       url = "github:ryantm/agenix";
@@ -82,6 +85,7 @@
     plasma-manager,
     nixos-hardware,
     agenix,
+    secrets,
     split-monitor-workspaces,
     ...
   }: let
@@ -193,11 +197,12 @@
         splitMonitorWorkspaces = inputs.split-monitor-workspaces;
         hyprlandDots = inputs.hyprland-dots;
         hyprlandDotsLocal = let
-          p = ./vendor/hyprland-dots;
+          p = /home/christian/projects/github/Hyprland-Dots;
         in
           if builtins.pathExists p
           then p
           else null;
+        secrets = inputs.secrets.outPath;
 
         # Für Kompatibilität mit bestehenden Modulen
         username = builtins.head systemConfig.users; # Erster User als Standard

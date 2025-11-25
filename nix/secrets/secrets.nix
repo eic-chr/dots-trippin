@@ -1,88 +1,79 @@
-# nix/secrets/secrets.nix
+# Simplified agenix RULES (explicit, no helper functions)
 #
-# Dynamische agenix-RULES:
-# - Scannt ssh/<user>/ nach *.age
-# - Weist pro User-Ordner Recipients (user's pubkey ++ hosts) zu
+# This file declares each secret explicitly with its recipients.
+# It avoids Nix functions so that agenix can eval to JSON reliably.
 #
-# Nutzung:
-#   cd nix/secrets
-#   agenix -e ssh/<user>/<dateiname>.age
+# Paths are relative to this file (secrets repo root).
 #
-# Hinweise:
-# - Trage unten eure User-/Host-Public-Keys ein.
-# - Alle gefundenen Dateien unter ssh/<user>/*.age bekommen automatisch die Default-Recipients.
+# Conventions:
+# - Place SSH private keys as encrypted .age files next to this rules file under:
+#   ssh/<user>/shared/<basename>.age         # shared across all hosts
+#   ssh/<user>/<hostname>/<basename>.age     # only for a specific host
+#
+# After changing recipients, run:  agenix --rekey
 
 let
-  # ===========================
-  # User Public Keys (per user)
-  # ===========================
-  userPubs = {
-    christian = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de";
-  };
+  # User public keys
+  christian_pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9115pTLLpkhhZZh6qdlurEMHDZn7Gpv3yEfAxkNvhP christian@ewolutions.de";
+  # charly_pub   = "ssh-ed25519 AAAA... charly@host";
+  # vincent_pub  = "ssh-ed25519 AAAA... vincent@host";
+  # victoria_pub = "ssh-ed25519 AAAA... victoria@host";
 
-  # ===========================
-  # Host Public Keys (Recipients)
-  #   Tipp: ssh-keyscan -t ed25519 <hostname> | awk '{print $2" "$3}'
-  # ===========================
-  offnix_host  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBbIb9P4phSXKAksHgNwOmnSyMHSxRC3u7iA+BLARrZ+ root@offnix";
-  devnix_host  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPe/+rUbeMTV0Lne4mfGBXixGxbVkl8VqLmAhvf9k7W root@nixos";
-  # macbookpro_host = "ssh-ed25519 AAAA... root@MacBookPro";
-
-  # Per-user recipients: user's pubkey (if defined) + systems
-  systemPubs = {
-    offnix = offnix_host;
-    devnix = devnix_host;
-    # macbookpro = macbookpro_host;
-  };
-
-  allSystemPublicKeys = builtins.attrValues systemPubs;
-
-  recipientsForShared = user:
-    let userPubKey = userPubs.${user} or null;
-    in (if userPubKey != null then [ userPubKey ] else []) ++ allSystemPublicKeys;
-
-  recipientsForHost = user: host:
-    let
-      userPubKey = userPubs.${user} or null;
-      hostPublicKey = systemPubs.${host} or null;
-    in
-      (if userPubKey != null then [ userPubKey ] else [])
-      ++ (if hostPublicKey != null then [ hostPublicKey ] else []);
-
-  # ===========================
-  # Dynamische Erzeugung der Regeln aus ssh/<user>/{shared,<host>}/*.age
-  # ===========================
-  sshRoot = (builtins.toString ./. ) + "/ssh";
-  sshDirectoryEntries = builtins.readDir sshRoot;
-  userDirectoryNames = builtins.filter (entryName: (sshDirectoryEntries.${entryName} or null) == "directory") (builtins.attrNames sshDirectoryEntries);
-
-  filesIn = directoryPath: let
-    dirEntries = if builtins.pathExists directoryPath then builtins.readDir directoryPath else {};
-  in
-    builtins.filter (fileName: (builtins.hasAttr fileName dirEntries) && dirEntries.${fileName} == "regular" && builtins.match ".*\\.age$" fileName != null) (builtins.attrNames dirEntries);
-
-  hostDirsFor = user: let
-    userDirEntries = if builtins.pathExists "${sshRoot}/${user}" then builtins.readDir "${sshRoot}/${user}" else {};
-  in
-    builtins.filter (entryName: (userDirEntries.${entryName} or null) == "directory" && entryName != "shared") (builtins.attrNames userDirEntries);
-
-  sharedEntriesFor = user: let
-    sharedDirPath = "${sshRoot}/${user}/shared";
-  in
-    builtins.map (fileName: {
-      name = "ssh/${user}/shared/${fileName}";
-      value = { publicKeys = recipientsForShared user; };
-    }) (filesIn sharedDirPath);
-
-  hostEntriesFor = user:
-    builtins.concatMap (host:
-      builtins.map (fileName: {
-        name = "ssh/${user}/${host}/${fileName}";
-        value = { publicKeys = recipientsForHost user host; };
-      }) (filesIn "${sshRoot}/${user}/${host}")
-    ) (hostDirsFor user);
-
-  entries =
-    builtins.concatMap (userName: (sharedEntriesFor userName) ++ (hostEntriesFor userName)) userDirectoryNames;
+  # Host (system) public keys
+  offnix_host_pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBbIb9P4phSXKAksHgNwOmnSyMHSxRC3u7iA+BLARrZ+ root@offnix";
+  devnix_host_pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPe/+rUbeMTV0Lne4mfGBXixGxbVkl8VqLmAhvf9k7W root@nixos";
+  # playnix_host_pub   = "ssh-ed25519 AAAA... root@playnix";
+  # macbookpro_host_pub= "ssh-ed25519 AAAA... root@MacBookPro";
 in
-builtins.listToAttrs entries
+{
+  # ==========================================
+  # christian's SSH secrets
+  # ==========================================
+
+  # Shared across all hosts
+  "ssh/christian/shared/info_ewolutions_de.age".publicKeys = [
+    christian_pub
+    offnix_host_pub
+    devnix_host_pub
+    # playnix_host_pub
+    # macbookpro_host_pub
+  ];
+
+  # Host-specific
+  "ssh/christian/offnix/id_ed25519.age".publicKeys = [
+    christian_pub
+    offnix_host_pub
+  ];
+
+  "ssh/christian/devnix/id_ed25519.age".publicKeys  = [
+    christian_pub
+    devnix_host_pub
+  ];
+
+  # ==========================================
+  # Examples for additional users/hosts
+  # ==========================================
+  # "ssh/vincent/shared/github.age".publicKeys = [
+  #   vincent_pub
+  #   offnix_host_pub
+  #   devnix_host_pub
+  #   # playnix_host_pub
+  # ];
+  #
+  # "ssh/vincent/offnix/id_ed25519_offnix.age".publicKeys = [
+  #   vincent_pub
+  #   offnix_host_pub
+  # ];
+
+  # ==========================================
+  # Optional: Output in PEM armor format (more readable diffs)
+  # ==========================================
+  # "ssh/christian/shared/info_ewolutions_de.age" = {
+  #   publicKeys = [
+  #     christian_pub
+  #     offnix_host_pub
+  #     devnix_host_pub
+  #   ];
+  #   armor = true;
+  # };
+}
