@@ -1,16 +1,16 @@
-# nix/secrets/secrets.nix
+# Simplified agenix RULES (explicit, no helper functions)
 #
-# Dynamische agenix-RULES:
-# - Scannt ssh/<user>/ nach *.age
-# - Weist pro User-Ordner Recipients (user's pubkey ++ hosts) zu
+# This file declares each secret explicitly with its recipients.
+# It avoids Nix functions so that agenix can eval to JSON reliably.
 #
-# Nutzung:
-#   cd nix/secrets
-#   agenix -e ssh/<user>/<dateiname>.age
+# Paths are relative to this file (secrets repo root).
 #
-# Hinweise:
-# - Trage unten eure User-/Host-Public-Keys ein.
-# - Alle gefundenen Dateien unter ssh/<user>/*.age bekommen automatisch die Default-Recipients.
+# Conventions:
+# - Place SSH private keys as encrypted .age files next to this rules file under:
+#   ssh/<user>/shared/<basename>.age         # shared across all hosts
+#   ssh/<user>/<hostname>/<basename>.age     # only for a specific host
+#
+# After changing recipients, run:  agenix --rekey
 
 let
   # ===========================
