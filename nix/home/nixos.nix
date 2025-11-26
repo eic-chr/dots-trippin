@@ -1,31 +1,19 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
-{
-  lib,
-  pkgs,
-  unstable,
-  currentUser,
-  userEmail,
-  userFullName,
-  hasPlasma,
-  hostname,
-  splitMonitorWorkspaces,
-  ...
-}: {
+{ lib, pkgs, unstable, currentUser, userEmail, userFullName, hasPlasma, hostname
+, splitMonitorWorkspaces, ... }: {
   # Importiere deine bestehenden Module
-  imports =
-    [
-      ./core.nix
-      ./git.nix
-      ./shell.nix
-      ./starship.nix
-      ./hyprland-dots-xdg.nix
-      ./nwg-dock-hyprland.nix
+  imports = [
+    ./core.nix
+    ./git.nix
+    ./shell.nix
+    ./starship.nix
+    ./hyprland-dots-xdg.nix
+    ./nwg-dock-hyprland.nix
 
-      ./thunderbird.nix
-      ./vscode.nix
-      ./firefox.nix
-    ]
-    ++ lib.optionals (hostname != "offnix") [./kitty.nix];
+    ./thunderbird.nix
+    ./vscode.nix
+    ./firefox.nix
+  ] ++ lib.optionals (hostname != "offnix") [ ./kitty.nix ];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
@@ -36,108 +24,20 @@
 
   home.activation.fixSmbCredsPerms =
     lib.mkIf (hostname == "offnix" || hostname == "devnix")
-    (lib.hm.dag.entryAfter ["writeBoundary"] ''
+    (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       if [ -f "$HOME/.smb_crd" ]; then
         chown "$USER":"$USER" "$HOME/.smb_crd" || true
         chmod 600 "$HOME/.smb_crd" || true
       fi
     '');
+
   programs.ssh = {
     enable = true;
     addKeysToAgent = "yes";
-    matchBlocks = {
-      "hzcloud" = {
-        hostname = "116.203.216.54";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzservices" = {
-        hostname = "10.0.1.13";
-        port = 22;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-
-      };
-      "hzdev" = {
-        hostname = "95.216.188.70";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzdev2" = {
-        hostname = "116.203.251.11";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzdev3" = {
-        hostname = "116.203.252.89";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzdemo-stadt" = {
-        hostname = "195.201.30.184";
-        port = 22;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzdemo2-stadt" = {
-        hostname = "116.203.241.240";
-        port = 22;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzflo" = {
-        hostname = "78.46.243.187";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzflo2" = {
-        hostname = "159.69.181.109";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzflo3" = {
-        hostname = "78.47.110.69";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzflo4" = {
-        hostname = "116.203.28.150";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzTerraTest" = {
-        hostname = "94.130.185.45";
-        port = 22;
-        user = "serviceusr";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzUnifi" = {
-        hostname = "unifi.ewolutions.hzlan";
-        port = 22;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzlandevewolutions" = {
-        hostname = "116.203.16.119";
-        port = 678;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-      "hzlanprometheus" = {
-        hostname = "prometheus.ewolutions.hzlan";
-        port = 22;
-        user = "root";
-        identityFile = "~/.ssh/info_ewolutions_de";
-      };
-    };
+    extraConfig = ''
+      Include ~/.ssh/config.d/*.conf
+      Include ~/.ssh/config.d/*
+    '';
   };
 
   programs.ssh = {
@@ -149,8 +49,6 @@
     '';
   };
 
-
-
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
@@ -161,7 +59,7 @@
   programs.hyprlandDotsXdg = lib.mkIf (hostname == "offnix") {
     enable = true;
     installRuntimePackages = true;
-    excludeDirs = ["nwg-dock-hyprland"];
+    excludeDirs = [ "nwg-dock-hyprland" ];
     # enableWayvnc disabled
     localIncludeContent = ''
       source = ~/.config/hypr/UserConfigs/Plugins.local.conf
@@ -192,7 +90,9 @@
   '';
 
   home.file.".config/hypr/UserConfigs/Plugins.local.conf".text = ''
-  #   plugin = ${splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces}/lib/libsplit-monitor-workspaces.so
+    #   plugin = ${
+      splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces
+    }/lib/libsplit-monitor-workspaces.so
   '';
 
   home.file.".config/hypr/UserConfigs/WindowRules.local.conf".text = ''
@@ -269,13 +169,14 @@
     recursive = true;
   };
 
-  home.activation.ensureSidepadActive = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    file="$HOME/.config/ml4w/settings/sidepad-active"
-    mkdir -p "$(dirname "$file")"
-    if [ ! -f "$file" ]; then
-      echo "btop" > "$file"
-    fi
-  '';
+  home.activation.ensureSidepadActive =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      file="$HOME/.config/ml4w/settings/sidepad-active"
+      mkdir -p "$(dirname "$file")"
+      if [ ! -f "$file" ]; then
+        echo "btop" > "$file"
+      fi
+    '';
 
   home.file.".config/hypr/UserConfigs/Polkit.local.conf".text = ''
     # Polkit agent for authentication dialogs (needed for logout/power actions)
@@ -304,9 +205,8 @@
   programs.rofi = {
     enable = true;
     package = pkgs.rofi-wayland;
-		plugins = with pkgs; [
-			(rofi-calc.override { rofi-unwrapped = rofi-wayland-unwrapped; })
-		];
+    plugins = with pkgs;
+      [ (rofi-calc.override { rofi-unwrapped = rofi-wayland-unwrapped; }) ];
     terminal = "kitty";
     theme = "~/.config/rofi/themes/KooL_style-10-Fancy.rasi";
     extraConfig = {
@@ -335,44 +235,38 @@
     kwin.scripts.polonium.enable = false;
     input = {
       keyboard = {
-        layouts = [
-          {
-            displayName = "US intl";
-            layout = "us";
-            variant = "intl";
-          }
-        ];
+        layouts = [{
+          displayName = "US intl";
+          layout = "us";
+          variant = "intl";
+        }];
       };
-      touchpads = [
-        {
-          enable = true;
-          name = "Apple Inc. Apple Internal Keyboard / Trackpad";
-          vendorId = "05ac"; # Apple Vendor ID
-          productId = "0263"; # Dein MacBook Trackpad
-          naturalScroll = true; # Traditionelles Scrolling!
-          tapToClick = true;
-          rightClickMethod = "twoFingers";
-        }
-      ];
+      touchpads = [{
+        enable = true;
+        name = "Apple Inc. Apple Internal Keyboard / Trackpad";
+        vendorId = "05ac"; # Apple Vendor ID
+        productId = "0263"; # Dein MacBook Trackpad
+        naturalScroll = true; # Traditionelles Scrolling!
+        tapToClick = true;
+        rightClickMethod = "twoFingers";
+      }];
     };
     # Panel-Konfiguration
-    panels = [
-      {
-        location = "bottom";
-        widgets = [
-          "org.kde.plasma.kickoff"
-          "org.kde.plasma.pager"
-          "org.kde.plasma.icontasks"
-          "org.kde.plasma.marginsseparator"
-          "org.kde.plasma.systemtray"
-          "org.kde.plasma.digitalclock"
-        ];
-      }
-    ];
+    panels = [{
+      location = "bottom";
+      widgets = [
+        "org.kde.plasma.kickoff"
+        "org.kde.plasma.pager"
+        "org.kde.plasma.icontasks"
+        "org.kde.plasma.marginsseparator"
+        "org.kde.plasma.systemtray"
+        "org.kde.plasma.digitalclock"
+      ];
+    }];
 
     # Shortcuts
     shortcuts = {
-      ksmserver = {"Lock Session" = ["Screensaver" "Meta+L"];};
+      ksmserver = { "Lock Session" = [ "Screensaver" "Meta+L" ]; };
       kwin = {
         "Switch to Desktop 1" = "Meta+1";
         "Switch to Desktop 2" = "Meta+2";
@@ -383,32 +277,30 @@
   };
 
   # Zusätzliche NixOS-spezifische Pakete
-  home.packages =
-    (with pkgs; [
-      # Browser (falls nicht system-weit installiert)
-      ags
-      ansible
-      # ansible-lint
-      cryptomator
-      discord
-      fzf
-      git-crypt
-      openssl
-      glow
-      pgadmin4
-      remmina
-      texlive.combined.scheme-small
-      md2pdf
-      pandoc
-      signal-desktop
-      teamviewer
-      waybar
-      nwg-drawer
-      inetutils
-      procps
-      unstable.zed-editor
-    ])
-    ++ lib.optionals (hostname == "offnix") [pkgs.kitty];
+  home.packages = (with pkgs; [
+    # Browser (falls nicht system-weit installiert)
+    ags
+    ansible
+    # ansible-lint
+    cryptomator
+    discord
+    fzf
+    git-crypt
+    openssl
+    glow
+    pgadmin4
+    remmina
+    texlive.combined.scheme-small
+    md2pdf
+    pandoc
+    signal-desktop
+    teamviewer
+    waybar
+    nwg-drawer
+    inetutils
+    procps
+    unstable.zed-editor
+  ]) ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {
@@ -422,10 +314,12 @@
     signal = {
       name = "Signal";
       # comment = "Meine angepasste Version von Signal";
-      icon = "${pkgs.signal-desktop}/share/icons/hicolor/512x512/apps/signal-desktop.png"; # unverändert
-      exec = "${pkgs.signal-desktop}/bin/signal-desktop --password-store=kwallet6";
+      icon =
+        "${pkgs.signal-desktop}/share/icons/hicolor/512x512/apps/signal-desktop.png"; # unverändert
+      exec =
+        "${pkgs.signal-desktop}/bin/signal-desktop --password-store=kwallet6";
       type = "Application";
-      categories = ["Network" "InstantMessaging"];
+      categories = [ "Network" "InstantMessaging" ];
     };
   };
 }
