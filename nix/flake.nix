@@ -197,7 +197,7 @@
         splitMonitorWorkspaces = inputs.split-monitor-workspaces;
         hyprlandDots = inputs.hyprland-dots;
         hyprlandDotsLocal = let
-          p = /home/christian/projects/github/Hyprland-Dots;
+          p = ./vendor/hyprland-dots;
         in
           if builtins.pathExists p
           then p
