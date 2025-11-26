@@ -276,6 +276,32 @@ networking.networkmanager = {
   # agenix: deploy per-user SSH private keys when available
   # Scan nix/secrets/ssh/<user>/{shared,<hostname>} for *.age; host-specific overrides shared; copy into ~/.ssh (no symlinks)
   age.secrets = lib.mkMerge [
+    # Per-user SSH config aus Secrets-Flake (host-spezifischer Override möglich)
+    (let
+      mkSshConfig = user: let
+        # Optionaler Host-Override: secrets/ssh/<user>/<hostname>/config.age
+        pHost = "${secrets}/ssh/${user}/${hostname}/config.age";
+        # Shared-Variante: secrets/ssh/<user>/config.age
+        pShared = "${secrets}/ssh/${user}/config.age";
+        src =
+          if builtins.pathExists pHost then pHost
+          else if builtins.pathExists pShared then pShared
+          else null;
+      in lib.optional (src != null) {
+        name = "ssh-config-${user}";
+        value = {
+          file = src;
+          owner = user;
+          group = "users";
+          mode = "0600";
+          path = "/home/${user}/.ssh/config.d/99-secret.conf";
+          symlink = false; # echte Kopie, kein Symlink
+        };
+      };
+      entries = lib.concatLists (map mkSshConfig users);
+    in
+      builtins.listToAttrs entries)
+
     (let
       mkUserEntries = user: let
         baseDir = "${secrets}/users/${user}";
@@ -388,5 +414,10 @@ networking.networkmanager = {
   # ) users);
 
   # ensure ~/.ssh exists with correct permissions for all users
-  systemd.tmpfiles.rules = map (u: "d /home/${u}/.ssh 0700 ${u} users -") users;
+  # systemd.tmpfiles.rules = map (u: "d /home/${u}/.ssh 0700 ${u} users -") users;
+
+  # am Ende (ergänzen/ersetzen)
+  systemd.tmpfiles.rules =
+    (map (u: "d /home/${u}/.ssh 0700 ${u} users -") users)
+    ++ (map (u: "d /home/${u}/.ssh/config.d 0700 ${u} users -") users);
 }
