@@ -196,16 +196,16 @@
         hyprlandPluginsPkgs = inputs.hyprland-plugins.packages.${systemConfig.system};
         splitMonitorWorkspaces = inputs.split-monitor-workspaces;
         hyprlandDots = inputs.hyprland-dots;
-        ml4wDotsLocal = let
-          p = /home/christian/projects/github/ml4w-dotfiles; # passe das auf deinen lokalen Pfad an
-          in
-          if builtins.pathExists p then p else null;
         hyprlandDotsLocal = let
           p = ./vendor/hyprland-dots;
         in
           if builtins.pathExists p
           then p
           else null;
+        ml4wDotsLocal = let
+          p = /home/christian/projects/github/ml4w-dotfiles; # passe das auf deinen lokalen Pfad an
+          in
+          if builtins.pathExists p then p else null;
         secrets = inputs.secrets.outPath;
 
         # Für Kompatibilität mit bestehenden Modulen
