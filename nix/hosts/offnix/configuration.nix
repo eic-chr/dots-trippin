@@ -17,6 +17,7 @@ in {
     ../shares.nix
   ];
 
+  
   # Hostname
   networking.hostName = hostname;
   networking.extraHosts = ''
@@ -31,7 +32,7 @@ in {
         isNormalUser = true;
         description = userConfigs.${user}.fullName or user;
         extraGroups =
-          ["dialout" "networkmanager" "audio" "video" "scanner" "lp" "input" "seat"]
+          ["dialout" "networkmanager" "audio" "video" "scanner" "lp" "input" "seat" "tun" ]
           ++ lib.optionals (isAdmin user) ["wheel"]
           ++ lib.optionals (isDeveloper user) ["docker"];
         shell = pkgs.zsh;
@@ -41,6 +42,10 @@ in {
 
   # Use Wayland/Hyprland session; disable X server to avoid conflicts.
   services.xserver.enable = lib.mkForce false;
+  services.openvpn.servers = {};
+
+
+  hardware.facetimehd.enable = true;
 
   # Bluetooth
   hardware.bluetooth = {
@@ -129,8 +134,38 @@ in {
     '';
   };
 
+  powerManagement.powerDownCommands = ''
+    set -eu
+    # Save and turn off keyboard backlight before suspend/hibernate
+    KB_DIR="/sys/class/leds/smc::kbd_backlight"
+    if [ ! -d "$KB_DIR" ]; then
+      for d in /sys/class/leds/*kbd_backlight*; do
+        if [ -d "$d" ]; then KB_DIR="$d"; break; fi
+      done
+    fi
+    if [ -d "$KB_DIR" ]; then
+      if [ -r "$KB_DIR/brightness" ]; then
+        cat "$KB_DIR/brightness" > /run/kbd_backlight.prev || true
+        chmod 600 /run/kbd_backlight.prev || true
+        echo "$KB_DIR" > /run/kbd_backlight.path || true
+        chmod 600 /run/kbd_backlight.path || true
+        echo 0 > "$KB_DIR/brightness" || true
+      fi
+    fi
+  '';
+
   powerManagement.resumeCommands = ''
     set -eu
+    # Restore keyboard backlight level saved before suspend
+    if [ -f /run/kbd_backlight.path ] && [ -f /run/kbd_backlight.prev ]; then
+      KB_DIR="$(cat /run/kbd_backlight.path)"
+      if [ -w "$KB_DIR/brightness" ]; then
+        PREV="$(cat /run/kbd_backlight.prev)"
+        echo "$PREV" > "$KB_DIR/brightness" || true
+      fi
+      rm -f /run/kbd_backlight.prev /run/kbd_backlight.path || true
+    fi
+
     # Ensure BT USB stays powered and wake-capable after resume
     for p in /sys/bus/usb/drivers/btusb/*/power/control; do
       if [ -f "$p" ]; then
@@ -184,8 +219,10 @@ in {
     '';
   };
 
+
+
   # Ensure deep sleep is the default suspend mode
-  boot.kernelParams = ["mem_sleep_default=s2idle"];
+  boot.kernelParams = ["mem_sleep_default=deep"];
 
   # Disable Wake-on-LAN at boot (prevents unwanted wakeups)
   systemd.services.disable-wol = {

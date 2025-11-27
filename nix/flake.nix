@@ -64,6 +64,15 @@
     # nixos-hardware for device-specific modules
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
+
+    # external secrets repo (flake)
+    secrets.url = "git+ssh://git@gitlab.dev.ewolutions.de/eickhoff/nix-secrets.git?ref=feat/first";
+
+    # agenix for secrets management
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -75,6 +84,8 @@
     home-manager,
     plasma-manager,
     nixos-hardware,
+    agenix,
+    secrets,
     split-monitor-workspaces,
     ...
   }: let
@@ -191,6 +202,7 @@
           if builtins.pathExists p
           then p
           else null;
+        secrets = inputs.secrets.outPath;
 
         # Für Kompatibilität mit bestehenden Modulen
         username = builtins.head systemConfig.users; # Erster User als Standard
@@ -254,6 +266,7 @@
       modules = [
         ./hosts/devnix/configuration.nix
         home-manager.nixosModules.home-manager
+        agenix.nixosModules.default
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
@@ -273,6 +286,7 @@
         nixos-hardware.nixosModules."apple-macbook-pro-11-4"
         ./hosts/offnix/configuration.nix
         home-manager.nixosModules.home-manager
+        agenix.nixosModules.default
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
@@ -291,6 +305,7 @@
       modules = [
         ./hosts/playnix/configuration.nix
         home-manager.nixosModules.home-manager
+        agenix.nixosModules.default
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;

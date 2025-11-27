@@ -24,6 +24,7 @@
     "ftdi_sio" 
     "pl2303" 
     "ch341"
+    "tun"
   ];
 
   # Firmware handled by nixos-hardware; keep redistributable firmware enabled

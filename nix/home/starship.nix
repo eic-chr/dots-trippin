@@ -65,6 +65,12 @@
         success_symbol = "[\\$](bright-green bold)";
         error_symbol = "[\\$](bright-red bold)";
       };
+      time = {
+        disabled = false;
+        format = "[$time]($style) ";
+        time_format = "%H:%M";
+        style = "bright-cyan bold";
+      };
     };
   };
 }
