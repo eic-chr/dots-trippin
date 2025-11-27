@@ -7,7 +7,8 @@
     ./git.nix
     ./shell.nix
     ./starship.nix
-    ./hyprland-dots-xdg.nix
+    # ./hyprland-dots-xdg.nix
+    ./ml4w.nix
     ./nwg-dock-hyprland.nix
 
     ./thunderbird.nix
@@ -45,101 +46,105 @@
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
     userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
   };
-
-  # Enable Hyprland-Dots XDG linking for offnix users (replaces stow-based approach)
-  programs.hyprlandDotsXdg = lib.mkIf (hostname == "offnix") {
+  programs.ml4wDotsXdg = {
     enable = true;
+    # optional, wenn du nicht via specialArg arbeiten willst:
+    # dotsPath = /home/christian/code/ml4w-dotfiles;
+    excludeDirs = [ ];
     installRuntimePackages = true;
-    excludeDirs = [ "nwg-dock-hyprland" ];
-    # enableWayvnc disabled
-    localIncludeContent = ''
-      source = ~/.config/hypr/UserConfigs/Plugins.local.conf
-      source = ~/.config/hypr/UserConfigs/AutoStart.conf
-      source = ~/.config/hypr/UserConfigs/WindowRules.local.conf
-      source = ~/.config/hypr/UserConfigs/Workspaces.local.conf
-      source = ~/.config/hypr/UserConfigs/Keybinds.local.conf
-      source = ~/.config/hypr/UserConfigs/Polkit.local.conf
-    '';
   };
+  # # Enable Hyprland-Dots XDG linking for offnix users (replaces stow-based approach)
+  # programs.hyprlandDotsXdg = lib.mkIf (hostname == "offnix") {
+  #   enable = true;
+  #   installRuntimePackages = true;
+  #   excludeDirs = ["nwg-dock-hyprland"];
+  #   # enableWayvnc disabled
+  #   localIncludeContent = ''
+  #     source = ~/.config/hypr/UserConfigs/Plugins.local.conf
+  #     source = ~/.config/hypr/UserConfigs/AutoStart.conf
+  #     source = ~/.config/hypr/UserConfigs/WindowRules.local.conf
+  #     source = ~/.config/hypr/UserConfigs/Workspaces.local.conf
+  #     source = ~/.config/hypr/UserConfigs/Keybinds.local.conf
+  #     source = ~/.config/hypr/UserConfigs/Polkit.local.conf
+  #   '';
+  # };
 
   programs.nwgDockHyprland.enable = true;
 
-  home.file.".config/hypr/UserConfigs/AutoStart.conf".text = ''
-    exec-once = $HOME/.config/nwg-dock-hyprland/launch.sh
-    exec-once = hyprctl dispatch renameworkspace 1 Docs
-    exec-once = hyprctl dispatch renameworkspace 2 Media
-    exec-once = hyprctl dispatch renameworkspace 3 Messenger
-    exec-once = hyprctl dispatch renameworkspace 4 Files
-    exec-once = hyprctl dispatch renameworkspace 5 Mail
-    exec-once = hyprctl dispatch renameworkspace 6 Browser
-    exec-once = hyprctl dispatch renameworkspace 7 IDE
-    exec-once = hyprctl dispatch renameworkspace 8 Terminals
-    exec-once = hyprctl dispatch renameworkspace 9 System
-    exec-once = hyprctl dispatch renameworkspace 10 Misc
-    exec-once = ~/.config/ml4w/scripts/sidepad.sh --init
-    exec-once = ~/.config/ml4w/scripts/sidepad.sh --hide
-  '';
-
-  home.file.".config/hypr/UserConfigs/Plugins.local.conf".text = ''
-    #   plugin = ${
-      splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces
-    }/lib/libsplit-monitor-workspaces.so
-  '';
-
-  home.file.".config/hypr/UserConfigs/WindowRules.local.conf".text = ''
-    # Example: route apps to specific workspaces (silent avoids focus jump)
-    windowrulev2 = workspace 1 silent, class:^([Oo]kular)$
-    windowrulev2 = workspace 3 silent, class:^(vesktop|discord|Element|[Ss]ignal)$
-    windowrulev2 = workspace 5 silent, class:^(thunderbird)$
-    windowrulev2 = workspace 4, class:^([Tt]hunar|[Dd]olphin)$
-    windowrulev2 = workspace 6, class:^(firefox|librewolf|zen)$
-    windowrulev2 = workspace 7, class:^(code|codium|jetbrains-.*)$
-    windowrulev2 = workspace 9 silent, class:^(com.nextcloud.*|org.keepassxc.*)$
-
-    windowrulev2 = float,class:^(com.nextcloud.*)$
-
-    # Ensure the sidebar window (ml4wsidebar) is floating
-    windowrulev2 = float, class:^(dotfiles-sidepad|btop-sidepad)$
-    windowrulev2 = float, class:^(io.github.qwersyk.Newelle)$
-  '';
-
-  home.file.".config/hypr/UserConfigs/Workspaces.local.conf".text = ''
-    #   plugin {
-    #     split-monitor-workspaces {
-    #         count = 5
-    #         keep_focused = 0
-    #         enable_notifications = 1
-    #         enable_persistent_workspaces = 1
-    #     }
-    # }
-    $mainMod = SUPER
-    # Switch workspaces with mainMod + [0-5]
-    bind = $mainMod, 1, workspace, 1
-    bind = $mainMod, 2, workspace, 2
-    bind = $mainMod, 3, workspace, 3
-    bind = $mainMod, 4, workspace, 4
-    bind = $mainMod, 5, workspace, 5
-
-    # Move active window to a workspace with mainMod + SHIFT + [0-5]
-    bind = $mainMod SHIFT, 1, movetoworkspacesilent, 1
-    bind = $mainMod SHIFT, 2, movetoworkspacesilent, 2
-    bind = $mainMod SHIFT, 3, movetoworkspacesilent, 3
-    bind = $mainMod SHIFT, 4, movetoworkspacesilent, 4
-    bind = $mainMod SHIFT, 5, movetoworkspacesilent, 5
-    # Example persistent workspaces bound to monitors
-    # Find monitor names: hyprctl monitors
-    # workspace = 1, monitor:eDP-1, persistent:true
-        # workspace = 2, monitor:eDP-1, persistent:true
-        # workspace = 3, monitor:eDP-1, persistent:true
-        # workspace = 4, monitor:eDP-1, persistent:true
-        # workspace = 5, monitor:eDP-1, persistent:true
-        # workspace = 6, monitor:HDMI-A-3, persistent:true
-        # workspace = 7, monitor:HDMI-A-3, persistent:true
-        # workspace = 8, monitor:HDMI-A-3, persistent:true
-        # workspace = 9, monitor:HDMI-A-3, persistent:true
-        # workspace = 0, monitor:HDMI-A-3, persistent:true
-  '';
-
+  # home.file.".config/hypr/UserConfigs/AutoStart.conf".text = ''
+  #   exec-once = $HOME/.config/nwg-dock-hyprland/launch.sh
+  #   exec-once = hyprctl dispatch renameworkspace 1 Docs
+  #   exec-once = hyprctl dispatch renameworkspace 2 Media
+  #   exec-once = hyprctl dispatch renameworkspace 3 Messenger
+  #   exec-once = hyprctl dispatch renameworkspace 4 Files
+  #   exec-once = hyprctl dispatch renameworkspace 5 Mail
+  #   exec-once = hyprctl dispatch renameworkspace 6 Browser
+  #   exec-once = hyprctl dispatch renameworkspace 7 IDE
+  #   exec-once = hyprctl dispatch renameworkspace 8 Terminals
+  #   exec-once = hyprctl dispatch renameworkspace 9 System
+  #   exec-once = hyprctl dispatch renameworkspace 10 Misc
+  #   exec-once = ~/.config/ml4w/scripts/sidepad.sh --init
+  #   exec-once = ~/.config/ml4w/scripts/sidepad.sh --hide
+  # '';
+  #
+  # home.file.".config/hypr/UserConfigs/Plugins.local.conf".text = ''
+  # #   plugin = ${splitMonitorWorkspaces.packages.${pkgs.system}.split-monitor-workspaces}/lib/libsplit-monitor-workspaces.so
+  # '';
+  #
+  # home.file.".config/hypr/UserConfigs/WindowRules.local.conf".text = ''
+  #   # Example: route apps to specific workspaces (silent avoids focus jump)
+  #   windowrulev2 = workspace 1 silent, class:^([Oo]kular)$
+  #   windowrulev2 = workspace 3 silent, class:^(vesktop|discord|Element|[Ss]ignal)$
+  #   windowrulev2 = workspace 5 silent, class:^(thunderbird)$
+  #   windowrulev2 = workspace 4, class:^([Tt]hunar|[Dd]olphin)$
+  #   windowrulev2 = workspace 6, class:^(firefox|librewolf|zen)$
+  #   windowrulev2 = workspace 7, class:^(code|codium|jetbrains-.*)$
+  #   windowrulev2 = workspace 9 silent, class:^(com.nextcloud.*|org.keepassxc.*)$
+  #
+  #   windowrulev2 = float,class:^(com.nextcloud.*)$
+  #
+  #   # Ensure the sidebar window (ml4wsidebar) is floating
+  #   windowrulev2 = float, class:^(dotfiles-sidepad|btop-sidepad)$
+  #   windowrulev2 = float, class:^(io.github.qwersyk.Newelle)$
+  # '';
+  #
+  # home.file.".config/hypr/UserConfigs/Workspaces.local.conf".text = ''
+  #   #   plugin {
+  #   #     split-monitor-workspaces {
+  #   #         count = 5
+  #   #         keep_focused = 0
+  #   #         enable_notifications = 1
+  #   #         enable_persistent_workspaces = 1
+  #   #     }
+  #   # }
+  #   $mainMod = SUPER
+  #   # Switch workspaces with mainMod + [0-5]
+  #   bind = $mainMod, 1, workspace, 1
+  #   bind = $mainMod, 2, workspace, 2
+  #   bind = $mainMod, 3, workspace, 3
+  #   bind = $mainMod, 4, workspace, 4
+  #   bind = $mainMod, 5, workspace, 5
+  #
+  #   # Move active window to a workspace with mainMod + SHIFT + [0-5]
+  #   bind = $mainMod SHIFT, 1, movetoworkspacesilent, 1
+  #   bind = $mainMod SHIFT, 2, movetoworkspacesilent, 2
+  #   bind = $mainMod SHIFT, 3, movetoworkspacesilent, 3
+  #   bind = $mainMod SHIFT, 4, movetoworkspacesilent, 4
+  #   bind = $mainMod SHIFT, 5, movetoworkspacesilent, 5
+  #   # Example persistent workspaces bound to monitors
+  #   # Find monitor names: hyprctl monitors
+  #   # workspace = 1, monitor:eDP-1, persistent:true
+  #       # workspace = 2, monitor:eDP-1, persistent:true
+  #       # workspace = 3, monitor:eDP-1, persistent:true
+  #       # workspace = 4, monitor:eDP-1, persistent:true
+  #       # workspace = 5, monitor:eDP-1, persistent:true
+  #       # workspace = 6, monitor:HDMI-A-3, persistent:true
+  #       # workspace = 7, monitor:HDMI-A-3, persistent:true
+  #       # workspace = 8, monitor:HDMI-A-3, persistent:true
+  #       # workspace = 9, monitor:HDMI-A-3, persistent:true
+  #       # workspace = 0, monitor:HDMI-A-3, persistent:true
+  # '';
+  #
   # # ml4w sidebar (Variant B) — sidepad scripts, pad, settings, keybinds
   # home.file.".config/ml4w/scripts/sidepad.sh" = {
   #   source = ../scripts/sidepad/sidepad-dispatcher.sh;
@@ -167,30 +172,30 @@
   #     echo "btop" > "$file"
   #   fi
   # '';
-
-  home.file.".config/hypr/UserConfigs/Polkit.local.conf".text = ''
-    # Polkit agent for authentication dialogs (needed for logout/power actions)
-    exec-once = lxqt-policykit
-  '';
-  home.file.".config/hypr/UserConfigs/Keybinds.local.conf".text = ''
-    # Toggle Rofi
-
-    bind = $mainMod, D, exec, pkill rofi || true && rofi -show drun -modi drun,filebrowser,run,window,calc # Main Menu (APP Launcher)
-    bind = $mainMod CTRL, Tab, exec, pkill rofi || true && rofi -show window -modi window
-    # Toggle sidebar
-    unbind = $mainMod, S
-    bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh --init
-    bind = $mainMod CTRL ALT, right, exec, ~/.config/ml4w/scripts/sidepad.sh                      # Open Sidepad
-    bind = $mainMod CTRL ALT, left, exec, ~/.config/ml4w/scripts/sidepad.sh --hide                # Close Sidepad
-
-    # Power menu (wlogout)
-    unbind = $mainMod SHIFT, E
-    bind = $mainMod SHIFT, E, exec, wlogout
-
-    # Expand/shrink handled by toggle when visible (upstream behavior)
-    # Select pad (rofi)
-    bind = $mainMod SHIFT, B, exec, ~/.config/ml4w/scripts/sidepad.sh --select
-  '';
+  #
+  # home.file.".config/hypr/UserConfigs/Polkit.local.conf".text = ''
+  #   # Polkit agent for authentication dialogs (needed for logout/power actions)
+  #   exec-once = lxqt-policykit
+  # '';
+  # home.file.".config/hypr/UserConfigs/Keybinds.local.conf".text = ''
+  #   # Toggle Rofi
+  #
+  #   bind = $mainMod, D, exec, pkill rofi || true && rofi -show drun -modi drun,filebrowser,run,window,calc # Main Menu (APP Launcher)
+  #   bind = $mainMod CTRL, Tab, exec, pkill rofi || true && rofi -show window -modi window
+  #   # Toggle sidebar
+  #   unbind = $mainMod, S
+  #   bind = $mainMod, S, exec, ~/.config/ml4w/scripts/sidepad.sh --init
+  #   bind = $mainMod CTRL ALT, right, exec, ~/.config/ml4w/scripts/sidepad.sh                      # Open Sidepad
+  #   bind = $mainMod CTRL ALT, left, exec, ~/.config/ml4w/scripts/sidepad.sh --hide                # Close Sidepad
+  #
+  #   # Power menu (wlogout)
+  #   unbind = $mainMod SHIFT, E
+  #   bind = $mainMod SHIFT, E, exec, wlogout
+  #
+  #   # Expand/shrink handled by toggle when visible (upstream behavior)
+  #   # Select pad (rofi)
+  #   bind = $mainMod SHIFT, B, exec, ~/.config/ml4w/scripts/sidepad.sh --select
+  # '';
 
   programs.rofi = {
     enable = true;
