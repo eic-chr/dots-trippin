@@ -1,5 +1,5 @@
 
-{ lib, pkgs, config, ml4wDotsLocal ? null, ... }:
+{ lib, pkgs, config, ml4wDotsLocal, ... }:
 let
   cfg = config.programs.ml4wDotsXdg;
 
@@ -61,16 +61,16 @@ in {
         assertions = [
           {
             assertion = dotsRoot != null;
-            message = "ml4w-dots-xdg: No valid dotsPath/ml4wDotsLocal found.";
+            message = "ml4w-dots-xdg: No valid dotsPath/ml4wDotsLocal found. ${toString ml4wDotsLocal} is it";
           }
           {
             assertion = exists "hypr";
-            message = "ml4w-dots-xdg: '${dotsRoot}/hypr' not found. Please point to the ML4W hyprland dotfiles repo root.";
+            message = "ml4w-dots-xdg: 'hypr' directory not found in the configured dotfiles path.";
           }
         ];
 
         # ~/.config/* Links plus optional ~/.local/bin from scripts
-        home.file = links // lib.optionalAttrs (exists "scripts") {
+        home.file = (if dotsRoot != null then links else {}) // lib.optionalAttrs (exists "scripts") {
           ".local/bin" = {
             source = "${dotsRoot}/scripts";
             recursive = true;
@@ -78,48 +78,48 @@ in {
         };
 
         # Pakete/Runtime-Tools
-        home.packages = lib.mkIf cfg.installRuntimePackages (with pkgs; [
+        home.packages = lib.mkIf cfg.installRuntimePackages [
           # Core
-          hyprland
-          xdg-desktop-portal-hyprland
+          pkgs.hyprland
+          pkgs."xdg-desktop-portal-hyprland"
 
           # Bars/launchers/notifications
-          waybar
-          rofi-wayland
-          dunst
-          wlogout
+          pkgs.waybar
+          pkgs."rofi-wayland"
+          pkgs.dunst
+          pkgs.wlogout
 
           # Terminal/Editor (Repo benutzt oft kitty)
-          kitty
+          pkgs.kitty
 
           # Wallpaper / effects
-          swww
+          pkgs.swww
 
           # Screenshots / clipboard
-          grim
-          slurp
-          swappy
-          wl-clipboard
-          cliphist
+          pkgs.grim
+          pkgs.slurp
+          pkgs.swappy
+          pkgs."wl-clipboard"
+          pkgs.cliphist
 
           # Audio / Brightness / Media
-          pamixer
-          pavucontrol
-          brightnessctl
-          playerctl
+          pkgs.pamixer
+          pkgs.pavucontrol
+          pkgs.brightnessctl
+          pkgs.playerctl
 
           # Network / Bluetooth applets (falls gewünscht)
-          networkmanagerapplet
-          blueman
+          pkgs.networkmanagerapplet
+          pkgs.blueman
 
           # Polkit agent für GUI Auth Dialoge
-          polkit_gnome
+          pkgs.polkit_gnome
 
           # Cursors/Icons/Theming (pragmatisch)
-          bibata-cursors
-          papirus-icon-theme
-          nwg-look
-        ]);
+          pkgs."bibata-cursors"
+          pkgs."papirus-icon-theme"
+          pkgs."nwg-look"
+        ];
       }
     ]
   );
