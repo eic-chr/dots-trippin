@@ -140,14 +140,20 @@
           hasPlasma = false;
         };
 
-        # NixOS VM configuration
-        devnix = {
-          system = "x86_64-linux";
-          hostname = "devnix";
-          nixpkgs = nixpkgs;
-          users = hostUsers.devnix;
-          hasPlasma = true;
-        };
+        # Hyprland / plugins through specialArgs for HM modules
+        hyprlandInput = inputs.hyprland;
+        hyprlandPlugins = inputs.hyprland-plugins;
+        hyprlandPluginsPkgs =
+          inputs.hyprland-plugins.packages.${systemConfig.system};
+        splitMonitorWorkspaces = inputs.split-monitor-workspaces;
+        hyprlandDots = inputs.hyprland-dots;
+        hyprlandDotsLocal = let p = ./vendor/hyprland-dots;
+        in if builtins.pathExists p then p else null;
+        ml4wDotsLocal = let
+          p =
+            /home/christian/projects/github/ml4w-dotfiles; # passe das auf deinen lokalen Pfad an
+        in if builtins.pathExists p then p else null;
+        secrets = inputs.secrets.outPath;
 
         # Laptop configuration with multiple users
         offnix = {

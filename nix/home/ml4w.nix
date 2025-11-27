@@ -1,7 +1,15 @@
 
-{ lib, pkgs, config, ml4wDotsLocal, ... }:
+{ lib, pkgs, config, ml4wDotsLocal ? null, ... }:
 let
   cfg = config.programs.ml4wDotsXdg;
+
+  # Helpers for verbosity
+  showPath = x:
+    let t = builtins.typeOf x;
+    in if x == null then "<null>"
+       else if t == "path" || t == "string" then toString x
+       else "<non-string>";
+  traceVal = msg: val: if cfg.verbose then builtins.trace ("[ml4w] " + msg) val else val;
 
   # Kandidaten-Verzeichnisse aus dem ML4W-Repo, die typischerweise vorkommen
   candidateDirs = [
@@ -17,13 +25,24 @@ let
     "mako"
   ];
 
-  dotsRoot =
+  # Resolve repo root and prefer an embedded .config if present
+  dotsRootCandidate = traceVal ("dotsPath=" + showPath cfg.dotsPath + " ml4wDotsLocal=" + showPath ml4wDotsLocal) (
     if cfg.dotsPath != null && builtins.pathExists cfg.dotsPath then cfg.dotsPath
     else if ml4wDotsLocal != null && builtins.pathExists ml4wDotsLocal then ml4wDotsLocal
-    else null;
+    else null
+  );
+
+  dotsRoot = let
+    dr =
+      if dotsRootCandidate != null && builtins.pathExists "${dotsRootCandidate}/.config"
+      then "${dotsRootCandidate}/.config"
+      else dotsRootCandidate;
+  in traceVal ("resolved dotsRoot=" + showPath dr) dr;
 
   exists = name: dotsRoot != null && builtins.pathExists "${dotsRoot}/${name}";
-  filtered = builtins.filter exists candidateDirs;
+  filtered = let
+    f = builtins.filter exists candidateDirs;
+  in traceVal ("linkable entries under " + showPath dotsRoot + ": " + (builtins.concatStringsSep ", " f)) f;
 
   mkLink = name: {
     name = ".config/${name}";
@@ -53,6 +72,12 @@ in {
       default = true;
       description = "Install a pragmatic set of runtime packages for Hyprland + ML4W";
     };
+
+    verbose = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable verbose evaluation and activation logging for ml4w dots linking";
+    };
   };
 
   config = lib.mkIf cfg.enable (
@@ -61,13 +86,21 @@ in {
         assertions = [
           {
             assertion = dotsRoot != null;
-            message = "ml4w-dots-xdg: No valid dotsPath/ml4wDotsLocal found. ${toString ml4wDotsLocal} is it";
+            message = "ml4w-dots-xdg: No valid dotsPath/ml4wDotsLocal found. dotsPath=${showPath cfg.dotsPath} ml4wDotsLocal=${showPath ml4wDotsLocal}";
           }
           {
-            assertion = exists "hypr";
-            message = "ml4w-dots-xdg: 'hypr' directory not found in the configured dotfiles path.";
+            assertion = (dotsRoot == null) || exists "hypr";
+            message = "ml4w-dots-xdg: 'hypr' directory not found. If your repo uses a .config root, set dotsPath to that subdirectory (e.g. /home/christian/projects/github/ml4w-dotfiles/.config).";
           }
         ];
+
+        # Verbose activation logging
+        home.activation.ml4wVerbose = lib.mkIf cfg.verbose (lib.hm.dag.entryAfter ["writeBoundary"] ''
+          echo "[ml4w] dotsPath=${showPath cfg.dotsPath}"
+          echo "[ml4w] ml4wDotsLocal=${showPath ml4wDotsLocal}"
+          echo "[ml4w] dotsRoot=${showPath dotsRoot}"
+          echo "[ml4w] linkable dirs: ${builtins.concatStringsSep " " filtered}"
+        '');
 
         # ~/.config/* Links plus optional ~/.local/bin from scripts
         home.file = (if dotsRoot != null then links else {}) // lib.optionalAttrs (exists "scripts") {
