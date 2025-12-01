@@ -535,6 +535,22 @@
         "type": "github"
       }
     },
+    "ml4w-dotfiles": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1764163854,
+        "narHash": "sha256-8w/JQXjK3f+kYkUDuOFQNqJfmFdwXR7PCMKTmLQddLs=",
+        "owner": "mylinuxforwork",
+        "repo": "dotfiles",
+        "rev": "72e73310117133d9688a720b4c74a885bcb3934b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mylinuxforwork",
+        "repo": "dotfiles",
+        "type": "github"
+      }
+    },
     "nix-filter": {
       "locked": {
         "lastModified": 1693833173,
@@ -718,6 +734,7 @@
         "hyprland": "hyprland",
         "hyprland-dots": "hyprland-dots",
         "hyprland-plugins": "hyprland-plugins",
+        "ml4w-dotfiles": "ml4w-dotfiles",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-darwin": "nixpkgs-darwin",

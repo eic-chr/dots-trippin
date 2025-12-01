@@ -1,15 +1,9 @@
 
-{ lib, pkgs, config, ml4wDotsLocal ? null, ... }:
+{ lib, pkgs, config, ml4wDots , ... }:
 let
   cfg = config.programs.ml4wDotsXdg;
 
-  # Helpers for verbosity
-  showPath = x:
-    let t = builtins.typeOf x;
-    in if x == null then "<null>"
-       else if t == "path" || t == "string" then toString x
-       else "<non-string>";
-  traceVal = msg: val: if cfg.verbose then builtins.trace ("[ml4w] " + msg) val else val;
+
 
   # Kandidaten-Verzeichnisse aus dem ML4W-Repo, die typischerweise vorkommen
   candidateDirs = [
@@ -25,43 +19,9 @@ let
     "mako"
   ];
 
-  # Resolve repo root and prefer an embedded .config if present
-  dotsRootCandidate = traceVal ("dotsPath=" + showPath cfg.dotsPath + " ml4wDotsLocal=" + showPath ml4wDotsLocal) (
-    if cfg.dotsPath != null && builtins.pathExists cfg.dotsPath then cfg.dotsPath
-    else if ml4wDotsLocal != null && builtins.pathExists ml4wDotsLocal then ml4wDotsLocal
-    else null
-  );
-
-  dotsRoot = let
-    dr =
-      if dotsRootCandidate != null && builtins.pathExists "${dotsRootCandidate}/.config"
-      then "${dotsRootCandidate}/.config"
-      else dotsRootCandidate;
-  in traceVal ("resolved dotsRoot=" + showPath dr) dr;
-
-  exists = name: dotsRoot != null && builtins.pathExists "${dotsRoot}/${name}";
-  filtered = let
-    f = builtins.filter exists candidateDirs;
-  in traceVal ("linkable entries under " + showPath dotsRoot + ": " + (builtins.concatStringsSep ", " f)) f;
-
-  mkLink = name: {
-    name = ".config/${name}";
-    value = {
-      source = "${dotsRoot}/${name}";
-      recursive = true;
-    } // (if builtins.elem name cfg.excludeDirs then { enable = false; } else {});
-  };
-
-  links = builtins.listToAttrs (map mkLink filtered);
-
 in {
   options.programs.ml4wDotsXdg = {
     enable = lib.mkEnableOption "Link ML4W Hyprland Dotfiles into XDG config";
-    dotsPath = lib.mkOption {
-      type = with lib.types; nullOr path;
-      default = null;
-      description = "Override path to local ML4W dotfiles checkout. Falls back to specialArg ml4wDotsLocal.";
-    };
     excludeDirs = lib.mkOption {
       type = with lib.types; listOf str;
       default = [ ];
@@ -83,42 +43,38 @@ in {
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
       {
-        assertions = [
-          {
-            assertion = dotsRoot != null;
-            message = "ml4w-dots-xdg: No valid dotsPath/ml4wDotsLocal found. dotsPath=${showPath cfg.dotsPath} ml4wDotsLocal=${showPath ml4wDotsLocal}";
-          }
-          {
-            assertion = (dotsRoot == null) || exists "hypr";
-            message = "ml4w-dots-xdg: 'hypr' directory not found. If your repo uses a .config root, set dotsPath to that subdirectory (e.g. /home/christian/projects/github/ml4w-dotfiles/.config).";
-          }
-        ];
+        # assertions = [
+        #   # {
+        #   #   assertion = dotsRoot != null;
+        #   #   message = "ml4w-dots-xdg: No valid dotsPath/ml4wDotsLocal found. dotsPath=${showPath cfg.dotsPath} ml4wDotsLocal=${showPath ml4wDotsLocal}";
+        #   # }
+        #   {
+        #     assertion = (dotsRoot == null) || exists "hypr";
+        #     message = "ml4w-dots-xdg: 'hypr' directory not found. If your repo uses a .config root, set dotsPath to that subdirectory (e.g. /home/christian/projects/github/ml4w-dotfiles/.config).";
+        #   }
+        # ];
 
-        # Verbose activation logging
-        home.activation.ml4wVerbose = lib.mkIf cfg.verbose (lib.hm.dag.entryAfter ["writeBoundary"] ''
-          echo "[ml4w] dotsPath=${showPath cfg.dotsPath}"
-          echo "[ml4w] ml4wDotsLocal=${showPath ml4wDotsLocal}"
-          echo "[ml4w] dotsRoot=${showPath dotsRoot}"
-          echo "[ml4w] linkable dirs: ${builtins.concatStringsSep " " filtered}"
-        '');
+        # # Verbose activation logging
+        # home.activation.ml4wVerbose = lib.mkIf cfg.verbose (lib.hm.dag.entryAfter ["writeBoundary"] ''
+        #   echo "[ml4w] dotsPath=${showPath cfg.dotsPath}"
+        #   echo "[ml4w] ml4wDotsLocal=${showPath ml4wDotsLocal}"
+        #   echo "[ml4w] dotsRoot=${showPath dotsRoot}"
+        #   echo "[ml4w] linkable dirs: ${builtins.concatStringsSep " " filtered}"
+        # '');
 
-        # ~/.config/* Links plus optional ~/.local/bin from scripts
-        home.file = (if dotsRoot != null then links else {}) // lib.optionalAttrs (exists "scripts") {
-          ".local/bin" = {
-            source = "${dotsRoot}/scripts";
-            recursive = true;
+
+# Dotfiles aus ML4W repo verlinken
+        home.file = {
+          ".config" = {
+            source = ml4wDots;  # das ganze repo — ggf. mit subdir
+              recursive = true;
           };
         };
-
-        # Pakete/Runtime-Tools
+# Pakete/Runtime-Tools
         home.packages = lib.mkIf cfg.installRuntimePackages [
-          # Core
-          pkgs.hyprland
-          pkgs."xdg-desktop-portal-hyprland"
 
           # Bars/launchers/notifications
           pkgs.waybar
-          pkgs."rofi-wayland"
           pkgs.dunst
           pkgs.wlogout
 
