@@ -48,6 +48,10 @@
       url = "github:JaKooLit/Hyprland-Dots";
       flake = false;
     };
+    ml4w-dotfiles = {
+      url = "github:mylinuxforwork/dotfiles";
+      flake = false;
+    };
     split-monitor-workspaces = {
       url = "github:Duckonaut/split-monitor-workspaces";
       inputs.hyprland.follows =
@@ -146,13 +150,7 @@
         hyprlandPluginsPkgs =
           inputs.hyprland-plugins.packages.${systemConfig.system};
         splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-        hyprlandDots = inputs.hyprland-dots;
-        hyprlandDotsLocal = let p = ./vendor/hyprland-dots;
-        in if builtins.pathExists p then p else null;
-        ml4wDotsLocal = let
-          p =
-            /home/christian/projects/github/ml4w-dotfiles; # passe das auf deinen lokalen Pfad an
-        in if builtins.pathExists p then p else null;
+        ml4wDots = inputs.ml4w-dotfiles;
         secrets = inputs.secrets.outPath;
 
         # Laptop configuration with multiple users

@@ -48,8 +48,8 @@
   };
   programs.ml4wDotsXdg = {
     enable = true;
+    verbose = true;
     # optional, wenn du nicht via specialArg arbeiten willst:
-    # dotsPath = /home/christian/code/ml4w-dotfiles;
     excludeDirs = [ ];
     installRuntimePackages = true;
   };

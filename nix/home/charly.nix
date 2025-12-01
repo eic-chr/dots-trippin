@@ -33,10 +33,10 @@
   };
 
   # Enable Hyprland-Dots XDG linking (host-independent)
-  programs.hyprlandDotsXdg = {
-    enable = true;
-    installRuntimePackages = true;
-  };
+  # programs.hyprlandDotsXdg = {
+  #   enable = true;
+  #   installRuntimePackages = true;
+  # };
 
   programs.nwgDockHyprland = {
     enable = true;

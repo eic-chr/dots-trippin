@@ -748,6 +748,7 @@
         "hyprland": "hyprland",
         "hyprland-dots": "hyprland-dots",
         "hyprland-plugins": "hyprland-plugins",
+        "ml4w-dotfiles": "ml4w-dotfiles",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-darwin": "nixpkgs-darwin",
