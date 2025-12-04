@@ -16,7 +16,7 @@
     ./git.nix
     ./shell.nix
     ./starship.nix
-    ./hyprland-dots-xdg.nix
+    # ./hyprland-dots-xdg.nix
     ./nwg-dock-hyprland.nix
     ./kitty.nix
   ];

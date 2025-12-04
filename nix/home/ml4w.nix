@@ -7,12 +7,17 @@ let
 
   # Kandidaten-Verzeichnisse aus dem ML4W-Repo, die typischerweise vorkommen
   candidateDirs = [
-    "hypr"
     "waybar"
     "rofi"
     "dunst"
+    "matugen"
+   # "ml4w" 
+   "nwg-dock-hyprland"
+   "sidepad"
+   "walker"
+   "waybar"
+   "waypaper"
     "wlogout"
-    "kitty"
     "wofi"
     "swaylock"
     "swayidle"
@@ -62,19 +67,32 @@ in {
         #   echo "[ml4w] linkable dirs: ${builtins.concatStringsSep " " filtered}"
         # '');
 
-
-# Dotfiles aus ML4W repo verlinken
-        home.file = {
-          ".config" = {
-            source = ml4wDots;  # das ganze repo — ggf. mit subdir
-              recursive = true;
-          };
-        };
+        # home.file = 
+        # lib.genAttrs candidateDirs (name: {
+        #   target = ".config/${name}";
+        #   source = "${ml4wDots}/dotfiles/.config/${name}";  # das ganze repo — ggf. mit subdir
+        #     recursive = true;
+        # })
+        #   // {
+        #     ".config/ml4w-ml4w" = {
+        #     target = ".config/ml4w-ml4w";
+        #     source = "${ml4wDots}/dotfiles/.config/ml4w";
+        #     recursive = true;
+        #   };
+        #   }
+        #   // {
+        #     ".config/hypr-ml4w" = {
+        #     target = ".config/hypr-ml4w";
+        #     source = "${ml4wDots}/dotfiles/.config/hypr";
+        #     recursive = true;
+        #   };
+        # };
 # Pakete/Runtime-Tools
         home.packages = lib.mkIf cfg.installRuntimePackages [
 
           # Bars/launchers/notifications
           pkgs.waybar
+          pkgs.waypaper
           pkgs.dunst
           pkgs.wlogout
 
@@ -86,6 +104,7 @@ in {
 
           # Screenshots / clipboard
           pkgs.grim
+          pkgs.grimblast
           pkgs.slurp
           pkgs.swappy
           pkgs."wl-clipboard"
@@ -108,6 +127,15 @@ in {
           pkgs."bibata-cursors"
           pkgs."papirus-icon-theme"
           pkgs."nwg-look"
+
+          pkgs.hyprshade
+          pkgs.hyprpaper
+          pkgs.gum
+          pkgs.figlet
+          pkgs.fastfetch
+          pkgs.qt6ct
+          pkgs.walker
+          pkgs.wget
         ];
       }
     ]
