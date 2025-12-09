@@ -136,14 +136,7 @@
           hasPlasma = false;
         };
 
-        # Hyprland / plugins through specialArgs for HM modules
-        hyprlandInput = inputs.hyprland;
-        hyprlandPlugins = inputs.hyprland-plugins;
-        hyprlandPluginsPkgs =
-          inputs.hyprland-plugins.packages.${systemConfig.system};
-        splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-        secrets = inputs.secrets.outPath;
-
+        # NixOS VM configuration
         devnix = {
           system = "x86_64-linux";
           hostname = "devnix";
@@ -151,6 +144,7 @@
           users = hostUsers.devnix;
           hasPlasma = true;
         };
+
         # Laptop configuration with multiple users
         offnix = {
           system = "x86_64-linux";
