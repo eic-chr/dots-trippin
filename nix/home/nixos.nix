@@ -149,34 +149,33 @@
         # workspace = 0, monitor:HDMI-A-3, persistent:true
   '';
 
-  # ml4w sidebar (Variant B) — sidepad scripts, pad, settings, keybinds
-  home.file.".config/ml4w/scripts/sidepad.sh" = {
-    source = ../scripts/sidepad/sidepad-dispatcher.sh;
-    executable = true;
-  };
-
-  home.file.".config/sidepad/sidepad" = {
-    source = ../scripts/sidepad/sidepad.sh;
-    executable = true;
-  };
-
-  home.file.".config/sidepad/presets" = {
-    source = ../scripts/sidepad/presets;
-    recursive = true;
-  };
-  home.file.".config/sidepad/pads" = {
-    source = ../scripts/sidepad/pads;
-    recursive = true;
-  };
-
-  home.activation.ensureSidepadActive =
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      file="$HOME/.config/ml4w/settings/sidepad-active"
-      mkdir -p "$(dirname "$file")"
-      if [ ! -f "$file" ]; then
-        echo "btop" > "$file"
-      fi
-    '';
+  # # ml4w sidebar (Variant B) — sidepad scripts, pad, settings, keybinds
+  # home.file.".config/ml4w/scripts/sidepad.sh" = {
+  #   source = ../scripts/sidepad/sidepad-dispatcher.sh;
+  #   executable = true;
+  # };
+  #
+  # home.file.".config/sidepad/sidepad" = {
+  #   source = ../scripts/sidepad/sidepad.sh;
+  #   executable = true;
+  # };
+  #
+  # home.file.".config/sidepad/presets" = {
+  #   source = ../scripts/sidepad/presets;
+  #   recursive = true;
+  # };
+  # home.file.".config/sidepad/pads" = {
+  #   source = ../scripts/sidepad/pads;
+  #   recursive = true;
+  # };
+  #
+  # home.activation.ensureSidepadActive = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  #   file="$HOME/.config/ml4w/settings/sidepad-active"
+  #   mkdir -p "$(dirname "$file")"
+  #   if [ ! -f "$file" ]; then
+  #     echo "btop" > "$file"
+  #   fi
+  # '';
 
   home.file.".config/hypr/UserConfigs/Polkit.local.conf".text = ''
     # Polkit agent for authentication dialogs (needed for logout/power actions)
