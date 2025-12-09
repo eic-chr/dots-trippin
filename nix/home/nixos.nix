@@ -40,15 +40,6 @@
     '';
   };
 
-  programs.ssh = {
-    enable = true;
-    addKeysToAgent = "yes";
-    extraConfig = ''
-      Include ~/.ssh/config.d/*.conf
-      Include ~/.ssh/config.d/*
-    '';
-  };
-
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
     userName = lib.mkForce userFullName; # Anpassen nach Bedarf
