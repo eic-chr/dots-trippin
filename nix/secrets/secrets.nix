@@ -11,7 +11,6 @@
 #   ssh/<user>/<hostname>/<basename>.age     # only for a specific host
 #
 # After changing recipients, run:  agenix --rekey
-
 let
   # ===========================
   # User Public Keys (per user)

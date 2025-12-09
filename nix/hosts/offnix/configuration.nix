@@ -17,7 +17,6 @@ in {
     ../shares.nix
   ];
 
-  
   # Hostname
   networking.hostName = hostname;
   networking.extraHosts = ''
@@ -32,7 +31,7 @@ in {
         isNormalUser = true;
         description = userConfigs.${user}.fullName or user;
         extraGroups =
-          ["dialout" "networkmanager" "audio" "video" "scanner" "lp" "input" "seat" "tun" ]
+          ["dialout" "networkmanager" "audio" "video" "scanner" "lp" "input" "seat" "tun"]
           ++ lib.optionals (isAdmin user) ["wheel"]
           ++ lib.optionals (isDeveloper user) ["docker"];
         shell = pkgs.zsh;
@@ -43,7 +42,6 @@ in {
   # Use Wayland/Hyprland session; disable X server to avoid conflicts.
   services.xserver.enable = lib.mkForce false;
   services.openvpn.servers = {};
-
 
   hardware.facetimehd.enable = true;
 
@@ -218,8 +216,6 @@ in {
       done
     '';
   };
-
-
 
   # Ensure deep sleep is the default suspend mode
   boot.kernelParams = ["mem_sleep_default=deep"];
