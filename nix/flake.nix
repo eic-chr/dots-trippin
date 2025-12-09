@@ -44,14 +44,6 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
-    hyprland-dots = {
-      url = "github:JaKooLit/Hyprland-Dots";
-      flake = false;
-    };
-    ml4w-dotfiles = {
-      url = "github:mylinuxforwork/dotfiles";
-      flake = false;
-    };
     split-monitor-workspaces = {
       url = "github:Duckonaut/split-monitor-workspaces";
       inputs.hyprland.follows =
@@ -150,9 +142,15 @@
         hyprlandPluginsPkgs =
           inputs.hyprland-plugins.packages.${systemConfig.system};
         splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-        ml4wDots = inputs.ml4w-dotfiles;
         secrets = inputs.secrets.outPath;
 
+        devnix = {
+          system = "x86_64-linux";
+          hostname = "devnix";
+          nixpkgs = nixpkgs;
+          users = hostUsers.devnix;
+          hasPlasma = true;
+        };
         # Laptop configuration with multiple users
         offnix = {
           system = "x86_64-linux";
@@ -188,13 +186,6 @@
           hyprlandPluginsPkgs =
             inputs.hyprland-plugins.packages.${systemConfig.system};
           splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-          hyprlandDots = inputs.hyprland-dots;
-          ml4wDotsLocal = let
-            p =
-              /home/christian/projects/github/ml4w-dotfiles; # passe das auf deinen lokalen Pfad an
-          in if builtins.pathExists p then p else null;
-          hyprlandDotsLocal = let p = ./vendor/hyprland-dots;
-          in if builtins.pathExists p then p else null;
           secrets = inputs.secrets.outPath;
 
           # Für Kompatibilität mit bestehenden Modulen
