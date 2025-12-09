@@ -21,8 +21,8 @@
     "kvm-intel"
     "applesmc" # Apple System Management Controller
     "coretemp" # CPU-Temperatur
-    "ftdi_sio" 
-    "pl2303" 
+    "ftdi_sio"
+    "pl2303"
     "ch341"
     "tun"
   ];
