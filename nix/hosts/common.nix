@@ -247,6 +247,7 @@ in {
       fira-code-symbols
       nerd-fonts.jetbrains-mono
       nerd-fonts.fira-code
+      fira-sans
     ];
 
     fontconfig = {
