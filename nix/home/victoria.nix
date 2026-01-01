@@ -1,8 +1,18 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
-{ config, lib, pkgs, currentUser, userConfig, userEmail, userFullName, hasPlasma
-, hostname, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  currentUser,
+  userConfig,
+  userEmail,
+  userFullName,
+  hasPlasma,
+  hostname,
+  ...
+}: {
   # Importiere deine bestehenden Module
-  imports = [ ./core.nix ./git.nix ./shell.nix ./starship.nix ./kitty.nix ];
+  imports = [./core.nix ./git.nix ./shell.nix ./starship.nix ./kitty.nix];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
@@ -20,11 +30,13 @@
     enable = true;
     input = {
       keyboard = {
-        layouts = [{
-          displayName = "US intl";
-          layout = "us";
-          variant = "intl";
-        }];
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
       };
     };
   };

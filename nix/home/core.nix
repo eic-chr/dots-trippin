@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     # Archives
     zip
@@ -17,7 +17,7 @@
     # Multimedia
     imagemagick
     exiftool
-    
+
     # Search & text processing
     ripgrep # recursively searches directories for a regex pattern
     jq # A lightweight and flexible command-line JSON processor

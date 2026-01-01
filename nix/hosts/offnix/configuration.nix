@@ -219,14 +219,14 @@ in {
 
   # Ensure deep sleep is the default suspend mode
   boot.kernelParams = ["mem_sleep_default=deep"];
-  boot.extraModulePackages = [ pkgs.linuxPackages.broadcom_sta ];
-  boot.blacklistedKernelModules = [ "b43" "bcma" "brcmsmac" "ssb" "brcmfmac" ];
-  boot.supportedFilesystems = [ "cifs" ];
+  boot.extraModulePackages = [pkgs.linuxPackages.broadcom_sta];
+  boot.blacklistedKernelModules = ["b43" "bcma" "brcmsmac" "ssb" "brcmfmac"];
+  boot.supportedFilesystems = ["cifs"];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   nixpkgs.config.allowInsecurePredicate = pkg:
-    builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
+    builtins.elem (lib.getName pkg) ["broadcom-sta"];
 
   # Disable Wake-on-LAN at boot (prevents unwanted wakeups)
   systemd.services.disable-wol = {

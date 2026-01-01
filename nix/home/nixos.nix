@@ -1,20 +1,31 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
-{ lib, pkgs, unstable, currentUser, userEmail, userFullName, hasPlasma, hostname
-, ... }: {
+{
+  lib,
+  pkgs,
+  unstable,
+  currentUser,
+  userEmail,
+  userFullName,
+  hasPlasma,
+  hostname,
+  ...
+}: {
   # Importiere deine bestehenden Module
-  imports = [
-    ./core.nix
-    ./git.nix
-    ./shell.nix
-    ./starship.nix
-    # ./hyprland-dots-xdg.nix
-    ./ml4w.nix
-    ./nwg-dock-hyprland.nix
+  imports =
+    [
+      ./core.nix
+      ./git.nix
+      ./shell.nix
+      ./starship.nix
+      # ./hyprland-dots-xdg.nix
+      ./ml4w.nix
+      ./nwg-dock-hyprland.nix
 
-    ./thunderbird.nix
-    ./vscode.nix
-    ./firefox.nix
-  ] ++ lib.optionals (hostname != "offnix") [ ./kitty.nix ];
+      ./thunderbird.nix
+      ./vscode.nix
+      ./firefox.nix
+    ]
+    ++ lib.optionals (hostname != "offnix") [./kitty.nix];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
@@ -25,7 +36,7 @@
 
   home.activation.fixSmbCredsPerms =
     lib.mkIf (hostname == "offnix" || hostname == "devnix")
-    (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    (lib.hm.dag.entryAfter ["writeBoundary"] ''
       if [ -f "$HOME/.smb_crd" ]; then
         chown "$USER":"$USER" "$HOME/.smb_crd" || true
         chmod 600 "$HOME/.smb_crd" || true
@@ -212,8 +223,7 @@
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
-    plugins = with pkgs;
-      [ (rofi-calc.override { rofi-unwrapped = rofi-unwrapped; }) ];
+    plugins = with pkgs; [(rofi-calc.override {rofi-unwrapped = rofi-unwrapped;})];
     terminal = "kitty";
     theme = "~/.config/rofi/themes/KooL_style-10-Fancy.rasi";
     extraConfig = {
@@ -242,38 +252,44 @@
     kwin.scripts.polonium.enable = false;
     input = {
       keyboard = {
-        layouts = [{
-          displayName = "US intl";
-          layout = "us";
-          variant = "intl";
-        }];
+        layouts = [
+          {
+            displayName = "US intl";
+            layout = "us";
+            variant = "intl";
+          }
+        ];
       };
-      touchpads = [{
-        enable = true;
-        name = "Apple Inc. Apple Internal Keyboard / Trackpad";
-        vendorId = "05ac"; # Apple Vendor ID
-        productId = "0263"; # Dein MacBook Trackpad
-        naturalScroll = true; # Traditionelles Scrolling!
-        tapToClick = true;
-        rightClickMethod = "twoFingers";
-      }];
+      touchpads = [
+        {
+          enable = true;
+          name = "Apple Inc. Apple Internal Keyboard / Trackpad";
+          vendorId = "05ac"; # Apple Vendor ID
+          productId = "0263"; # Dein MacBook Trackpad
+          naturalScroll = true; # Traditionelles Scrolling!
+          tapToClick = true;
+          rightClickMethod = "twoFingers";
+        }
+      ];
     };
     # Panel-Konfiguration
-    panels = [{
-      location = "bottom";
-      widgets = [
-        "org.kde.plasma.kickoff"
-        "org.kde.plasma.pager"
-        "org.kde.plasma.icontasks"
-        "org.kde.plasma.marginsseparator"
-        "org.kde.plasma.systemtray"
-        "org.kde.plasma.digitalclock"
-      ];
-    }];
+    panels = [
+      {
+        location = "bottom";
+        widgets = [
+          "org.kde.plasma.kickoff"
+          "org.kde.plasma.pager"
+          "org.kde.plasma.icontasks"
+          "org.kde.plasma.marginsseparator"
+          "org.kde.plasma.systemtray"
+          "org.kde.plasma.digitalclock"
+        ];
+      }
+    ];
 
     # Shortcuts
     shortcuts = {
-      ksmserver = { "Lock Session" = [ "Screensaver" "Meta+L" ]; };
+      ksmserver = {"Lock Session" = ["Screensaver" "Meta+L"];};
       kwin = {
         "Switch to Desktop 1" = "Meta+1";
         "Switch to Desktop 2" = "Meta+2";
@@ -284,29 +300,31 @@
   };
 
   # Zusätzliche NixOS-spezifische Pakete
-  home.packages = (with pkgs; [
-    # Browser (falls nicht system-weit installiert)
-    ags
-    ansible
-    # ansible-lint
-    cryptomator
-    fzf
-    git-crypt
-    openssl
-    glow
-    pgadmin4
-    remmina
-    texlive.combined.scheme-small
-    md2pdf
-    pandoc
-    signal-desktop
-    teamviewer
-    waybar
-    nwg-drawer
-    inetutils
-    procps
-    unstable.zed-editor
-  ]) ++ lib.optionals (hostname == "offnix") [ pkgs.kitty ];
+  home.packages =
+    (with pkgs; [
+      # Browser (falls nicht system-weit installiert)
+      ags
+      ansible
+      # ansible-lint
+      cryptomator
+      fzf
+      git-crypt
+      openssl
+      glow
+      pgadmin4
+      remmina
+      texlive.combined.scheme-small
+      md2pdf
+      pandoc
+      signal-desktop
+      teamviewer
+      waybar
+      nwg-drawer
+      inetutils
+      procps
+      unstable.zed-editor
+    ])
+    ++ lib.optionals (hostname == "offnix") [pkgs.kitty];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {
@@ -320,12 +338,10 @@
     signal = {
       name = "Signal";
       # comment = "Meine angepasste Version von Signal";
-      icon =
-        "${pkgs.signal-desktop}/share/icons/hicolor/512x512/apps/signal-desktop.png"; # unverändert
-      exec =
-        "${pkgs.signal-desktop}/bin/signal-desktop --password-store=kwallet6";
+      icon = "${pkgs.signal-desktop}/share/icons/hicolor/512x512/apps/signal-desktop.png"; # unverändert
+      exec = "${pkgs.signal-desktop}/bin/signal-desktop --password-store=kwallet6";
       type = "Application";
-      categories = [ "Network" "InstantMessaging" ];
+      categories = ["Network" "InstantMessaging"];
     };
   };
 }

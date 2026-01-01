@@ -1,9 +1,14 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ pkgs, lib, hostname, users, userConfigs, ... }:
-let
+{
+  pkgs,
+  lib,
+  hostname,
+  users,
+  userConfigs,
+  ...
+}: let
   isAdmin = user: user == "christian" || userConfigs.${user}.isAdmin or false;
   isDeveloper = user: userConfigs.${user}.profile or null == "developer";
 in {
@@ -19,29 +24,32 @@ in {
   networking.extraHosts = ''
     91.239.118.30 mail.ewolutions.de
   '';
-  networking.firewall.allowedTCPPorts = lib.mkAfter [ 3389 ];
+  networking.firewall.allowedTCPPorts = lib.mkAfter [3389];
 
   # Dynamische Benutzer-Erstellung basierend auf hostUsers
   users.users = builtins.listToAttrs (map (user: {
-    name = user;
-    value = {
-      isNormalUser = true;
-      description = userConfigs.${user}.fullName or user;
-      extraGroups = [
-        "dialout"
-        "networkmanager"
-        "audio"
-        "video"
-        "scanner"
-        "lp"
-        "input"
-        "seat"
-        "tun"
-      ] ++ lib.optionals (isAdmin user) [ "wheel" ]
-        ++ lib.optionals (isDeveloper user) [ "docker" ];
-      shell = pkgs.zsh;
-    };
-  }) users);
+      name = user;
+      value = {
+        isNormalUser = true;
+        description = userConfigs.${user}.fullName or user;
+        extraGroups =
+          [
+            "dialout"
+            "networkmanager"
+            "audio"
+            "video"
+            "scanner"
+            "lp"
+            "input"
+            "seat"
+            "tun"
+          ]
+          ++ lib.optionals (isAdmin user) ["wheel"]
+          ++ lib.optionals (isDeveloper user) ["docker"];
+        shell = pkgs.zsh;
+      };
+    })
+    users);
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -89,9 +97,9 @@ in {
   services.flatpak.enable = true;
   systemd.services.flatpak-add-flathub = {
     description = "Add Flathub Flatpak remote (system-wide)";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
+    wantedBy = ["multi-user.target"];
+    after = ["network-online.target"];
+    wants = ["network-online.target"];
     serviceConfig.Type = "oneshot";
     script = ''
       set -eu
@@ -190,5 +198,4 @@ in {
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
-
 }
