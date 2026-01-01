@@ -208,7 +208,6 @@ in {
       "visual-studio-code"
       "vscode-insiders"
       "vscode-extension-ms-vscode-remote-remote-containers"
-      "discord"
       "teamviewer"
       "broadcom-sta"
       "postman"

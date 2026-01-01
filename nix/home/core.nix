@@ -17,7 +17,7 @@
     # Multimedia
     imagemagick
     exiftool
-    # clipgrab
+    
     # Search & text processing
     ripgrep # recursively searches directories for a regex pattern
     jq # A lightweight and flexible command-line JSON processor
@@ -51,14 +51,12 @@
     gnupg
 
     # Productivity
-    glow # markdown previewer in terminal
     atuin # Shell-History
     languagetool # Sprachprüfung
     ltex-ls # LSP für LanguageTool
     zk # Zettelkasten
 
     # Fun
-    cowsay
     whatsapp-electron
     vesktop
     # Terminal (falls Sie es nicht systemweit wollen)

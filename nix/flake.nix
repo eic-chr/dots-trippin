@@ -178,65 +178,6 @@
         };
       };
 
-      # Gaming laptop configuration with multiple users
-      playnix = {
-        system = "x86_64-linux";
-        hostname = "playnix";
-        nixpkgs = nixpkgs;
-        users = hostUsers.playnix;
-        hasPlasma = true;
-      };
-    };
-
-    # Helper function to create specialArgs for each system
-    mkSpecialArgs = systemConfig:
-      inputs
-      // {
-        inherit (systemConfig) hostname hasPlasma users;
-        inherit userConfigs hostUsers;
-
-          # Hyprland / plugins through specialArgs for HM modules
-          hyprlandInput = inputs.hyprland;
-          hyprlandPlugins = inputs.hyprland-plugins;
-          hyprlandPluginsPkgs =
-            inputs.hyprland-plugins.packages.${systemConfig.system};
-          splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-          secrets = inputs.secrets.outPath;
-          ml4wDots = inputs.ml4w-dotfiles;
-
-          # Für Kompatibilität mit bestehenden Modulen
-          username =
-            builtins.head systemConfig.users; # Erster User als Standard
-        };
-
-        # NixOS VM configuration
-        devnix = {
-          system = "x86_64-linux";
-          hostname = "devnix";
-          nixpkgs = nixpkgs;
-          users = hostUsers.devnix;
-          hasPlasma = true;
-        };
-
-        # Laptop configuration with multiple users
-        offnix = {
-          system = "x86_64-linux";
-          hostname = "offnix";
-          nixpkgs = nixpkgs;
-          users = hostUsers.offnix;
-          hasPlasma = true;
-        };
-
-        # Gaming laptop configuration with multiple users
-        playnix = {
-          system = "x86_64-linux";
-          hostname = "playnix";
-          nixpkgs = nixpkgs;
-          users = hostUsers.playnix;
-          hasPlasma = true;
-        };
-      };
-
       # Helper function to create specialArgs for each system
       mkSpecialArgs = systemConfig:
         inputs // {
@@ -254,6 +195,7 @@
             inputs.hyprland-plugins.packages.${systemConfig.system};
           splitMonitorWorkspaces = inputs.split-monitor-workspaces;
           secrets = inputs.secrets.outPath;
+          ml4wDots = inputs.ml4w-dotfiles;
 
           # Für Kompatibilität mit bestehenden Modulen
           username =
@@ -321,75 +263,6 @@
             }
           ];
         };
-      # NixOS configurations
-      nixosConfigurations."${systems.devnix.hostname}" =
-        nixpkgs.lib.nixosSystem {
-          system = systems.devnix.system;
-          specialArgs = mkSpecialArgs systems.devnix;
-          modules = [
-            ./hosts/devnix/configuration.nix
-            home-manager.nixosModules.home-manager
-            agenix.nixosModules.default
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = mkSpecialArgs systems.devnix;
-              home-manager.users = mkHomeManagerUsers systems.devnix;
-              home-manager.sharedModules =
-                [ plasma-manager.homeManagerModules.plasma-manager ];
-            }
-          ];
-        };
-
-      nixosConfigurations."${systems.offnix.hostname}" =
-        nixpkgs.lib.nixosSystem {
-          system = systems.offnix.system;
-          specialArgs = mkSpecialArgs systems.offnix;
-          modules = [
-            nixos-hardware.nixosModules."apple-macbook-pro-11-4"
-            ./hosts/offnix/configuration.nix
-            home-manager.nixosModules.home-manager
-            agenix.nixosModules.default
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = mkSpecialArgs systems.offnix;
-              home-manager.users = mkHomeManagerUsers systems.offnix;
-              home-manager.sharedModules =
-                [ plasma-manager.homeManagerModules.plasma-manager ];
-            }
-          ];
-        };
-
-      nixosConfigurations."${systems.playnix.hostname}" =
-        nixpkgs.lib.nixosSystem {
-          system = systems.playnix.system;
-          specialArgs = mkSpecialArgs systems.playnix;
-          modules = [
-            ./hosts/playnix/configuration.nix
-            home-manager.nixosModules.home-manager
-            agenix.nixosModules.default
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = mkSpecialArgs systems.playnix;
-              home-manager.users = mkHomeManagerUsers systems.playnix;
-              home-manager.sharedModules =
-                [ plasma-manager.homeManagerModules.plasma-manager ];
-            }
-          ];
-        };
-
-      # Formatters for all systems
-      formatter = builtins.listToAttrs (map (systemName:
-        let systemConfig = systems.${systemName};
-        in {
-          name = systemConfig.system;
-          value =
-            systemConfig.nixpkgs.legacyPackages.${systemConfig.system}.alejandra;
-        }) (builtins.attrNames systems));
-    };
-
       # NixOS configurations
       nixosConfigurations."${systems.devnix.hostname}" =
         nixpkgs.lib.nixosSystem {
