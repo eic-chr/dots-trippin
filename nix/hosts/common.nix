@@ -34,9 +34,6 @@ in {
     extraPortals = with pkgs; [ kdePackages.xdg-desktop-portal-kde ];
   };
 
-  boot.extraModulePackages = [ pkgs.linuxPackages.broadcom_sta ];
-  boot.blacklistedKernelModules = [ "b43" "bcma" "brcmsmac" "ssb" "brcmfmac" ];
-  boot.supportedFilesystems = [ "cifs" ];
   # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
   # Netzwerk
@@ -46,8 +43,6 @@ in {
   };
 
   # Bootloader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   programs.zsh.enable = true;
   security.sudo = {
@@ -90,20 +85,21 @@ in {
       Type = "oneshot";
       ExecStart = ''
         ${pkgs.bash}/bin/bash -lc '
-                           for i in {1..10}; do 
-                             if busctl --user list | grep -q org.freedesktop.secrets; then 
-                               echo "[OK] Secret Service available"; exit 0; 
-                                 fi; 
-                                 sleep 0.5; 
-                                 done; 
-                                 echo "[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam"; 
-                                 ${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true; 
-                                 sleep 1; 
-                                 if busctl --user list | grep -q org.freedesktop.secrets; then 
-                                   echo "[OK] Secret Service available after start"; exit 0; 
-                                 else 
-                                   echo "[ERROR] Secret Service unavailable"; exit 1; 
-                                     fi''';
+                           for i in {1..10}; do
+                             if busctl --user list | grep -q org.freedesktop.secrets; then
+                               echo "[OK] Secret Service available"; exit 0;
+                                 fi;
+                                 sleep 0.5;
+                                 done;
+                                 echo "[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam";
+                                 ${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true;
+                                 sleep 1;
+                                 if busctl --user list | grep -q org.freedesktop.secrets; then
+                                   echo "[OK] Secret Service available after start"; exit 0;
+                                 else
+                                   echo "[ERROR] Secret Service unavailable"; exit 1;
+                                     fi'
+      '';
     };
   };
 
@@ -126,11 +122,14 @@ in {
       ntfs3g # NTFS-Support (Lesen/Schreiben)
       dosfstools # FAT/FAT32/ExFAT Tools (mkfs.vfat usw.)
       exfatprogs # ExFAT Support
-      screen
       minicom
       picocom # minimalistisch
       tio # modern & angenehm
       tmux
+      filezilla
+      stow
+      usbutils
+      lm_sensors
 
       git
       htop
@@ -166,23 +165,23 @@ in {
       # KDE Apps (gemeinsam für alle KDE-Systeme)
     ] ++ lib.optionals hasPlasma [
       # KDE-spezifische Pakete
-      kdePackages.ark
-      kdePackages.dolphin
-      kdePackages.gwenview
-      kdePackages.kate
-      kdePackages.kcalc
-      kdePackages.kdegraphics-thumbnailers
-      kdePackages.krfb
-      kdePackages.kio-extras
-      kdePackages.kmail
-      kdePackages.kolourpaint
-      kdePackages.konsole
-      kdePackages.korganizer
-      kdePackages.ksystemlog
-      kdePackages.merkuro
-      kdePackages.okular
-      kdePackages.qtimageformats
-      kdePackages.spectacle
+      # kdePackages.ark
+      # kdePackages.dolphin
+      # kdePackages.gwenview
+      # kdePackages.kate
+      # kdePackages.kcalc
+      # kdePackages.kdegraphics-thumbnailers
+      # kdePackages.krfb
+      # kdePackages.kio-extras
+      # kdePackages.kmail
+      # kdePackages.kolourpaint
+      # kdePackages.konsole
+      # kdePackages.korganizer
+      # kdePackages.ksystemlog
+      # kdePackages.merkuro
+      # kdePackages.okular
+      # kdePackages.qtimageformats
+      # kdePackages.spectacle
     ];
   # Nix-Einstellungen
   nix = {
@@ -208,7 +207,6 @@ in {
       "vscode-with-extensions"
       "visual-studio-code"
       "vscode-insiders"
-      "vscode-extension-ms-vsliveshare-vsliveshare"
       "vscode-extension-ms-vscode-remote-remote-containers"
       "discord"
       "teamviewer"
@@ -216,8 +214,6 @@ in {
       "postman"
     ];
 
-  nixpkgs.config.allowInsecurePredicate = pkg:
-    builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
   # Firewall
   networking.firewall = {
     enable = false;
@@ -241,7 +237,7 @@ in {
       font-awesome
       material-design-icons
       noto-fonts
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       liberation_ttf
       fira-code
       fira-code-symbols
@@ -260,7 +256,7 @@ in {
 
   # System State Version
   age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 
   # agenix: deploy per-user SSH private keys when available
   # Scan nix/secrets/ssh/<user>/{shared,<hostname>} for *.age; host-specific overrides shared; copy into ~/.ssh (no symlinks)

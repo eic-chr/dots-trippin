@@ -85,16 +85,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1762912391,
-        "narHash": "sha256-4hpBE7bGd24SfD28rzMdUGXsLsNEYxCCrTipFdoqoNM=",
+        "lastModified": 1765066094,
+        "narHash": "sha256-0YSU35gfRFJzx/lTGgOt6ubP8K6LeW0vaywzNNqxkl4=",
         "owner": "lnl7",
         "repo": "nix-darwin",
-        "rev": "d76299b2cd01837c4c271a7b5186e3d5d8ebd126",
+        "rev": "688427b1aab9afb478ca07989dc754fa543e03d5",
         "type": "github"
       },
       "original": {
         "owner": "lnl7",
-        "ref": "nix-darwin-25.05",
+        "ref": "nix-darwin-25.11",
         "repo": "nix-darwin",
         "type": "github"
       }
@@ -186,16 +186,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1763992789,
-        "narHash": "sha256-WHkdBlw6oyxXIra/vQPYLtqY+3G8dUVZM8bEXk0t8x4=",
+        "lastModified": 1767024057,
+        "narHash": "sha256-B1aycRjMRvb6QOGbnqDhiDzZwMebj5jxZ5qyJzaKvpI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "44831a7eaba4360fb81f2acc5ea6de5fde90aaa3",
+        "rev": "34578a2fdfce4257ce5f5baf6e7efbd4e4e252b1",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "release-25.05",
+        "ref": "release-25.11",
         "repo": "home-manager",
         "type": "github"
       }
@@ -288,22 +288,6 @@
         "type": "github"
       }
     },
-    "hyprland-dots": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1763829759,
-        "narHash": "sha256-QRs/armhW0Ayofnxq7leqi1FHHj6sUTXI6ep5Xm+eY4=",
-        "owner": "JaKooLit",
-        "repo": "Hyprland-Dots",
-        "rev": "bcfd5e7c2b67f0a62b1ceeb62d20b0a80ca55a70",
-        "type": "github"
-      },
-      "original": {
-        "owner": "JaKooLit",
-        "repo": "Hyprland-Dots",
-        "type": "github"
-      }
-    },
     "hyprland-guiutils": {
       "inputs": {
         "aquamarine": [
@@ -392,11 +376,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1759610243,
-        "narHash": "sha256-+KEVnKBe8wz+a6dTLq8YDcF3UrhQElwsYJaVaHXJtoI=",
+        "lastModified": 1765214753,
+        "narHash": "sha256-P9zdGXOzToJJgu5sVjv7oeOGPIIwrd9hAUAP3PsmBBs=",
         "owner": "hyprwm",
         "repo": "hyprland-protocols",
-        "rev": "bd153e76f751f150a09328dbdeb5e4fab9d23622",
+        "rev": "3f3860b869014c00e8b9e0528c7b4ddc335c21ab",
         "type": "github"
       },
       "original": {
@@ -622,7 +606,7 @@
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixpkgs-25.05-darwin",
+        "ref": "nixpkgs-25.11-darwin",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -654,7 +638,7 @@
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixos-25.05",
+        "ref": "nixos-25.11",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -746,7 +730,6 @@
         "darwin": "darwin_2",
         "home-manager": "home-manager_2",
         "hyprland": "hyprland",
-        "hyprland-dots": "hyprland-dots",
         "hyprland-plugins": "hyprland-plugins",
         "ml4w-dotfiles": "ml4w-dotfiles",
         "nixos-hardware": "nixos-hardware",
@@ -761,11 +744,11 @@
     },
     "secrets": {
       "locked": {
-        "lastModified": 1764139038,
-        "narHash": "sha256-DJPpj7UHLiuaKcNh1E4riB5Q2wwMAtD8FoV+qlWaO0o=",
+        "lastModified": 1766999343,
+        "narHash": "sha256-NldfOt+SXlNn6hXjJn274lq97FOGxEwnBSy+hoGY6do=",
         "ref": "feat/first",
-        "rev": "1fb044f4ee191d065c143850d8c21052be2da75b",
-        "revCount": 5,
+        "rev": "f3291bda9ef014fffc36f8d062c11382b8066875",
+        "revCount": 7,
         "type": "git",
         "url": "ssh://git@gitlab.dev.ewolutions.de/eickhoff/nix-secrets.git"
       },

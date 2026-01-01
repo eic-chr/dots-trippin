@@ -1,16 +1,6 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
-{
-  config,
-  lib,
-  pkgs,
-  currentUser,
-  userConfig,
-  userEmail,
-  userFullName,
-  hasPlasma,
-  hostname,
-  ...
-}: {
+{ config, lib, pkgs, currentUser, userConfig, userEmail, userFullName, hasPlasma
+, hostname, ... }: {
   # Importiere deine bestehenden Module
   imports = [
     ./core.nix
@@ -47,34 +37,30 @@
     # Tastatur-Layout: US International
     input = {
       keyboard = {
-        layouts = [
-          {
-            displayName = "US intl";
-            layout = "us";
-            variant = "intl";
-          }
-        ];
+        layouts = [{
+          displayName = "US intl";
+          layout = "us";
+          variant = "intl";
+        }];
       };
     };
 
     # Panel-Konfiguration
-    panels = [
-      {
-        location = "bottom";
-        widgets = [
-          "org.kde.plasma.kickoff"
-          "org.kde.plasma.pager"
-          "org.kde.plasma.icontasks"
-          "org.kde.plasma.marginsseparator"
-          "org.kde.plasma.systemtray"
-          "org.kde.plasma.digitalclock"
-        ];
-      }
-    ];
+    panels = [{
+      location = "bottom";
+      widgets = [
+        "org.kde.plasma.kickoff"
+        "org.kde.plasma.pager"
+        "org.kde.plasma.icontasks"
+        "org.kde.plasma.marginsseparator"
+        "org.kde.plasma.systemtray"
+        "org.kde.plasma.digitalclock"
+      ];
+    }];
 
     # Shortcuts
     shortcuts = {
-      ksmserver = {"Lock Session" = ["Screensaver" "Meta+L"];};
+      ksmserver = { "Lock Session" = [ "Screensaver" "Meta+L" ]; };
       kwin = {
         "Switch to Desktop 1" = "Meta+1";
         "Switch to Desktop 2" = "Meta+2";
@@ -87,7 +73,6 @@
   # Zusätzliche NixOS-spezifische Pakete
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
-    discord
     fzf
     git-crypt
     signal-desktop

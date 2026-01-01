@@ -32,7 +32,7 @@
       pkief.material-icon-theme
 
       # Utilities
-      ms-vsliveshare.vsliveshare
+      # ms-vsliveshare.vsliveshare
       ms-vscode.hexeditor
       redhat.vscode-yaml
       tamasfe.even-better-toml
