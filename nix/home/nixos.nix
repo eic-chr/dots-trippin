@@ -1,6 +1,6 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
 { lib, pkgs, unstable, currentUser, userEmail, userFullName, hasPlasma, hostname
-, splitMonitorWorkspaces, ... }: {
+, ... }: {
   # Importiere deine bestehenden Module
   imports = [
     ./core.nix
@@ -31,7 +31,21 @@
         chmod 600 "$HOME/.smb_crd" || true
       fi
     '');
+  programs.tmux = {
+    extraConfig = ''
+      # Use vim keybindings in copy mode
+      set-window-option -g mode-keys vi
 
+      # v in copy mode starts making selection
+      bind-key -T copy-mode-vi v send-keys -X begin-selection
+      bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+      bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+
+      # Escape turns on copy mode
+      bind Escape copy-mode
+
+    '';
+  };
   programs.ssh = {
     enable = true;
     addKeysToAgent = "yes";
@@ -49,8 +63,6 @@
   programs.ml4wDotsXdg = {
     enable = true;
     verbose = true;
-    # optional, wenn du nicht via specialArg arbeiten willst:
-    excludeDirs = [ ];
     installRuntimePackages = true;
   };
   # # Enable Hyprland-Dots XDG linking for offnix users (replaces stow-based approach)
@@ -199,9 +211,9 @@
 
   programs.rofi = {
     enable = true;
-    package = pkgs.rofi-wayland;
+    package = pkgs.rofi;
     plugins = with pkgs;
-      [ (rofi-calc.override { rofi-unwrapped = rofi-wayland-unwrapped; }) ];
+      [ (rofi-calc.override { rofi-unwrapped = rofi-unwrapped; }) ];
     terminal = "kitty";
     theme = "~/.config/rofi/themes/KooL_style-10-Fancy.rasi";
     extraConfig = {
@@ -278,7 +290,6 @@
     ansible
     # ansible-lint
     cryptomator
-    discord
     fzf
     git-crypt
     openssl

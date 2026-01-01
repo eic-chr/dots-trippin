@@ -1,9 +1,13 @@
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, config, ml4wDots, ... }:
 let cfg = config.programs.ml4wDotsXdg;
-
 in {
   options.programs.ml4wDotsXdg = {
     enable = lib.mkEnableOption "Link ML4W Hyprland Dotfiles into XDG config";
+    excludeDirs = lib.mkOption {
+      type = with lib.types; listOf str;
+      default = [ ];
+      description = "Which repo subdirs to NOT link into ~/.config";
+    };
     installRuntimePackages = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -22,7 +26,6 @@ in {
   config = lib.mkIf cfg.enable (lib.mkMerge [{
     # Pakete/Runtime-Tools
     home.packages = lib.mkIf cfg.installRuntimePackages [
-
       # Bars/launchers/notifications
       pkgs.waybar
       pkgs.waypaper
@@ -66,7 +69,7 @@ in {
       pkgs.gum
       pkgs.figlet
       pkgs.fastfetch
-      pkgs.qt6ct
+      pkgs.qt6Packages.qt6ct
       pkgs.walker
       pkgs.wget
     ];
