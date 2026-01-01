@@ -30,7 +30,7 @@
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
   home.homeDirectory = "/home/${currentUser}";
-  home.stateVersion = "25.05";
+  home.stateVersion = "25.11";
 
   # Fix ~/.smb_crd permissions
 
@@ -300,31 +300,26 @@
   };
 
   # Zusätzliche NixOS-spezifische Pakete
-  home.packages =
-    (with pkgs; [
-      # Browser (falls nicht system-weit installiert)
-      ags
-      ansible
-      # ansible-lint
-      cryptomator
-      fzf
-      git-crypt
-      openssl
-      glow
-      pgadmin4
-      remmina
-      texlive.combined.scheme-small
-      md2pdf
-      pandoc
-      signal-desktop
-      teamviewer
-      waybar
-      nwg-drawer
-      inetutils
-      procps
-      unstable.zed-editor
-    ])
-    ++ lib.optionals (hostname == "offnix") [pkgs.kitty];
+  home.packages = with pkgs; [
+    # Browser (falls nicht system-weit installiert)
+    ags
+    ansible
+    # ansible-lint
+    cryptomator
+    git-crypt
+    openssl
+    glow
+    pgadmin4
+    remmina
+    texlive.combined.scheme-small
+    md2pdf
+    pandoc
+    teamviewer
+    nwg-drawer
+    inetutils
+    procps
+    unstable.zed-editor
+  ];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;
   services.gpg-agent = {

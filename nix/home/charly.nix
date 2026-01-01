@@ -24,7 +24,7 @@
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
   home.homeDirectory = "/home/${currentUser}";
-  home.stateVersion = "25.05";
+  home.stateVersion = "25.11";
 
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
@@ -38,9 +38,7 @@
   #   installRuntimePackages = true;
   # };
 
-  programs.nwgDockHyprland = {
-    enable = true;
-  };
+  programs.nwgDockHyprland = {enable = true;};
 
   # Plasma-Konfiguration (möglicherweise andere Präferenzen als ce)
   programs.plasma = lib.mkIf hasPlasma {
@@ -84,9 +82,7 @@
 
     # Gleiche Shortcuts
     shortcuts = {
-      ksmserver = {
-        "Lock Session" = ["Screensaver" "Meta+L"];
-      };
+      ksmserver = {"Lock Session" = ["Screensaver" "Meta+L"];};
       kwin = {
         "Switch to Desktop 1" = "Meta+1";
         "Switch to Desktop 2" = "Meta+2";
