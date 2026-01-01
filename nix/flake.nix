@@ -44,10 +44,6 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
-    hyprland-dots = {
-      url = "github:JaKooLit/Hyprland-Dots";
-      flake = false;
-    };
     split-monitor-workspaces = {
       url = "github:Duckonaut/split-monitor-workspaces";
       inputs.hyprland.follows =
@@ -184,9 +180,6 @@
           hyprlandPluginsPkgs =
             inputs.hyprland-plugins.packages.${systemConfig.system};
           splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-          hyprlandDots = inputs.hyprland-dots;
-          hyprlandDotsLocal = let p = ./vendor/hyprland-dots;
-          in if builtins.pathExists p then p else null;
           secrets = inputs.secrets.outPath;
 
           # Für Kompatibilität mit bestehenden Modulen

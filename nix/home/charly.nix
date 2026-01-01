@@ -16,7 +16,7 @@
     ./git.nix
     ./shell.nix
     ./starship.nix
-    ./hyprland-dots-xdg.nix
+    # ./hyprland-dots-xdg.nix
     ./nwg-dock-hyprland.nix
     ./kitty.nix
   ];
@@ -33,10 +33,10 @@
   };
 
   # Enable Hyprland-Dots XDG linking (host-independent)
-  programs.hyprlandDotsXdg = {
-    enable = true;
-    installRuntimePackages = true;
-  };
+  # programs.hyprlandDotsXdg = {
+  #   enable = true;
+  #   installRuntimePackages = true;
+  # };
 
   programs.nwgDockHyprland = {
     enable = true;

@@ -6,7 +6,7 @@
   programs.hyprland = {
     enable = true;
     withUWSM = true;
-    package = (builtins.getAttr pkgs.system hyprlandInput.packages).hyprland;
+    # package = (builtins.getAttr pkgs.system hyprlandInput.packages).hyprland;
   };
 
   programs.hyprlock.enable = true;
