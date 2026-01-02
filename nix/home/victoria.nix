@@ -17,7 +17,7 @@
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
   home.homeDirectory = "/home/${currentUser}";
-  home.stateVersion = "25.05";
+  home.stateVersion = "25.11";
 
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
@@ -25,6 +25,7 @@
     userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
   };
 
+  services.kdeconnect.enable = true;
   programs.plasma = lib.mkIf hasPlasma {
     enable = true;
     input = {
@@ -43,11 +44,12 @@
   # Zusätzliche NixOS-spezifische Pakete
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
-    discord
     fzf
     git-crypt
     signal-desktop
     stow
+    firefox
+    protonmail-bridge-gui
   ];
 
   services.ssh-agent.enable = true;

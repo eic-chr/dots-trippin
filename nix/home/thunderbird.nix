@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{...}: {
   programs.thunderbird = {
     enable = true;
     profiles = {
@@ -20,11 +20,11 @@
           "mail.server.server1.login_at_startup" = true;
           "mail.server.server1.max_cached_connections" = 5;
           "mail.server.server1.name" = "christian.eickhoff@mailbox.org";
-          "mail.server.server1.namespace.other_users" = "\"shared/\"";
-          "mail.server.server1.namespace.personal" = "\"\"";
+          "mail.server.server1.namespace.other_users" = ''"shared/"'';
+          "mail.server.server1.namespace.personal" = ''""'';
           "mail.server.server1.nextFilterTime" = 28624807;
           "mail.server.server1.port" = 993;
-          "mail.server.server1.serverIDResponse" = "(\"name\" \"Dovecot\")";
+          "mail.server.server1.serverIDResponse" = ''("name" "Dovecot")'';
           "mail.server.server1.socketType" = 3;
           "mail.server.server1.spamActionTargetAccount" = "imap://christian.eickhoff%40mailbox.org@imap.mailbox.org";
           "mail.server.server1.storeContractID" = "@mozilla.org/msgstore/berkeleystore;1";
@@ -57,10 +57,10 @@
           "mail.server.server3.max_cached_connections" = 5;
           "mail.server.server3.moveOnSpam" = true;
           "mail.server.server3.name" = "christian@ewolutions.de";
-          "mail.server.server3.namespace.personal" = "\"\"";
+          "mail.server.server3.namespace.personal" = ''""'';
           "mail.server.server3.nextFilterTime" = 28624807;
           "mail.server.server3.numHdrsToKeep" = 2000;
-          "mail.server.server3.serverIDResponse" = "(\"name\" \"Dovecot\")";
+          "mail.server.server3.serverIDResponse" = ''("name" "Dovecot")'';
           "mail.server.server3.socketType" = 2;
           "mail.server.server3.spamActionTargetAccount" = "imap://christian%40ewolutions.de@mail.ewolutions.de";
           "mail.server.server3.spamActionTargetFolder" = "imap://christian%40ewolutions.de@mail.ewolutions.de/Junk";

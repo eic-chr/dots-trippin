@@ -1,6 +1,15 @@
 # Performance profiling (nur temporär für tests)
 # zmodload zsh/zprof
-
+#
+# Automatisch tmux bei SSH (nur interaktiv, eine Session pro Host)
+case $- in
+  *i*)
+    if [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]]; then
+      SESSION="ssh-$(hostname -s)"
+      tmux attach -t "$SESSION" || tmux new -s "$SESSION"
+    fi
+  ;;
+esac
 # PATH exports
 export PATH="/usr/local/opt/m4/bin:$PATH"
 export PATH="/usr/local/opt/curl/bin:$PATH" 

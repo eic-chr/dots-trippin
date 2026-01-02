@@ -87,7 +87,6 @@
   # Zusätzliche NixOS-spezifische Pakete
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
-    discord
     fzf
     git-crypt
     signal-desktop
