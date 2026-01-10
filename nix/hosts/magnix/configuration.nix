@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./hardware-configuration.nix
     ../common.nix
@@ -15,10 +11,6 @@
       # Logitech Bolt Dongle Wakeup deaktivieren
       ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c548", TEST=="power/wakeup", ATTR{power/wakeup}="disabled"
     '';
-
-    xserver.enable = lib.mkForce false;
-    displayManager.sddm.enable = true;
-    desktopManager.plasma6.enable = true;
   };
 
   services.blueman.enable = true;

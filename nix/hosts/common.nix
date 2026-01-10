@@ -318,7 +318,7 @@ in {
       fira-code
       fira-code-symbols
       nerd-fonts.jetbrains-mono
-      nerd-fonts.fira-code
+      nerd-font.fira-code
       fira-sans
     ];
 
