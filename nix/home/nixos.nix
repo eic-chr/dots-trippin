@@ -35,7 +35,8 @@
   # Fix ~/.smb_crd permissions
 
   home.activation.fixSmbCredsPerms =
-    lib.mkIf (hostname == "offnix" || hostname == "devnix")
+    lib.mkIf
+    (hostname == "offnix" || hostname == "devnix" || hostname == "magnix")
     (lib.hm.dag.entryAfter ["writeBoundary"] ''
       if [ -f "$HOME/.smb_crd" ]; then
         chown "$USER":"$USER" "$HOME/.smb_crd" || true
@@ -250,6 +251,28 @@
       cursor.theme = "breeze_cursors";
     };
     kwin.scripts.polonium.enable = false;
+    kwin = {
+      # System Settings > Window Management > Desktop Effects > ...
+      effects = {
+        blur = {
+          enable = true;
+          noiseStrength = 0;
+          strength = 6;
+        };
+
+        slideBack.enable = true;
+
+        translucency.enable = true;
+
+        wobblyWindows.enable = true;
+      };
+
+      # System Settings > Window Management > Virtual Desktops
+      virtualDesktops = {
+        number = 2;
+        rows = 1;
+      };
+    };
     input = {
       keyboard = {
         layouts = [
@@ -260,7 +283,7 @@
           }
         ];
       };
-      touchpads = [
+      touchpads = lib.optionals (hostname == "offnix") [
         {
           enable = true;
           name = "Apple Inc. Apple Internal Keyboard / Trackpad";
@@ -271,6 +294,37 @@
           rightClickMethod = "twoFingers";
         }
       ];
+    };
+    fonts = {
+      general = {
+        family = "Noto Sans";
+        pointSize = 10;
+      };
+
+      menu = {
+        family = "Noto Sans";
+        pointSize = 10;
+      };
+
+      toolbar = {
+        family = "Noto Sans";
+        pointSize = 10;
+      };
+
+      windowTitle = {
+        family = "Noto Sans";
+        pointSize = 10;
+      };
+
+      small = {
+        family = "Noto Sans";
+        pointSize = 8;
+      };
+
+      fixedWidth = {
+        family = "Noto Sans Mono";
+        pointSize = 10;
+      };
     };
     # Panel-Konfiguration
     panels = [
@@ -286,6 +340,28 @@
         ];
       }
     ];
+    configFile."kwinrc" = {
+      Compositing = {
+        Enabled = true;
+        Backend = "auto";
+        LatencyPolicy = "Low";
+        VSync = true;
+        MaxFPS = 0; # kein künstliches Limit
+        AnimationDurationFactor = 0.75;
+        AdaptiveSync = true;
+        AllowTearing = false;
+      };
+    };
+    configFile."powermanagementprofilesrc" = {
+      AC = {icon = "battery-charging";};
+
+      "AC/SuspendAndShutdown" = {
+        AutoSuspendAction = 0;
+        AutoSuspendIdleTimeoutSec = 0;
+      };
+
+      "AC/DPMSControl" = {TurnOffDisplayIdleTimeoutSec = 3600;};
+    };
 
     # Shortcuts
     shortcuts = {
@@ -319,6 +395,7 @@
     inetutils
     procps
     unstable.zed-editor
+    chromium
   ];
   services.kdeconnect.enable = true;
   services.ssh-agent.enable = true;

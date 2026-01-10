@@ -1,4 +1,22 @@
 {...}: {
+  home.file.
+    "signature-ewolutions-ce.txt" = {
+    text = ''
+      __________________________________________________________
+
+      EWolutions - Eickhoff & Wölfing IT Solutions GbR
+
+      Einöd 395
+      D-98663 Heldburg
+
+      Telefon:   036 871 / 318 625
+      E-Mail:  christian@ewolutions.de
+      __________________________________________________________
+
+      Bitte denken Sie an die Umwelt, bevor Sie diese Mail ausdrucken.
+    '';
+  };
+
   programs.thunderbird = {
     enable = true;
     profiles = {

@@ -59,6 +59,8 @@
     # Fun
     whatsapp-electron
     vesktop
+
+    rustdesk
     # Terminal (falls Sie es nicht systemweit wollen)
     # kitty          # Auskommentiert - könnte auch system-wide bleiben
   ];

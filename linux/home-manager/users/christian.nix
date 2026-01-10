@@ -1,7 +1,6 @@
 { config, pkgs, lib, ... }:
 
 {
-  home.stateVersion = "24.11";
 
   home.file = {
     ".p10k.zsh" = {
@@ -23,7 +22,8 @@
         typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=196
       '';
     };
-    ".oh-my-zsh/custom/themes/powerlevel10k".source = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
+    ".oh-my-zsh/custom/themes/powerlevel10k".source =
+      "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
 
     ".config/plasma-workspace/env/keyboard.sh" = {
       text = ''
@@ -96,15 +96,13 @@
     };
     Service = {
       Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash ${config.home.homeDirectory}/projects/ceickhoff/dots-trippin/setup.sh";
+      ExecStart =
+        "${pkgs.bash}/bin/bash ${config.home.homeDirectory}/projects/ceickhoff/dots-trippin/setup.sh";
       RemainAfterExit = true;
-      Environment = [
-        "PATH=${lib.makeBinPath [ pkgs.stow pkgs.git pkgs.coreutils ]}"
-      ];
+      Environment =
+        [ "PATH=${lib.makeBinPath [ pkgs.stow pkgs.git pkgs.coreutils ]}" ];
     };
-    Install = {
-      WantedBy = [ "default.target" ];
-    };
+    Install = { WantedBy = [ "default.target" ]; };
   };
   # Systemd service for keyboard configuration
   systemd.user.services.keyboard-setup = {
@@ -115,12 +113,11 @@
     };
     Service = {
       Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.xorg.setxkbmap}/bin/setxkbmap us intl && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option compose:ralt && ${pkgs.xorg.xset}/bin/xset r rate 200 30'";
+      ExecStart =
+        "${pkgs.bash}/bin/bash -c '${pkgs.xorg.setxkbmap}/bin/setxkbmap us intl && ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option compose:ralt && ${pkgs.xorg.xset}/bin/xset r rate 200 30'";
       RemainAfterExit = true;
     };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
+    Install = { WantedBy = [ "graphical-session.target" ]; };
   };
 
   programs = {
@@ -131,7 +128,6 @@
         use-agent = true;
       };
     };
-
 
     ssh = {
       enable = true;
@@ -177,7 +173,6 @@
       enable = true;
       settings = builtins.fromTOML (lib.readFile ../starship/starship.toml);
     };
-
 
   };
   # SSH Public Key
@@ -237,16 +232,12 @@
           provider = "anthropic";
           model = "claude-3-5-sonnet-20241022";
         };
-        provider = {
-          name = "anthropic";
-        };
+        provider = { name = "anthropic"; };
       };
 
       # Terminal settings
       terminal = {
-        shell = {
-          program = "zsh";
-        };
+        shell = { program = "zsh"; };
         font_family = "FiraCode Nerd Font";
         font_size = 13;
       };
@@ -254,9 +245,7 @@
       # Git integration
       git = {
         git_gutter = "tracked_files";
-        inline_blame = {
-          enabled = true;
-        };
+        inline_blame = { enabled = true; };
       };
 
       # Project panel
