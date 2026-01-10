@@ -1,6 +1,5 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
 {
-  config,
   agenix,
   nur,
   pkgs,
@@ -12,12 +11,45 @@
   secrets,
   ...
 }: let
+  isAdmin = user: user == "christian" || userConfigs.${user}.isAdmin or false;
+  isDeveloper = user: userConfigs.${user}.profile or null == "developer";
   # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
   trustedProfiles = ["developer" "admin"];
   trustedUsers = builtins.filter (user:
     builtins.elem (userConfigs.${user}.profile or "none") trustedProfiles)
   users;
 in {
+  # Nix-Einstellungen
+  nix = {
+    settings = {
+      experimental-features = ["nix-command" "flakes"];
+      trusted-users = ["root"] ++ trustedUsers;
+      auto-optimise-store = true;
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 10d";
+    };
+  };
+  # Nixpkgs-Konfiguration mit NUR
+  nixpkgs = {
+    overlays = [nur.overlays.default];
+    config.allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "facetimehd-firmware"
+        "code"
+        "vscode"
+        "vscode-fhs"
+        "vscode-with-extensions"
+        "visual-studio-code"
+        "vscode-insiders"
+        "vscode-extension-ms-vscode-remote-remote-containers"
+        "teamviewer"
+        "broadcom-sta"
+        "postman"
+      ];
+  };
   # Zeitzone und Lokalisierung
   time.timeZone = "Europe/Berlin";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -35,9 +67,70 @@ in {
 
   console.keyMap = "us";
 
-  services.displayManager.sddm = {enable = true;};
-  services.desktopManager.plasma6.enable = true;
-  services.teamviewer.enable = true;
+  # Scanner support
+  hardware.sane.enable = true;
+
+  # Dynamische Benutzer-Erstellung basierend auf hostUsers
+  users.users = builtins.listToAttrs (map (user: {
+      name = user;
+      value = {
+        isNormalUser = true;
+        description = userConfigs.${user}.fullName or user;
+        extraGroups =
+          [
+            "dialout"
+            "networkmanager"
+            "audio"
+            "video"
+            "scanner"
+            "lp"
+            "input"
+            "seat"
+            "tun"
+          ]
+          ++ lib.optionals (isAdmin user) ["wheel"]
+          ++ lib.optionals (isDeveloper user) ["docker"];
+        shell = pkgs.zsh;
+      };
+    })
+    users);
+  services = {
+    xserver.enable = false;
+
+    # Enable CUPS to print documents.
+    printing = {
+      enable = true;
+      drivers = with pkgs; [hplip epson-escpr];
+    };
+    # Provide D-Bus service for kwalletd6 (Plasma 6)
+    dbus.packages = [pkgs.kdePackages.kwallet];
+
+    displayManager.sddm = {enable = true;};
+    # Enable Flatpak with Flathub remote
+    flatpak.enable = true;
+    desktopManager.plasma6.enable = true;
+    # Enable sound with pipewire.
+    services.pulseaudio.enable = false;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+
+    openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = true;
+        KbdInteractiveAuthentication = true;
+        PermitRootLogin = "no";
+      };
+    };
+
+    gvfs.enable = true;
+  };
+
   # XDG Portal für KDE
   xdg.portal = {
     enable = true;
@@ -47,78 +140,96 @@ in {
   # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
   # Netzwerk
-  networking.networkmanager = {
-    enable = true;
-    plugins = with pkgs; [networkmanager-openvpn];
+  networking = {
+    hostName = hostname;
+    # Firewall
+    firewall = {
+      enable = false;
+      allowedTCPPorts = [22]; # SSH
+    };
+    networkmanager = {
+      enable = true;
+      plugins = with pkgs; [networkmanager-openvpn];
+    };
   };
-
-  # Bootloader
 
   programs.zsh.enable = true;
-  security.sudo = {
-    wheelNeedsPassword = false;
-    extraConfig = ''
-      Defaults env_keep += "SSH_AUTH_SOCK"
-    '';
-  };
-
-  # Enable KWallet unlock via PAM for SDDM and TTY login
-  security.pam.services = {
-    sddm.kwallet.enable = true;
-    login.kwallet.enable = true;
-  };
-
-  # Provide D-Bus service for kwalletd6 (Plasma 6)
-  services.dbus.packages = [pkgs.kdePackages.kwallet];
 
   # Ensure plasma-kwallet-pam starts at login
-  systemd.user.services.plasma-kwallet-pam-ensure = {
-    description = "Ensure plasma-kwallet-pam.service is started at login";
-    after = ["graphical-session.target" "dbus.service"];
-    wantedBy = ["graphical-session.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service";
-      RemainAfterExit = true;
+  systemd = {
+    user.services = {
+      secret-service-sanity = {
+        description = "Sanity-check Secret Service (org.freedesktop.secrets) availability at login";
+        wants = ["plasma-kwallet-pam.service"];
+        after = ["plasma-kwallet-pam.service" "dbus.service"];
+        wantedBy = ["default.target"];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = ''
+            ${pkgs.bash}/bin/bash -lc '
+                               for i in {1..10}; do
+                                 if busctl --user list | grep -q org.freedesktop.secrets; then
+                                   echo "[OK] Secret Service available"; exit 0;
+                                     fi;
+                                     sleep 0.5;
+                                     done;
+                                     echo "[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam";
+                                     ${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true;
+                                     sleep 1;
+                                     if busctl --user list | grep -q org.freedesktop.secrets; then
+                                       echo "[OK] Secret Service available after start"; exit 0;
+                                     else
+                                       echo "[ERROR] Secret Service unavailable"; exit 1;
+                                         fi'
+          '';
+        };
+      };
+      plasma-kwallet-pam-ensure = {
+        description = "Ensure plasma-kwallet-pam.service is started at login";
+        after = ["graphical-session.target" "dbus.service"];
+        wantedBy = ["graphical-session.target"];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service";
+          RemainAfterExit = true;
+        };
+      };
     };
+    services.flatpak-add-flathub = {
+      description = "Add Flathub Flatpak remote (system-wide)";
+      wantedBy = ["multi-user.target"];
+      after = ["network-online.target"];
+      wants = ["network-online.target"];
+      serviceConfig.Type = "oneshot";
+      script = ''
+        set -eu
+        if ! ${pkgs.flatpak}/bin/flatpak remotes --system | grep -q '^flathub'; then
+          ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
+        fi
+      '';
+    };
+    tmpfiles.rules =
+      (map (u: "d /home/${u}/.ssh 0700 ${u} users -") users)
+      ++ (map (u: "d /home/${u}/.ssh/config.d 0700 ${u} users -") users);
   };
 
   # Sanity-check Secret Service availability at user login (more robust)
-  systemd.user.services.secret-service-sanity = {
-    description = "Sanity-check Secret Service (org.freedesktop.secrets) availability at login";
-    wants = ["plasma-kwallet-pam.service"];
-    after = ["plasma-kwallet-pam.service" "dbus.service"];
-    wantedBy = ["default.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = ''
-        ${pkgs.bash}/bin/bash -lc '
-                           for i in {1..10}; do
-                             if busctl --user list | grep -q org.freedesktop.secrets; then
-                               echo "[OK] Secret Service available"; exit 0;
-                                 fi;
-                                 sleep 0.5;
-                                 done;
-                                 echo "[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam";
-                                 ${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true;
-                                 sleep 1;
-                                 if busctl --user list | grep -q org.freedesktop.secrets; then
-                                   echo "[OK] Secret Service available after start"; exit 0;
-                                 else
-                                   echo "[ERROR] Secret Service unavailable"; exit 1;
-                                     fi'
-      '';
-    };
-  };
 
   # Audio mit PipeWire
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
+  security = {
+    rtkit.enable = true;
+    sudo = {
+      wheelNeedsPassword = false;
+      extraConfig = ''
+        Defaults env_keep += "SSH_AUTH_SOCK"
+      '';
+    };
+
+    # Enable KWallet unlock via PAM for SDDM and TTY login
+    pam.services = {
+      sddm.kwallet.enable = true;
+      login.kwallet.enable = true;
+    };
   };
   # KDE-spezifische System-Pakete
   environment.systemPackages = with pkgs;
@@ -192,53 +303,7 @@ in {
       # kdePackages.qtimageformats
       # kdePackages.spectacle
     ];
-  # Nix-Einstellungen
-  nix = {
-    settings = {
-      experimental-features = ["nix-command" "flakes"];
-      trusted-users = ["root"] ++ trustedUsers;
-      auto-optimise-store = true;
-    };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 10d";
-    };
-  };
-  # Nixpkgs-Konfiguration mit NUR
-  nixpkgs.overlays = [nur.overlays.default];
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      "facetimehd-firmware"
-      "code"
-      "vscode"
-      "vscode-fhs"
-      "vscode-with-extensions"
-      "visual-studio-code"
-      "vscode-insiders"
-      "vscode-extension-ms-vscode-remote-remote-containers"
-      "teamviewer"
-      "broadcom-sta"
-      "postman"
-    ];
 
-  # Firewall
-  networking.firewall = {
-    enable = false;
-    allowedTCPPorts = [22]; # SSH
-  };
-
-  # SSH
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = true;
-      KbdInteractiveAuthentication = true;
-      PermitRootLogin = "no";
-    };
-  };
-
-  services.gvfs.enable = true;
   # Font-Konfiguration
   fonts = {
     packages = with pkgs; [
@@ -401,7 +466,7 @@ in {
               owner = user;
               group = "users";
               mode = t.mode or "0400";
-              path = t.path;
+              inherit (t) path;
               symlink = t.symlink or false;
             };
           };
@@ -426,7 +491,4 @@ in {
   # systemd.tmpfiles.rules = map (u: "d /home/${u}/.ssh 0700 ${u} users -") users;
 
   # am Ende (ergänzen/ersetzen)
-  systemd.tmpfiles.rules =
-    (map (u: "d /home/${u}/.ssh 0700 ${u} users -") users)
-    ++ (map (u: "d /home/${u}/.ssh/config.d 0700 ${u} users -") users);
 }

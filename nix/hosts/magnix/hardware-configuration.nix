@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   lib,
   modulesPath,
   ...
@@ -11,6 +12,13 @@
     initrd.kernelModules = [];
     extraModulePackages = with config.boot.kernelPackages; [nct6687d];
     kernelModules = ["nct6687" "kvm-amd"];
+    kernelPackages = pkgs.linuxPackages_latest;
+
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    # Use latest kernel.
   };
 
   fileSystems."/" = {
@@ -26,14 +34,6 @@
 
   swapDevices = [{device = "/dev/disk/by-uuid/c5de3389-f05d-4f75-8f56-cb3e818a2436";}];
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp10s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp11s0.useDHCP = lib.mkDefault true;
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {
     cpu.amd.updateMicrocode =
@@ -45,8 +45,4 @@
     logitech.wireless.enable = true;
     opengl.driSupport32Bit = true;
   };
-  services.udev.extraRules = ''
-    # Logitech Bolt Dongle Wakeup deaktivieren
-    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c548", TEST=="power/wakeup", ATTR{power/wakeup}="disabled"
-  '';
 }
