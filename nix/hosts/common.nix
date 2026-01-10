@@ -330,7 +330,6 @@ in {
     };
   };
 
-  # System State Version
   age.identityPaths = ["/etc/ssh/ssh_host_ed25519_key"];
   system.stateVersion = "25.11";
 
