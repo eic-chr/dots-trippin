@@ -5,6 +5,7 @@
         "darwin": "darwin",
         "home-manager": "home-manager",
         "nixpkgs": [
+          "infra",
           "nixpkgs"
         ],
         "systems": "systems"
@@ -26,18 +27,22 @@
     "aquamarine": {
       "inputs": {
         "hyprutils": [
+          "infra",
           "hyprland",
           "hyprutils"
         ],
         "hyprwayland-scanner": [
+          "infra",
           "hyprland",
           "hyprwayland-scanner"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -59,6 +64,7 @@
     "darwin": {
       "inputs": {
         "nixpkgs": [
+          "infra",
           "agenix",
           "nixpkgs"
         ]
@@ -81,6 +87,7 @@
     "darwin_2": {
       "inputs": {
         "nixpkgs": [
+          "infra",
           "nixpkgs-darwin"
         ]
       },
@@ -115,9 +122,26 @@
         "type": "github"
       }
     },
+    "flake-compat_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767039857,
+        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
+        "owner": "NixOS",
+        "repo": "flake-compat",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
+          "infra",
           "nur",
           "nixpkgs"
         ]
@@ -139,7 +163,29 @@
     "gitignore": {
       "inputs": {
         "nixpkgs": [
+          "infra",
           "hyprland",
+          "pre-commit-hooks",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1709087332,
+        "narHash": "sha256-HG2cCnktfHsKV0s4XW83gU3F57gaTljL9KNSuG6bnQs=",
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "rev": "637db329424fd7e46cf4185293b9cc8c88c95394",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "type": "github"
+      }
+    },
+    "gitignore_2": {
+      "inputs": {
+        "nixpkgs": [
           "pre-commit-hooks",
           "nixpkgs"
         ]
@@ -161,6 +207,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
+          "infra",
           "agenix",
           "nixpkgs"
         ]
@@ -182,6 +229,7 @@
     "home-manager_2": {
       "inputs": {
         "nixpkgs": [
+          "infra",
           "nixpkgs"
         ]
       },
@@ -203,14 +251,17 @@
     "hyprcursor": {
       "inputs": {
         "hyprlang": [
+          "infra",
           "hyprland",
           "hyprlang"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -232,14 +283,17 @@
     "hyprgraphics": {
       "inputs": {
         "hyprutils": [
+          "infra",
           "hyprland",
           "hyprutils"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -291,31 +345,38 @@
     "hyprland-guiutils": {
       "inputs": {
         "aquamarine": [
+          "infra",
           "hyprland",
           "aquamarine"
         ],
         "hyprgraphics": [
+          "infra",
           "hyprland",
           "hyprgraphics"
         ],
         "hyprlang": [
+          "infra",
           "hyprland",
           "hyprlang"
         ],
         "hyprtoolkit": "hyprtoolkit",
         "hyprutils": [
+          "infra",
           "hyprland",
           "hyprutils"
         ],
         "hyprwayland-scanner": [
+          "infra",
           "hyprland",
           "hyprwayland-scanner"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -337,14 +398,17 @@
     "hyprland-plugins": {
       "inputs": {
         "hyprland": [
+          "infra",
           "hyprland"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland-plugins",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland-plugins",
           "hyprland",
           "systems"
@@ -367,10 +431,12 @@
     "hyprland-protocols": {
       "inputs": {
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -392,14 +458,17 @@
     "hyprlang": {
       "inputs": {
         "hyprutils": [
+          "infra",
           "hyprland",
           "hyprutils"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -421,36 +490,43 @@
     "hyprtoolkit": {
       "inputs": {
         "aquamarine": [
+          "infra",
           "hyprland",
           "hyprland-guiutils",
           "aquamarine"
         ],
         "hyprgraphics": [
+          "infra",
           "hyprland",
           "hyprland-guiutils",
           "hyprgraphics"
         ],
         "hyprlang": [
+          "infra",
           "hyprland",
           "hyprland-guiutils",
           "hyprlang"
         ],
         "hyprutils": [
+          "infra",
           "hyprland",
           "hyprland-guiutils",
           "hyprutils"
         ],
         "hyprwayland-scanner": [
+          "infra",
           "hyprland",
           "hyprland-guiutils",
           "hyprwayland-scanner"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland",
           "hyprland-guiutils",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "hyprland-guiutils",
           "systems"
@@ -473,10 +549,12 @@
     "hyprutils": {
       "inputs": {
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -498,10 +576,12 @@
     "hyprwayland-scanner": {
       "inputs": {
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -523,14 +603,17 @@
     "hyprwire": {
       "inputs": {
         "hyprutils": [
+          "infra",
           "hyprland",
           "hyprutils"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]
@@ -548,6 +631,33 @@
         "repo": "hyprwire",
         "type": "github"
       }
+    },
+    "infra": {
+      "inputs": {
+        "agenix": "agenix",
+        "darwin": "darwin_2",
+        "home-manager": "home-manager_2",
+        "hyprland": "hyprland",
+        "hyprland-plugins": "hyprland-plugins",
+        "ml4w-dotfiles": "ml4w-dotfiles",
+        "nixos-hardware": "nixos-hardware",
+        "nixpkgs": "nixpkgs_2",
+        "nixpkgs-darwin": "nixpkgs-darwin",
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "nur": "nur",
+        "plasma-manager": "plasma-manager",
+        "secrets": "secrets",
+        "split-monitor-workspaces": "split-monitor-workspaces"
+      },
+      "locked": {
+        "path": "./nix",
+        "type": "path"
+      },
+      "original": {
+        "path": "./nix",
+        "type": "path"
+      },
+      "parent": []
     },
     "ml4w-dotfiles": {
       "flake": false,
@@ -675,6 +785,38 @@
         "type": "github"
       }
     },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1767892417,
+        "narHash": "sha256-dhhvQY67aboBk8b0/u0XB6vwHdgbROZT3fJAjyNh5Ww=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3497aa5c9457a9d88d71fa93a4a8368816fbeeba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_5": {
+      "locked": {
+        "lastModified": 1764947035,
+        "narHash": "sha256-EYHSjVM4Ox4lvCXUMiKKs2vETUSL5mx+J2FfutM7T9w=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a672be65651c80d3f592a89b3945466584a22069",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -697,9 +839,11 @@
     "plasma-manager": {
       "inputs": {
         "home-manager": [
+          "infra",
           "home-manager"
         ],
         "nixpkgs": [
+          "infra",
           "nixpkgs"
         ]
       },
@@ -722,6 +866,7 @@
         "flake-compat": "flake-compat",
         "gitignore": "gitignore",
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ]
@@ -740,22 +885,31 @@
         "type": "github"
       }
     },
+    "pre-commit-hooks_2": {
+      "inputs": {
+        "flake-compat": "flake-compat_2",
+        "gitignore": "gitignore_2",
+        "nixpkgs": "nixpkgs_5"
+      },
+      "locked": {
+        "lastModified": 1767281941,
+        "narHash": "sha256-6MkqajPICgugsuZ92OMoQcgSHnD6sJHwk8AxvMcIgTE=",
+        "owner": "cachix",
+        "repo": "pre-commit-hooks.nix",
+        "rev": "f0927703b7b1c8d97511c4116eb9b4ec6645a0fa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cachix",
+        "repo": "pre-commit-hooks.nix",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
-        "agenix": "agenix",
-        "darwin": "darwin_2",
-        "home-manager": "home-manager_2",
-        "hyprland": "hyprland",
-        "hyprland-plugins": "hyprland-plugins",
-        "ml4w-dotfiles": "ml4w-dotfiles",
-        "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_2",
-        "nixpkgs-darwin": "nixpkgs-darwin",
-        "nixpkgs-unstable": "nixpkgs-unstable",
-        "nur": "nur",
-        "plasma-manager": "plasma-manager",
-        "secrets": "secrets",
-        "split-monitor-workspaces": "split-monitor-workspaces"
+        "infra": "infra",
+        "nixpkgs": "nixpkgs_4",
+        "pre-commit-hooks": "pre-commit-hooks_2"
       }
     },
     "secrets": {
@@ -777,6 +931,7 @@
     "split-monitor-workspaces": {
       "inputs": {
         "hyprland": [
+          "infra",
           "hyprland"
         ],
         "nix-filter": "nix-filter"
@@ -828,26 +983,32 @@
     "xdph": {
       "inputs": {
         "hyprland-protocols": [
+          "infra",
           "hyprland",
           "hyprland-protocols"
         ],
         "hyprlang": [
+          "infra",
           "hyprland",
           "hyprlang"
         ],
         "hyprutils": [
+          "infra",
           "hyprland",
           "hyprutils"
         ],
         "hyprwayland-scanner": [
+          "infra",
           "hyprland",
           "hyprwayland-scanner"
         ],
         "nixpkgs": [
+          "infra",
           "hyprland",
           "nixpkgs"
         ],
         "systems": [
+          "infra",
           "hyprland",
           "systems"
         ]

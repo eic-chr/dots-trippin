@@ -17,7 +17,7 @@
     # Multimedia
     imagemagick
     exiftool
-    clipgrab
+
     # Search & text processing
     ripgrep # recursively searches directories for a regex pattern
     jq # A lightweight and flexible command-line JSON processor
@@ -39,7 +39,6 @@
     aria2 # A lightweight multi-protocol & multi-source command-line download utility
     socat # replacement of openbsd-netcat
     nmap # A utility for network discovery and security auditing
-    caddy # Web server
 
     # System info & utilities
     file
@@ -52,20 +51,21 @@
     gnupg
 
     # Productivity
-    glow # markdown previewer in terminal
     atuin # Shell-History
     languagetool # Sprachprüfung
     ltex-ls # LSP für LanguageTool
     zk # Zettelkasten
 
     # Fun
-    cowsay
+    whatsapp-electron
+    vesktop
 
+    rustdesk
     # Terminal (falls Sie es nicht systemweit wollen)
-    # kitty          # Auskommentiert - könnte auch system-wide bleiben
   ];
 
   programs = {
+    nix-index.enable = true;
     direnv.enable = true;
     # modern vim
     neovim = {

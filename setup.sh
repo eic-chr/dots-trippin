@@ -2,11 +2,7 @@
 
 # folders that should, or only need to be installed for a local user
 base=(
-    git
-    brew
-    lunarvim
     nvim
-    vim
     tmux
     zk
 

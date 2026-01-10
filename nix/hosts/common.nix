@@ -1,13 +1,58 @@
 # Gemeensame NixOS Konfiguration für alle Hosts
-{ config, agenix, nur, pkgs, lib, users, userConfigs, hasPlasma, hostname
-, secrets, ... }:
-let
+{
+  agenix,
+  nur,
+  pkgs,
+  lib,
+  users,
+  userConfigs,
+  hasPlasma,
+  hostname,
+  secrets,
+  ...
+}: let
+  isAdmin = user: user == "christian" || userConfigs.${user}.isAdmin or false;
+  isDeveloper = user: userConfigs.${user}.profile or null == "developer";
   # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
-  trustedProfiles = [ "developer" "admin" ];
+  trustedProfiles = ["developer" "admin"];
   trustedUsers = builtins.filter (user:
     builtins.elem (userConfigs.${user}.profile or "none") trustedProfiles)
-    users;
+  users;
 in {
+  # Nix-Einstellungen
+  nix = {
+    settings = {
+      experimental-features = ["nix-command" "flakes"];
+      trusted-users = ["root"] ++ trustedUsers;
+      auto-optimise-store = true;
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 10d";
+    };
+  };
+  # Nixpkgs-Konfiguration mit NUR
+  nixpkgs = {
+    overlays = [nur.overlays.default];
+    config.allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "broadcom-sta"
+        "code"
+        "facetimehd-firmware"
+        "libsciter"
+        "postman"
+        "steam-unwrapped"
+        "steam"
+        "teamviewer"
+        "visual-studio-code"
+        "vscode"
+        "vscode-extension-ms-vscode-remote-remote-containers"
+        "vscode-fhs"
+        "vscode-insiders"
+        "vscode-with-extensions"
+      ];
+  };
   # Zeitzone und Lokalisierung
   time.timeZone = "Europe/Berlin";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -25,96 +70,169 @@ in {
 
   console.keyMap = "us";
 
-  services.displayManager.sddm = { enable = true; };
-  services.desktopManager.plasma6.enable = true;
-  services.teamviewer.enable = true;
+  # Scanner support
+  hardware.sane.enable = true;
+
+  # Dynamische Benutzer-Erstellung basierend auf hostUsers
+  users.users = builtins.listToAttrs (map (user: {
+      name = user;
+      value = {
+        isNormalUser = true;
+        description = userConfigs.${user}.fullName or user;
+        extraGroups =
+          [
+            "dialout"
+            "networkmanager"
+            "audio"
+            "video"
+            "scanner"
+            "lp"
+            "input"
+            "seat"
+            "tun"
+          ]
+          ++ lib.optionals (isAdmin user) ["wheel"]
+          ++ lib.optionals (isDeveloper user) ["docker"];
+        shell = pkgs.zsh;
+      };
+    })
+    users);
+  services = {
+    xserver.enable = false;
+
+    # Enable CUPS to print documents.
+    printing = {
+      enable = true;
+      drivers = with pkgs; [hplip epson-escpr];
+    };
+    # Provide D-Bus service for kwalletd6 (Plasma 6)
+    dbus.packages = [pkgs.kdePackages.kwallet];
+
+    displayManager.sddm = {enable = true;};
+    # Enable Flatpak with Flathub remote
+    flatpak.enable = true;
+    desktopManager.plasma6.enable = true;
+    # Enable sound with pipewire.
+    pulseaudio.enable = false;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+
+    openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = true;
+        KbdInteractiveAuthentication = true;
+        PermitRootLogin = "no";
+      };
+    };
+
+    gvfs.enable = true;
+  };
+
   # XDG Portal für KDE
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ kdePackages.xdg-desktop-portal-kde ];
+    extraPortals = with pkgs; [kdePackages.xdg-desktop-portal-kde];
   };
 
-  boot.extraModulePackages = [ pkgs.linuxPackages.broadcom_sta ];
-  boot.blacklistedKernelModules = [ "b43" "bcma" "brcmsmac" "ssb" "brcmfmac" ];
-  boot.supportedFilesystems = [ "cifs" ];
   # RDP Server für Remote Desktop (funktioniert mit Wayland)
 
   # Netzwerk
-  networking.networkmanager = {
-    enable = true;
-    plugins = with pkgs; [ networkmanager-openvpn ];
+  networking = {
+    hostName = hostname;
+    # Firewall
+    firewall = {
+      enable = false;
+      allowedTCPPorts = [22]; # SSH
+    };
+    networkmanager = {
+      enable = true;
+      plugins = with pkgs; [networkmanager-openvpn];
+    };
   };
-
-  # Bootloader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   programs.zsh.enable = true;
-  security.sudo = {
-    wheelNeedsPassword = false;
-    extraConfig = ''
-      Defaults env_keep += "SSH_AUTH_SOCK"
-    '';
-  };
-
-  # Enable KWallet unlock via PAM for SDDM and TTY login
-  security.pam.services = {
-    sddm.kwallet.enable = true;
-    login.kwallet.enable = true;
-  };
-
-  # Provide D-Bus service for kwalletd6 (Plasma 6)
-  services.dbus.packages = [ pkgs.kdePackages.kwallet ];
 
   # Ensure plasma-kwallet-pam starts at login
-  systemd.user.services.plasma-kwallet-pam-ensure = {
-    description = "Ensure plasma-kwallet-pam.service is started at login";
-    after = [ "graphical-session.target" "dbus.service" ];
-    wantedBy = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart =
-        "${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service";
-      RemainAfterExit = true;
+  systemd = {
+    user.services = {
+      secret-service-sanity = {
+        description = "Sanity-check Secret Service (org.freedesktop.secrets) availability at login";
+        wants = ["plasma-kwallet-pam.service"];
+        after = ["plasma-kwallet-pam.service" "dbus.service"];
+        wantedBy = ["default.target"];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = ''
+            ${pkgs.bash}/bin/bash -lc '
+                               for i in {1..10}; do
+                                 if busctl --user list | grep -q org.freedesktop.secrets; then
+                                   echo "[OK] Secret Service available"; exit 0;
+                                     fi;
+                                     sleep 0.5;
+                                     done;
+                                     echo "[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam";
+                                     ${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true;
+                                     sleep 1;
+                                     if busctl --user list | grep -q org.freedesktop.secrets; then
+                                       echo "[OK] Secret Service available after start"; exit 0;
+                                     else
+                                       echo "[ERROR] Secret Service unavailable"; exit 1;
+                                         fi'
+          '';
+        };
+      };
+      plasma-kwallet-pam-ensure = {
+        description = "Ensure plasma-kwallet-pam.service is started at login";
+        after = ["graphical-session.target" "dbus.service"];
+        wantedBy = ["graphical-session.target"];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service";
+          RemainAfterExit = true;
+        };
+      };
     };
+    services.flatpak-add-flathub = {
+      description = "Add Flathub Flatpak remote (system-wide)";
+      wantedBy = ["multi-user.target"];
+      after = ["network-online.target"];
+      wants = ["network-online.target"];
+      serviceConfig.Type = "oneshot";
+      script = ''
+        set -eu
+        if ! ${pkgs.flatpak}/bin/flatpak remotes --system | grep -q '^flathub'; then
+          ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
+        fi
+      '';
+    };
+    tmpfiles.rules =
+      (map (u: "d /home/${u}/.ssh 0700 ${u} users -") users)
+      ++ (map (u: "d /home/${u}/.ssh/config.d 0700 ${u} users -") users);
   };
 
   # Sanity-check Secret Service availability at user login (more robust)
-  systemd.user.services.secret-service-sanity = {
-    description =
-      "Sanity-check Secret Service (org.freedesktop.secrets) availability at login";
-    wants = [ "plasma-kwallet-pam.service" ];
-    after = [ "plasma-kwallet-pam.service" "dbus.service" ];
-    wantedBy = [ "default.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = ''
-        ${pkgs.bash}/bin/bash -lc '
-                           for i in {1..10}; do 
-                             if busctl --user list | grep -q org.freedesktop.secrets; then 
-                               echo "[OK] Secret Service available"; exit 0; 
-                                 fi; 
-                                 sleep 0.5; 
-                                 done; 
-                                 echo "[WARN] Secret Service missing after wait, trying to start plasma-kwallet-pam"; 
-                                 ${pkgs.systemd}/bin/systemctl --user start plasma-kwallet-pam.service || true; 
-                                 sleep 1; 
-                                 if busctl --user list | grep -q org.freedesktop.secrets; then 
-                                   echo "[OK] Secret Service available after start"; exit 0; 
-                                 else 
-                                   echo "[ERROR] Secret Service unavailable"; exit 1; 
-                                     fi''';
-    };
-  };
 
   # Audio mit PipeWire
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
+  security = {
+    rtkit.enable = true;
+    sudo = {
+      wheelNeedsPassword = false;
+      extraConfig = ''
+        Defaults env_keep += "SSH_AUTH_SOCK"
+      '';
+    };
+
+    # Enable KWallet unlock via PAM for SDDM and TTY login
+    pam.services = {
+      sddm.kwallet.enable = true;
+      login.kwallet.enable = true;
+    };
   };
   # KDE-spezifische System-Pakete
   environment.systemPackages = with pkgs;
@@ -126,11 +244,14 @@ in {
       ntfs3g # NTFS-Support (Lesen/Schreiben)
       dosfstools # FAT/FAT32/ExFAT Tools (mkfs.vfat usw.)
       exfatprogs # ExFAT Support
-      screen
       minicom
       picocom # minimalistisch
       tio # modern & angenehm
       tmux
+      filezilla
+      stow
+      usbutils
+      lm_sensors
 
       git
       htop
@@ -164,89 +285,40 @@ in {
       # Browser
 
       # KDE Apps (gemeinsam für alle KDE-Systeme)
-    ] ++ lib.optionals hasPlasma [
+    ]
+    ++ lib.optionals hasPlasma [
       # KDE-spezifische Pakete
-      kdePackages.ark
-      kdePackages.dolphin
-      kdePackages.gwenview
-      kdePackages.kate
-      kdePackages.kcalc
-      kdePackages.kdegraphics-thumbnailers
-      kdePackages.krfb
-      kdePackages.kio-extras
-      kdePackages.kmail
-      kdePackages.kolourpaint
-      kdePackages.konsole
-      kdePackages.korganizer
-      kdePackages.ksystemlog
-      kdePackages.merkuro
-      kdePackages.okular
-      kdePackages.qtimageformats
-      kdePackages.spectacle
-    ];
-  # Nix-Einstellungen
-  nix = {
-    settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" ] ++ trustedUsers;
-      auto-optimise-store = true;
-    };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 10d";
-    };
-  };
-  # Nixpkgs-Konfiguration mit NUR
-  nixpkgs.overlays = [ nur.overlays.default ];
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      "facetimehd-firmware"
-      "code"
-      "vscode"
-      "vscode-fhs"
-      "vscode-with-extensions"
-      "visual-studio-code"
-      "vscode-insiders"
-      "vscode-extension-ms-vsliveshare-vsliveshare"
-      "vscode-extension-ms-vscode-remote-remote-containers"
-      "discord"
-      "teamviewer"
-      "broadcom-sta"
-      "postman"
+      # kdePackages.ark
+      # kdePackages.dolphin
+      # kdePackages.gwenview
+      # kdePackages.kate
+      # kdePackages.kcalc
+      # kdePackages.kdegraphics-thumbnailers
+      # kdePackages.krfb
+      # kdePackages.kio-extras
+      # kdePackages.kmail
+      # kdePackages.kolourpaint
+      # kdePackages.konsole
+      # kdePackages.korganizer
+      # kdePackages.ksystemlog
+      # kdePackages.merkuro
+      # kdePackages.okular
+      # kdePackages.qtimageformats
+      # kdePackages.spectacle
     ];
 
-  nixpkgs.config.allowInsecurePredicate = pkg:
-    builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
-  # Firewall
-  networking.firewall = {
-    enable = false;
-    allowedTCPPorts = [ 22 ]; # SSH
-  };
-
-  # SSH
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = true;
-      KbdInteractiveAuthentication = true;
-      PermitRootLogin = "no";
-    };
-  };
-
-  services.gvfs.enable = true;
   # Font-Konfiguration
   fonts = {
     packages = with pkgs; [
       font-awesome
       material-design-icons
       noto-fonts
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       liberation_ttf
       fira-code
       fira-code-symbols
       nerd-fonts.jetbrains-mono
-      nerd-fonts.fira-code
+      nerd-font.fira-code
       fira-sans
     ];
 
@@ -258,28 +330,27 @@ in {
     };
   };
 
-  # System State Version
-  age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-  system.stateVersion = "25.05";
+  age.identityPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+  system.stateVersion = "25.11";
 
   # agenix: deploy per-user SSH private keys when available
   # Scan nix/secrets/ssh/<user>/{shared,<hostname>} for *.age; host-specific overrides shared; copy into ~/.ssh (no symlinks)
   age.secrets = lib.mkMerge [
     # Per-user SSH config aus Secrets-Flake (host-spezifischer Override möglich)
     (let
-      mkSshConfig = user:
-        let
-          # Optionaler Host-Override: secrets/ssh/<user>/<hostname>/config.age
-          pHost = "${secrets}/ssh/${user}/${hostname}/config.age";
-          # Shared-Variante: secrets/ssh/<user>/config.age
-          pShared = "${secrets}/ssh/${user}/config.age";
-          src = if builtins.pathExists pHost then
-            pHost
-          else if builtins.pathExists pShared then
-            pShared
-          else
-            null;
-        in lib.optional (src != null) {
+      mkSshConfig = user: let
+        # Optionaler Host-Override: secrets/ssh/<user>/<hostname>/config.age
+        pHost = "${secrets}/ssh/${user}/${hostname}/config.age";
+        # Shared-Variante: secrets/ssh/<user>/config.age
+        pShared = "${secrets}/ssh/${user}/config.age";
+        src =
+          if builtins.pathExists pHost
+          then pHost
+          else if builtins.pathExists pShared
+          then pShared
+          else null;
+      in
+        lib.optional (src != null) {
           name = "ssh-config-${user}";
           value = {
             file = src;
@@ -291,58 +362,66 @@ in {
           };
         };
       entries = lib.concatLists (map mkSshConfig users);
-    in builtins.listToAttrs entries)
+    in
+      builtins.listToAttrs entries)
 
     (let
-      mkUserEntries = user:
-        let
-          baseDir = "${secrets}/users/${user}";
-          keyRegex = "id_.*_" + hostname + "\\.age";
-          # collect .age files from shared and host-specific dirs
-          readNames = dir:
-            if builtins.pathExists dir then
-              builtins.filter (n:
-                let t = (builtins.readDir dir).${n} or null;
-                in t == "regular" && builtins.match keyRegex n != null)
-              (builtins.attrNames (builtins.readDir dir))
-            else
-              [ ];
-          bases = readNames baseDir;
-          # bases = builtins.filter
-          #   (f: builtins.match keyRegex f != null)
-          #   (builtins.attrNames (builtins.readDir baseDir));
-          # build mappings baseName -> filePath (host overrides shared)
-          mkOne = base:
-            let baseName = builtins.replaceStrings [ ".age" ] [ "" ] base;
-            in {
-              name = "ssh-${user}-${baseName}";
-              value = {
-                file = "${baseDir}/${base}";
-                owner = user;
-                group = "users";
-                mode = "600";
-                path = "/home/${user}/.ssh/${baseName}";
-                symlink = false;
-              };
-            };
-        in map mkOne bases;
-      entries = lib.concatLists (map mkUserEntries users);
-    in builtins.listToAttrs entries)
-    (let
-      mkPwdEntry = user:
-        let p = "${secrets}/users/${user}/passwd-${hostname}.age";
-        in if builtins.pathExists p then [{
-          name = "passwd-${user}";
+      mkUserEntries = user: let
+        baseDir = "${secrets}/users/${user}";
+        keyRegex = "id_.*_" + hostname + "\\.age";
+        # collect .age files from shared and host-specific dirs
+        readNames = dir:
+          if builtins.pathExists dir
+          then
+            builtins.filter (n: let
+              t = (builtins.readDir dir).${n} or null;
+            in
+              t == "regular" && builtins.match keyRegex n != null)
+            (builtins.attrNames (builtins.readDir dir))
+          else [];
+        bases = readNames baseDir;
+        # bases = builtins.filter
+        #   (f: builtins.match keyRegex f != null)
+        #   (builtins.attrNames (builtins.readDir baseDir));
+        # build mappings baseName -> filePath (host overrides shared)
+        mkOne = base: let
+          baseName = builtins.replaceStrings [".age"] [""] base;
+        in {
+          name = "ssh-${user}-${baseName}";
           value = {
-            file = p;
-            owner = "root";
-            group = "root";
-            mode = "0400";
+            file = "${baseDir}/${base}";
+            owner = user;
+            group = "users";
+            mode = "600";
+            path = "/home/${user}/.ssh/${baseName}";
+            symlink = false;
           };
-        }] else
-          [ ];
+        };
+      in
+        map mkOne bases;
+      entries = lib.concatLists (map mkUserEntries users);
+    in
+      builtins.listToAttrs entries)
+    (let
+      mkPwdEntry = user: let
+        p = "${secrets}/users/${user}/passwd-${hostname}.age";
+      in
+        if builtins.pathExists p
+        then [
+          {
+            name = "passwd-${user}";
+            value = {
+              file = p;
+              owner = "root";
+              group = "root";
+              mode = "0400";
+            };
+          }
+        ]
+        else [];
       entries = lib.concatLists (map mkPwdEntry users);
-    in builtins.listToAttrs entries)
+    in
+      builtins.listToAttrs entries)
     (let
       # Generic per-user secrets with shared/host override
       # Place .age files under:
@@ -352,52 +431,53 @@ in {
       # Map desired secret names to their installation targets per user here.
       # Extend this attrset with more users and targets as needed.
       userSecretTargets = {
-        christian = [{
-          name = "github-token";
-          path = "/home/christian/.config/gh/token";
-          mode = "0400";
-          symlink = false;
-        }
-        # {
-        #   name = "aws-credentials";
-        #   path = "/home/christian/.aws/credentials";
-        #   mode = "0400";
-        #   symlink = false;
-        # }
-          ];
+        christian = [
+          {
+            name = "github-token";
+            path = "/home/christian/.config/gh/token";
+            mode = "0400";
+            symlink = false;
+          }
+          # {
+          #   name = "aws-credentials";
+          #   path = "/home/christian/.aws/credentials";
+          #   mode = "0400";
+          #   symlink = false;
+          # }
+        ];
         # vincent = [ ... ];
         # charly = [ ... ];
       };
 
-      mkOneUser = user:
-        let
-          targets = userSecretTargets.${user} or [ ];
-          mkOneTarget = t:
-            let
-              pHost =
-                "${secrets}/users/${user}/secrets/${hostname}/${t.name}.age";
-              pShared = "${secrets}/users/${user}/secrets/shared/${t.name}.age";
-              src = if builtins.pathExists pHost then
-                pHost
-              else if builtins.pathExists pShared then
-                pShared
-              else
-                null;
-            in lib.optional (src != null) {
-              name = "secret-${user}-${t.name}";
-              value = {
-                file = src;
-                owner = user;
-                group = "users";
-                mode = t.mode or "0400";
-                path = t.path;
-                symlink = t.symlink or false;
-              };
+      mkOneUser = user: let
+        targets = userSecretTargets.${user} or [];
+        mkOneTarget = t: let
+          pHost = "${secrets}/users/${user}/secrets/${hostname}/${t.name}.age";
+          pShared = "${secrets}/users/${user}/secrets/shared/${t.name}.age";
+          src =
+            if builtins.pathExists pHost
+            then pHost
+            else if builtins.pathExists pShared
+            then pShared
+            else null;
+        in
+          lib.optional (src != null) {
+            name = "secret-${user}-${t.name}";
+            value = {
+              file = src;
+              owner = user;
+              group = "users";
+              mode = t.mode or "0400";
+              inherit (t) path;
+              symlink = t.symlink or false;
             };
-        in lib.concatMap mkOneTarget targets;
+          };
+      in
+        lib.concatMap mkOneTarget targets;
 
       entries = lib.concatLists (map mkOneUser users);
-    in builtins.listToAttrs entries)
+    in
+      builtins.listToAttrs entries)
   ];
 
   # Wire user hashed passwords from agenix secrets (initial-only via initialHashedPasswordFile). Existing users won't be changed on rebuild.
@@ -413,7 +493,4 @@ in {
   # systemd.tmpfiles.rules = map (u: "d /home/${u}/.ssh 0700 ${u} users -") users;
 
   # am Ende (ergänzen/ersetzen)
-  systemd.tmpfiles.rules =
-    (map (u: "d /home/${u}/.ssh 0700 ${u} users -") users)
-    ++ (map (u: "d /home/${u}/.ssh/config.d 0700 ${u} users -") users);
 }

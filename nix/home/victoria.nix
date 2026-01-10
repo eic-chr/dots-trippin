@@ -1,61 +1,57 @@
 # Home-Manager Konfiguration für NixOS Systeme (Benutzer: ce)
 {
-  config,
   lib,
   pkgs,
   currentUser,
-  userConfig,
   userEmail,
   userFullName,
   hasPlasma,
-  hostname,
   ...
 }: {
   # Importiere deine bestehenden Module
   imports = [./core.nix ./git.nix ./shell.nix ./starship.nix ./kitty.nix];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
-  home.username = currentUser;
-  home.homeDirectory = "/home/${currentUser}";
-  home.stateVersion = "25.05";
+  home = {
+    username = currentUser;
+    homeDirectory = "/home/${currentUser}";
+    stateVersion = "25.11";
 
-  # Git-Konfiguration für ca (überschreibt die aus git.nix)
-  programs.git = {
-    userName = lib.mkForce userFullName; # Anpassen nach Bedarf
-    userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
+    # Zusätzliche NixOS-spezifische Pakete
+    packages = with pkgs; [fzf git-crypt signal-desktop stow firefox];
   };
 
-  programs.plasma = lib.mkIf hasPlasma {
-    enable = true;
-    input = {
-      keyboard = {
-        layouts = [
-          {
-            displayName = "US intl";
-            layout = "us";
-            variant = "intl";
-          }
-        ];
+  # Git-Konfiguration für ca (überschreibt die aus git.nix)
+  programs = {
+    git = {
+      userName = lib.mkForce userFullName; # Anpassen nach Bedarf
+      userEmail = lib.mkForce userEmail; # Anpassen nach Bedarf
+    };
+    plasma = lib.mkIf hasPlasma {
+      enable = true;
+      input = {
+        keyboard = {
+          layouts = [
+            {
+              displayName = "US intl";
+              layout = "us";
+              variant = "intl";
+            }
+          ];
+        };
       };
     };
   };
 
-  # Zusätzliche NixOS-spezifische Pakete
-  home.packages = with pkgs; [
-    # Browser (falls nicht system-weit installiert)
-    discord
-    fzf
-    git-crypt
-    signal-desktop
-    stow
-  ];
-
-  services.ssh-agent.enable = true;
-  services.gpg-agent = {
-    enable = true;
-    enableSshSupport = false;
-    pinentry.package = pkgs.pinentry-curses; # QT-Version für KDE
-    defaultCacheTtl = 28800; # 8 Stunden
-    maxCacheTtl = 86400; # 24 Stunden
+  services = {
+    kdeconnect.enable = true;
+    ssh-agent.enable = true;
+    gpg-agent = {
+      enable = true;
+      enableSshSupport = false;
+      pinentry.package = pkgs.pinentry-curses; # QT-Version für KDE
+      defaultCacheTtl = 28800; # 8 Stunden
+      maxCacheTtl = 86400; # 24 Stunden
+    };
   };
 }

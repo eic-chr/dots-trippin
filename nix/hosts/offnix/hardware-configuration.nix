@@ -8,27 +8,55 @@
   modulesPath,
   ...
 }: {
-  imports = [
-    (modulesPath + "/installer/scan/not-detected.nix")
-  ];
+  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
-  boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"];
-  boot.initrd.kernelModules = [];
+  # Ensure deep sleep is the default suspend mode
+  boot = {
+    kernelParams = ["mem_sleep_default=deep"];
+    extraModulePackages = [pkgs.linuxPackages.broadcom_sta];
+    blacklistedKernelModules = ["b43" "bcma" "brcmsmac" "ssb" "brcmfmac"];
+    supportedFilesystems = ["cifs"];
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    initrd = {
+      availableKernelModules = ["xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"];
+      kernelModules = [];
+    };
 
-  # MacBook Pro 2014 spezifische Kernel-Module
-  # WiFi is handled by nixos-hardware (brcmfmac via broadcom-43xx); do not use wl here
-  boot.kernelModules = [
-    "kvm-intel"
-    "applesmc" # Apple System Management Controller
-    "coretemp" # CPU-Temperatur
-    "ftdi_sio"
-    "pl2303"
-    "ch341"
-    "tun"
-  ];
+    # MacBook Pro 2014 spezifische Kernel-Module
+    # WiFi is handled by nixos-hardware (brcmfmac via broadcom-43xx); do not use wl here
+    kernelModules = [
+      "kvm-intel"
+      "applesmc" # Apple System Management Controller
+      "coretemp" # CPU-Temperatur
+      "ftdi_sio"
+      "pl2303"
+      "ch341"
+      "tun"
+    ];
+  };
 
   # Firmware handled by nixos-hardware; keep redistributable firmware enabled
-  hardware.enableRedistributableFirmware = true;
+  hardware = {
+    enableRedistributableFirmware = true;
+
+    cpu.intel.updateMicrocode =
+      lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+    # Grafik - Intel HD Graphics 4000/5000 Serie
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+      extraPackages = with pkgs; [
+        # Defer Intel VAAPI drivers to nixos-hardware (MacBookPro11,4)
+        # Keep only translation layers
+        vaapiVdpau
+        libvdpau-va-gl
+      ];
+    };
+  };
 
   # Dateisysteme (von nixos-generate-config)
   fileSystems."/" = {
@@ -42,38 +70,6 @@
   };
   swapDevices = [];
 
-  # Netzwerk (von nixos-generate-config)
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp0s20u5.useDHCP = lib.mkDefault true;
-
   # Hardware-Platform (von nixos-generate-config)
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-  # MacBook Pro 2014 Hardware-Optimierungen
-
-  # Grafik - Intel HD Graphics 4000/5000 Serie
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-    extraPackages = with pkgs; [
-      # Defer Intel VAAPI drivers to nixos-hardware (MacBookPro11,4)
-      # Keep only translation layers
-      vaapiVdpau
-      libvdpau-va-gl
-    ];
-  };
-
-  # udev-Regeln für MacBook-spezifische Hardware
-  services.udev.extraRules = ''
-    # MacBook Tastatur-Hintergrundbeleuchtung
-    SUBSYSTEM=="leds", KERNEL=="smc::kbd_backlight", ACTION=="add", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/leds/%k/brightness", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/leds/%k/brightness"
-
-    # MacBook Bildschirm-Helligkeit
-    SUBSYSTEM=="backlight", KERNEL=="intel_backlight", ACTION=="add", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness"
-  '';
 }

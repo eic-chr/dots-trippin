@@ -25,7 +25,7 @@
   # Basis Home-Manager Einstellungen - angepasst für ca
   home.username = currentUser;
   home.homeDirectory = "/home/${currentUser}";
-  home.stateVersion = "25.05";
+  home.stateVersion = "25.11";
 
   # Git-Konfiguration für ca (überschreibt die aus git.nix)
   programs.git = {
@@ -87,7 +87,6 @@
   # Zusätzliche NixOS-spezifische Pakete
   home.packages = with pkgs; [
     # Browser (falls nicht system-weit installiert)
-    discord
     fzf
     git-crypt
     signal-desktop

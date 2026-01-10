@@ -20,12 +20,14 @@ in {
   networking.hostName = hostname;
 
   # Bootloader: use GRUB for BIOS (no EFI on this VM)
-  boot.loader.systemd-boot.enable = lib.mkForce false;
-  boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
-  boot.loader.grub = {
-    enable = true;
-    device = "/dev/sda";
-    useOSProber = false;
+  boot.loader = {
+    systemd-boot.enable = lib.mkForce false;
+    efi.canTouchEfiVariables = lib.mkForce false;
+    grub = {
+      enable = true;
+      device = "/dev/sda";
+      useOSProber = false;
+    };
   };
 
   # Dynamische Benutzer-Erstellung basierend auf hostUsers
