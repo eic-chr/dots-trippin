@@ -37,17 +37,20 @@ in {
     overlays = [nur.overlays.default];
     config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
-        "facetimehd-firmware"
-        "code"
-        "vscode"
-        "vscode-fhs"
-        "vscode-with-extensions"
-        "visual-studio-code"
-        "vscode-insiders"
-        "vscode-extension-ms-vscode-remote-remote-containers"
-        "teamviewer"
         "broadcom-sta"
+        "code"
+        "facetimehd-firmware"
+        "libsciter"
         "postman"
+        "steam-unwrapped"
+        "steam"
+        "teamviewer"
+        "visual-studio-code"
+        "vscode"
+        "vscode-extension-ms-vscode-remote-remote-containers"
+        "vscode-fhs"
+        "vscode-insiders"
+        "vscode-with-extensions"
       ];
   };
   # Zeitzone und Lokalisierung
@@ -110,7 +113,7 @@ in {
     flatpak.enable = true;
     desktopManager.plasma6.enable = true;
     # Enable sound with pipewire.
-    services.pulseaudio.enable = false;
+    pulseaudio.enable = false;
     pipewire = {
       enable = true;
       alsa.enable = true;
