@@ -89,7 +89,7 @@
   }: let
     # Host-zu-User Zuordnung
     hostUsers = {
-      MacBookPro = ["christianeickhoff"];
+      MacBookPro = ["ap4103"];
       devnix = ["christian"];
       offnix = ["christian" "charly"];
       magnix = ["christian" "victoria"];
@@ -98,10 +98,10 @@
 
     # User-spezifische Konfigurationen
     userConfigs = {
-      christianeickhoff = {
+      ap4103 = {
         email = "christian@ewolutions.de";
         fullName = "Christian Eickhoff";
-        homeConfig = ./home;
+        homeConfig = ./home/ap4103.nix;
         profile = "developer";
         isAdmin = true;
       };
@@ -144,7 +144,7 @@
       # macOS configuration
       mac = {
         system = "aarch64-darwin";
-        hostname = "MacBookPro";
+        hostname = "MacBookRWRMF4N0G3";
         nixpkgs = nixpkgs-darwin;
         users = hostUsers.MacBookPro;
         hasPlasma = false;
@@ -186,30 +186,41 @@
       };
     };
 
+    isLinuxSystem = system:
+      builtins.match ".*-linux" system != null;
+
     # Helper function to create specialArgs for each system
-    mkSpecialArgs = systemConfig:
-      inputs
-      // {
-        inherit (systemConfig) hostname hasPlasma users;
-        inherit userConfigs hostUsers;
+    mkSpecialArgs = systemConfig: let
+      isLinux = isLinuxSystem systemConfig.system;
 
-        # nixpkgs-unstable importieren und durchreichen
-        unstable =
-          import inputs.nixpkgs-unstable {system = systemConfig.system;};
+      baseArgs =
+        inputs
+        // {
+          inherit (systemConfig) hostname hasPlasma users;
+          inherit userConfigs hostUsers;
 
-        # Hyprland / plugins through specialArgs for HM modules
-        hyprlandInput = inputs.hyprland;
-        hyprlandPlugins = inputs.hyprland-plugins;
-        hyprlandPluginsPkgs =
-          inputs.hyprland-plugins.packages.${systemConfig.system};
-        splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-        secrets = inputs.secrets.outPath;
-        ml4wDots = inputs.ml4w-dotfiles;
-
-        # Für Kompatibilität mit bestehenden Modulen
-        username =
-          builtins.head systemConfig.users; # Erster User als Standard
-      };
+          secrets = inputs.secrets.outPath;
+          # Für Kompatibilität mit bestehenden Modulen
+          username =
+            builtins.head systemConfig.users; # Erster User als Standard
+        };
+      linuxArgs =
+        if isLinux
+        then {
+          # nixpkgs-unstable importieren und durchreichen
+          unstable =
+            import inputs.nixpkgs-unstable {system = systemConfig.system;};
+          # Hyprland / plugins through specialArgs for HM modules
+          hyprlandInput = inputs.hyprland;
+          hyprlandPlugins = inputs.hyprland-plugins;
+          hyprlandPluginsPkgs =
+            inputs.hyprland-plugins.packages.${systemConfig.system};
+          splitMonitorWorkspaces = inputs.split-monitor-workspaces;
+          ml4wDots = inputs.ml4w-dotfiles;
+        }
+        else {};
+    in
+      baseArgs // linuxArgs;
 
     # Helper function to create home-manager user configurations
     mkHomeManagerUsers = systemConfig:
@@ -225,8 +236,13 @@
             imports = [
               (
                 if builtins.hasAttr user userConfigs
-                then userConfigs.${user}.homeConfig
+                then
+                  builtins.trace
+                  "→ User-spezifische Home-Konfiguration wird geladen"
+                  userConfigs.${user}.homeConfig
                 else
+                  builtins.trace
+                  "→ Fallback: ./home/nixos.nix wird geladen"
                   # Fallback: verwende eine Standard-Konfiguration
                   ./home/nixos.nix
               )
@@ -256,8 +272,8 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = mkSpecialArgs systems.mac;
           home-manager.users = mkHomeManagerUsers systems.mac;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.mac;
         }
       ];
     };
