@@ -6,19 +6,19 @@
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
 
     # Existing infra flake
-    infra.url = "path:./nix";
+    #infra.url = "path:./nix";
   };
 
   outputs = {
     self,
     nixpkgs,
     pre-commit-hooks,
-    infra,
     ...
   }: let
     systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
+    infra = import ./nix;
   in {
     formatter = forAllSystems (system: let
       pkgs = import nixpkgs {inherit system;};
