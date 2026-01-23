@@ -4,16 +4,20 @@
   lib,
   pkgs,
   currentUser,
-  userEmail,
-  userFullName,
-  hasPlasma,
   ...
-}: let 
+}: let
   dotfilesDir = "${config.home.homeDirectory}/projects/ceickhoff/dots";
-  stowPackages = [ nvim ]
+  stowPackages = ["nvim"];
 in {
   # Importiere deine bestehenden Module
-  imports = [./core.nix ./git.nix ./shell.nix ./starship.nix ./kitty.nix];
+  imports = [
+    ./core.nix
+    ./git.nix
+    ./shell.nix
+    ./starship.nix
+    ./kitty.nix
+    ./vscode.nix
+  ];
 
   # Basis Home-Manager Einstellungen - angepasst für ca
   home = {
@@ -22,14 +26,15 @@ in {
     stateVersion = "25.11";
     activation.stowDotfiles = config.lib.dag.entryAfter ["writeBoundary"] ''
       cd ${dotfilesDir}
-      ${pkgs.stow}/bin/stow -R -t ${config.home.homeDirectory} ${lib.concatStringsSep " " stowPackages}
+      ${pkgs.stow}/bin/stow -R -t ${config.home.homeDirectory} ${
+        lib.concatStringsSep " " stowPackages
+      }
     '';
+    file.".glide.toml".source = ./.glide.toml;
 
     # Zusätzliche NixOS-spezifische Pakete
-    packages = with pkgs; [];
+    packages = [];
   };
 
-  services = {
-    ssh-agent.enable = true;
-  };
+  services = {ssh-agent.enable = true;};
 }

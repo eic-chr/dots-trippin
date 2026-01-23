@@ -1,4 +1,12 @@
-{pkgs, ...}: {
+{
+  nixpkgs,
+  lib,
+  pkgs,
+  ...
+}: {
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg)
+    ["vscode-extension-ms-vscode-remote-remote-containers"];
   ##########################################################################
   #
   #  Install all apps and packages here.
@@ -34,27 +42,33 @@
   # The apps installed by homebrew are not managed by nix, and not reproducible!
   # But on macOS, homebrew has a much larger selection of apps than nixpkgs, especially for GUI apps!
   homebrew = {
-    enable = false;
+    enable = true;
 
+    # Apple Silicon
+    brewPrefix = "/opt/homebrew/bin";
+
+    # Was darf nix-darwin steuern?
     onActivation = {
-      autoUpdate = false;
-      # 'zap': uninstalls all formulae(and related files) not listed here.
-      # cleanup = "zap";
+      autoUpdate = true;
+      upgrade = true;
+      cleanup = "zap";
     };
 
-    taps = [
-      "homebrew/services"
-    ];
+    taps = [];
 
-    # `brew install`
-    # TODO Feel free to add your favorite apps here.
     brews = [
-      # "aria2"  # download tool
+      #"mas" "watch" "httpie"
     ];
 
     # `brew install --cask`
     # TODO Feel free to add your favorite apps here.
     casks = [
+      "caffeine"
+      "glide"
+      # "raycast"
+      "shottr"
+      "stats"
+      # "wireshark-app"
       # "google-chrome"
     ];
   };

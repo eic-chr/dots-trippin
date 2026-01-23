@@ -15,7 +15,13 @@
     pre-commit-hooks,
     ...
   }: let
-    systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+    systems = [
+      "x86_64-linux"
+      "aarch64-linux"
+      "aarch64-darwin"
+      "x86_64-darwin"
+      "arch64-darwin"
+    ];
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
     infra = import ./nix;

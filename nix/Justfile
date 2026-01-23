@@ -20,7 +20,7 @@ default:
 # Build and switch Darwin configuration, then switch home-manager
 [group('darwin')]
 rebuild-switch:
-  darwin-rebuild switch --flake .
+ {{elevate}} darwin-rebuild switch --flake .
 
 # Full system build and switch (nix build + darwin rebuild + home-manager)
 [group('darwin')]
