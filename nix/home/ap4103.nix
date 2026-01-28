@@ -30,7 +30,6 @@ in {
         lib.concatStringsSep " " stowPackages
       }
     '';
-    file.".glide.toml".source = ./.glide.toml;
 
     # Zusätzliche NixOS-spezifische Pakete
     packages = [];
