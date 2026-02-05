@@ -15,6 +15,9 @@
       "https://mirrors.ustc.edu.cn/nix-channels/store"
       "https://cache.nixos.org"
     ];
+    extra-trusted-public-keys = [
+      "ncps.lan.eickhoff-it.net:kPV9cRk5SA/oqFPzY4lTEWv1/2fs1Q4AaNX2x872rFM="
+    ];
   };
 
   inputs = {

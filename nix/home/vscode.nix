@@ -48,8 +48,8 @@ in {
         tamasfe.even-better-toml
 
         # Docker & Containers
-        ms-vscode-remote.remote-containers
-        ms-azuretools.vscode-docker
+        # ms-vscode-remote.remote-containers
+        # ms-azuretools.vscode-docker
 
         # Nix Support
         bbenoist.nix
