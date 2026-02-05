@@ -10,6 +10,7 @@
   # the nixConfig here only affects the flake itself, not the system configuration!
   nixConfig = {
     substituters = [
+      "https://ncps.lan.eickhoff-it.net"
       # Query the mirror of USTC first, and then the official cache.
       "https://mirrors.ustc.edu.cn/nix-channels/store"
       "https://cache.nixos.org"
@@ -258,10 +259,10 @@
       inherit (systems.mac) system;
       specialArgs = mkSpecialArgs systems.mac;
       modules = [
-        ./modules/nix-core.nix
-        ./modules/system.nix
-        ./modules/apps.nix
-        ./modules/host-users.nix
+        ./hosts/macbook/nix-core.nix
+        ./hosts/macbook/system.nix
+        ./hosts/macbook/apps.nix
+        ./hosts/macbook/host-users.nix
         home-manager.darwinModules.home-manager
         {
           home-manager = {
