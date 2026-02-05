@@ -36,7 +36,7 @@ in {
   # The apps installed by homebrew are not managed by nix, and not reproducible!
   # But on macOS, homebrew has a much larger selection of apps than nixpkgs, especially for GUI apps!
   services.aerospace = {
-    enable = true;
+    enable = false;
     settings = {
       default-root-container-orientation = "auto";
       on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
