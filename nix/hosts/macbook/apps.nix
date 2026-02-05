@@ -147,6 +147,7 @@ in {
     # TODO Feel free to add your favorite apps here.
     casks = [
       "caffeine"
+      "chromium"
       # "raycast"
       "shottr"
       "stats"

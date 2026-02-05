@@ -19,12 +19,12 @@ _:
     };
   };
 
-  # Add ability to used TouchID for sudo authentication
   security = {
     pki.certificates = [
-      (builtins.readFile ./HUK-COBURG-TU-RootCA10.cer)
-      (builtins.readFile ./HUK-COBURG-TU-DMZ-SubCA12_2023.cer)
+      (builtins.readFile ../../assets/HUK-COBURG-TU-RootCA10.cer)
+      (builtins.readFile ../../assets/HUK-COBURG-TU-DMZ-SubCA12_2023.cer)
     ];
+    # Add ability to used TouchID for sudo authentication
     pam.services.sudo_local.touchIdAuth = true;
   };
 
