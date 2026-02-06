@@ -108,7 +108,7 @@ build-devnix-local-secrets:
 
 [group('nixos')]
 build-magnix:
-  {{elevate}} nixos-rebuild switch --flake .#magnix
+  {{elevate}} nixos-rebuild switch --show-trace --flake .#magnix
 
 [group('nixos')]
 build-offnix:
@@ -125,23 +125,6 @@ build-playnix:
 build-playnix-local-secrets:
   sudo nixos-rebuild switch --override-input secrets "path:{{secrets_repo}}" --flake .#playnix
 
-[group('report')]
-report-magnix:
-  #!/usr/bin/env bash
-  set -euo pipefail
-  mkdir -p nix/reports
-  out="nix/reports/packages-magnix.md"
-  sys=$(nix build .#nixosConfigurations.magnix.config.system.build.toplevel --no-link --print-out-paths)
-  {
-    echo "# magnix package report"
-    echo
-    date -Iseconds | sed 's/^/Generated: /'
-    echo
-    echo '```'
-    nix path-info -rSh "$sys" | sort -h
-    echo '```'
-  } > "$out"
-  echo "Wrote $out"
 [group('report')]
 report-offnix:
   #!/usr/bin/env bash

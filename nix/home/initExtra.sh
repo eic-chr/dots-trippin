@@ -126,5 +126,10 @@ _just_completion() {
 
 compctl -K _just_completion just
 
+if [ -f "$HOME/.gitlab-token" ]; then
+      export GITLAB_TOKEN=$(cat "$HOME/.gitlab-token")
+      export GITLAB_URL="https://gitlab.dev.ewolutions.de"
+      export GITLAB_GROUP_ID="ewolutions"
+    fi
 # Performance profiling output (nur für Tests)
 # zprof

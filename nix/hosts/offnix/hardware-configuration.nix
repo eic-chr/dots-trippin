@@ -15,7 +15,7 @@
     kernelParams = ["mem_sleep_default=deep"];
     extraModulePackages = [pkgs.linuxPackages.broadcom_sta];
     blacklistedKernelModules = ["b43" "bcma" "brcmsmac" "ssb" "brcmfmac"];
-    supportedFilesystems = ["cifs"];
+    supportedFilesystems = ["cifs" "ntfs"];
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;

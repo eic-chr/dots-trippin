@@ -7,6 +7,7 @@
   ];
 
   services = {
+    udisks2.enable = true;
     udev.extraRules = ''
       # Logitech Bolt Dongle Wakeup deaktivieren
       ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c548", TEST=="power/wakeup", ATTR{power/wakeup}="disabled"
@@ -31,5 +32,8 @@
     heroic
     mangohud
     protonup-qt
+    handbrake
+    makemkv
+    libdvdcss
   ];
 }

@@ -9,7 +9,6 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
       gitlab_url = "https://gitlab.dev.ewolutions.de",
-      gitlab_token = 'glpat-KW2ZXRFvHTcnvQoZCeUTQG86MQp1OjcH.01.0w1553wjx',
       debug_logging = true,
       group_id = "ewolutions",
     },
