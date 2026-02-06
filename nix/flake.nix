@@ -15,6 +15,8 @@
       "ncps.lan.eickhoff-it.net-1:kPV9cRk5SA/oqFPzY4lTEWv1/2fs1Q4AaNX2x872rFM="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ];
+    connect-timeout = 2;
+    fallback = true;
   };
 
   inputs = {
