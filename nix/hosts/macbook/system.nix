@@ -23,6 +23,7 @@ _:
     pki.certificates = [
       (builtins.readFile ../../assets/HUK-COBURG-TU-RootCA10.cer)
       (builtins.readFile ../../assets/HUK-COBURG-TU-DMZ-SubCA12_2023.cer)
+      (builtins.readFile ../../assets/CA-Bundle_DMZ-SubCA13.cer)
     ];
     # Add ability to used TouchID for sudo authentication
     pam.services.sudo_local.touchIdAuth = true;
