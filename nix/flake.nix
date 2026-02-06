@@ -9,7 +9,10 @@
 
   # the nixConfig here only affects the flake itself, not the system configuration!
   nixConfig = {
-    substituters = ["https://ncps.lan.eickhoff-it.net" "https://cache.nixos.org"];
+    substituters = [
+      # "https://ncps.lan.eickhoff-it.net"
+      "https://cache.nixos.org"
+    ];
 
     trusted-public-keys = [
       "ncps.lan.eickhoff-it.net-1:kPV9cRk5SA/oqFPzY4lTEWv1/2fs1Q4AaNX2x872rFM="
