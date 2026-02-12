@@ -6,7 +6,7 @@ _: {
 
     # Kommentieren Sie alles andere aus oder entfernen Sie es:
     # package = pkgs.nix;
-    # settings = { ... };
+    settings = {experimental-features = ["nix-command" "flakes"];};
     # gc = { ... };
   };
 }
