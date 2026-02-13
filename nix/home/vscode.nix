@@ -49,7 +49,7 @@ in {
 
         # Docker & Containers
         # ms-vscode-remote.remote-containers
-        # ms-azuretools.vscode-docker
+        ms-azuretools.vscode-docker
 
         # Nix Support
         bbenoist.nix

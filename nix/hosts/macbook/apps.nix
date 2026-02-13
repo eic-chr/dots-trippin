@@ -19,18 +19,18 @@
   # Related Discussion: https://discourse.nixos.org/t/darwin-again/29331
 
   environment.systemPackages = with pkgs; [
-    # Core system tools (alle Benutzer brauchen sie)
-    git # Version control - systemweit nötig
-    direnv # Environment management - systemweit besser
+    git
+    direnv
     just
+    tmux
+    zed-editor
 
     # System administration
-    sshpass # SSH-Tool für Automatisierung
+    sshpass
 
-    # Spell checking (systemweit verfügbar)
     (aspellWithDicts (dicts: with dicts; [de en en-computers]))
   ];
-
+  services = {openssh = {enable = true;};};
   # TODO To make this work, homebrew need to be installed manually, see https://brew.sh
   #
   # The apps installed by homebrew are not managed by nix, and not reproducible!
@@ -41,7 +41,6 @@
     # Apple Silicon
     brewPrefix = "/opt/homebrew/bin";
 
-    # Was darf nix-darwin steuern?
     onActivation = {
       autoUpdate = true;
       upgrade = true;

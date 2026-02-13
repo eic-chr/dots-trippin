@@ -29,6 +29,7 @@
     # Unstable für einzelne Pakete
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    mac-app-util.url = "github:hraban/mac-app-util";
     # home-manager for user configuration management
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -85,6 +86,7 @@
     nixpkgs-unstable,
     nixpkgs-darwin,
     darwin,
+    mac-app-util,
     home-manager,
     plasma-manager,
     nixos-hardware,
@@ -268,15 +270,22 @@
         ./hosts/macbook/system.nix
         ./hosts/macbook/apps.nix
         ./hosts/macbook/host-users.nix
+        mac-app-util.darwinModules.default
         home-manager.darwinModules.home-manager
-        {
+        ({
+          pkgs,
+          config,
+          inputs,
+          ...
+        }: {
           home-manager = {
+            sharedModules = [mac-app-util.homeManagerModules.default];
             useGlobalPkgs = true;
             useUserPackages = true;
             users = mkHomeManagerUsers systems.mac;
             extraSpecialArgs = mkSpecialArgs systems.mac;
           };
-        }
+        })
       ];
     };
 
