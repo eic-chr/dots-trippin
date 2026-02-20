@@ -59,11 +59,6 @@
     ltex-ls # LSP für LanguageTool
     zk # Zettelkasten
 
-    # Fun
-    whatsapp-electron
-    vesktop
-
-    rustdesk
     # Terminal (falls Sie es nicht systemweit wollen)
   ];
 

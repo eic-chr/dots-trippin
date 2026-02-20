@@ -15,6 +15,13 @@
       "https://mirrors.ustc.edu.cn/nix-channels/store"
       "https://cache.nixos.org"
     ];
+
+    trusted-public-keys = [
+      "ncps.lan.eickhoff-it.net-1:kPV9cRk5SA/oqFPzY4lTEWv1/2fs1Q4AaNX2x872rFM="
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+    connect-timeout = 2;
+    fallback = true;
   };
 
   inputs = {
@@ -23,7 +30,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     # Unstable für einzelne Pakete
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    mac-app-util.url = "github:hraban/mac-app-util";
     # home-manager for user configuration management
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -80,6 +91,7 @@
     nixpkgs-unstable,
     nixpkgs-darwin,
     darwin,
+    mac-app-util,
     home-manager,
     plasma-manager,
     nixos-hardware,
@@ -90,7 +102,7 @@
   }: let
     # Host-zu-User Zuordnung
     hostUsers = {
-      MacBookPro = ["christianeickhoff"];
+      MacBookPro = ["ap4103"];
       devnix = ["christian"];
       offnix = ["christian" "charly"];
       magnix = ["christian" "victoria"];
@@ -99,10 +111,10 @@
 
     # User-spezifische Konfigurationen
     userConfigs = {
-      christianeickhoff = {
-        email = "christian@ewolutions.de";
+      ap4103 = {
+        email = "christian.eickhoff@huk-coburg.de";
         fullName = "Christian Eickhoff";
-        homeConfig = ./home;
+        homeConfig = ./home/ap4103.nix;
         profile = "developer";
         isAdmin = true;
       };
@@ -136,16 +148,12 @@
       };
     };
 
-    # User mapping für Home-Manager Konfigurationen (abgeleitet)
-    userHomeConfigs =
-      builtins.mapAttrs (user: config: config.homeConfig) userConfigs;
-
     # System-specific configurations
     systems = {
       # macOS configuration
       mac = {
         system = "aarch64-darwin";
-        hostname = "MacBookPro";
+        hostname = "MacBookRWRMF4N0G3";
         nixpkgs = nixpkgs-darwin;
         users = hostUsers.MacBookPro;
         hasPlasma = false;
@@ -155,7 +163,7 @@
       devnix = {
         system = "x86_64-linux";
         hostname = "devnix";
-        nixpkgs = nixpkgs;
+        inherit nixpkgs;
         users = hostUsers.devnix;
         hasPlasma = true;
       };
@@ -164,7 +172,7 @@
       offnix = {
         system = "x86_64-linux";
         hostname = "offnix";
-        nixpkgs = nixpkgs;
+        inherit nixpkgs;
         users = hostUsers.offnix;
         hasPlasma = true;
       };
@@ -172,7 +180,7 @@
       magnix = {
         system = "x86_64-linux";
         hostname = "magnix";
-        nixpkgs = nixpkgs;
+        inherit nixpkgs;
         users = hostUsers.magnix;
         hasPlasma = true;
       };
@@ -181,36 +189,46 @@
       playnix = {
         system = "x86_64-linux";
         hostname = "playnix";
-        nixpkgs = nixpkgs;
+        inherit nixpkgs;
         users = hostUsers.playnix;
         hasPlasma = true;
       };
     };
 
+    isLinuxSystem = system: builtins.match ".*-linux" system != null;
+
     # Helper function to create specialArgs for each system
-    mkSpecialArgs = systemConfig:
-      inputs
-      // {
-        inherit (systemConfig) hostname hasPlasma users;
-        inherit userConfigs hostUsers;
+    mkSpecialArgs = systemConfig: let
+      isLinux = isLinuxSystem systemConfig.system;
 
-        # nixpkgs-unstable importieren und durchreichen
-        unstable =
-          import inputs.nixpkgs-unstable {system = systemConfig.system;};
+      baseArgs =
+        inputs
+        // {
+          inherit (systemConfig) hostname hasPlasma users;
+          inherit userConfigs hostUsers;
 
-        # Hyprland / plugins through specialArgs for HM modules
-        hyprlandInput = inputs.hyprland;
-        hyprlandPlugins = inputs.hyprland-plugins;
-        hyprlandPluginsPkgs =
-          inputs.hyprland-plugins.packages.${systemConfig.system};
-        splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-        secrets = inputs.secrets.outPath;
-        ml4wDots = inputs.ml4w-dotfiles;
-
-        # Für Kompatibilität mit bestehenden Modulen
-        username =
-          builtins.head systemConfig.users; # Erster User als Standard
-      };
+          secrets = inputs.secrets.outPath;
+          # Für Kompatibilität mit bestehenden Modulen
+          username =
+            builtins.head systemConfig.users; # Erster User als Standard
+        };
+      linuxArgs =
+        if isLinux
+        then {
+          # nixpkgs-unstable importieren und durchreichen
+          unstable =
+            import inputs.nixpkgs-unstable {inherit (systemConfig) system;};
+          # Hyprland / plugins through specialArgs for HM modules
+          hyprlandInput = inputs.hyprland;
+          hyprlandPlugins = inputs.hyprland-plugins;
+          hyprlandPluginsPkgs =
+            inputs.hyprland-plugins.packages.${systemConfig.system};
+          splitMonitorWorkspaces = inputs.split-monitor-workspaces;
+          ml4wDots = inputs.ml4w-dotfiles;
+        }
+        else {};
+    in
+      baseArgs // linuxArgs;
 
     # Helper function to create home-manager user configurations
     mkHomeManagerUsers = systemConfig:
@@ -226,8 +244,12 @@
             imports = [
               (
                 if builtins.hasAttr user userConfigs
-                then userConfigs.${user}.homeConfig
+                then
+                  builtins.trace
+                  "→ User-spezifische Home-Konfiguration wird geladen"
+                  userConfigs.${user}.homeConfig
                 else
+                  builtins.trace "→ Fallback: ./home/nixos.nix wird geladen"
                   # Fallback: verwende eine Standard-Konfiguration
                   ./home/nixos.nix
               )
@@ -246,20 +268,29 @@
   in {
     # macOS configuration
     darwinConfigurations."${systems.mac.hostname}" = darwin.lib.darwinSystem {
-      system = systems.mac.system;
+      inherit (systems.mac) system;
       specialArgs = mkSpecialArgs systems.mac;
       modules = [
-        ./modules/nix-core.nix
-        ./modules/system.nix
-        ./modules/apps.nix
-        ./modules/host-users.nix
+        ./hosts/macbook/nix-core.nix
+        ./hosts/macbook/system.nix
+        ./hosts/macbook/apps.nix
+        ./hosts/macbook/host-users.nix
+        mac-app-util.darwinModules.default
         home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = mkSpecialArgs systems.mac;
-          home-manager.users = mkHomeManagerUsers systems.mac;
-        }
+        ({
+          pkgs,
+          config,
+          inputs,
+          ...
+        }: {
+          home-manager = {
+            sharedModules = [mac-app-util.homeManagerModules.default];
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users = mkHomeManagerUsers systems.mac;
+            extraSpecialArgs = mkSpecialArgs systems.mac;
+          };
+        })
       ];
     };
 

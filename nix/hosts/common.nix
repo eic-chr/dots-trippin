@@ -11,7 +11,6 @@
   secrets,
   ...
 }: let
-  # === GANZ AM ANFANG ===
   isAdmin = user: user == "christian" || userConfigs.${user}.isAdmin or false;
   isDeveloper = user: userConfigs.${user}.profile or null == "developer";
   # Nur Developer und Admin-Profile bekommen Nix-Vertrauen
@@ -356,7 +355,7 @@ in {
           if builtins.pathExists pHost
           then pHost
           else if builtins.pathExists pShared
-          then builtins.trace "hier kommt pShared ${pShared}" pShared
+          then pShared
           else null;
       in
         lib.optional (src != null) {
@@ -493,7 +492,7 @@ in {
             if builtins.pathExists pHost
             then pHost
             else if builtins.pathExists pShared
-            then builtins.trace "=== pShared is ${toString pShared}" pShared
+            then pShared
             else null;
         in
           lib.optional (src != null) {

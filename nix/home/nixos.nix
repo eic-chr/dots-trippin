@@ -53,6 +53,10 @@
       unstable.zed-editor
       chromium
       element-desktop
+      # Fun
+      whatsapp-electron
+      vesktop
+      rustdesk
     ];
 
     # Fix ~/.smb_crd permissions
