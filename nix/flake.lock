@@ -760,11 +760,11 @@
     },
     "secrets": {
       "locked": {
-        "lastModified": 1770316813,
-        "narHash": "sha256-DVZaMpLokWRjo+u7TUj8PbeT299rZMuIUpa1hK8r0zs=",
+        "lastModified": 1771354478,
+        "narHash": "sha256-7qW6mYy+9MzNstu3jf5Skjxknfm8IkKcjyPQXdC0x0A=",
         "ref": "feat/first",
-        "rev": "9850a244a22ea5e000c01035817219f502b67204",
-        "revCount": 12,
+        "rev": "bc9b4362c13639fb1d3059c61aa3bfa50fe5f0f0",
+        "revCount": 14,
         "type": "git",
         "url": "ssh://git@gitlab.dev.ewolutions.de/eickhoff/nix-secrets.git"
       },

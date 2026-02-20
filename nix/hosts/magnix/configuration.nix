@@ -13,7 +13,7 @@
       ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c548", TEST=="power/wakeup", ATTR{power/wakeup}="disabled"
     '';
   };
-
+  services.teamviewer.enable = true;
   services.blueman.enable = true;
   programs.coolercontrol.enable = true;
   programs.steam = {

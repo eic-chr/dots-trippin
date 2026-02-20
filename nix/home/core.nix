@@ -25,8 +25,11 @@
     fzf # A command-line fuzzy finder
 
     # Development tools (von Ihrer system-Liste)
+    jdk21
     cargo
     lazygit # Git-UI
+    vale # Docs Linter
+    ltex-ls # Rechtschreibung
     nil # Nix LSP
     nixfmt-classic # Nix-Formatter
     nodejs
@@ -74,6 +77,10 @@
       vimAlias = true;
     };
 
+    java = {
+      enable = true;
+      package = pkgs.jdk21;
+    };
     # A modern replacement for ‘ls’
     # useful in bash/zsh prompt, not in nushell.
     eza = {

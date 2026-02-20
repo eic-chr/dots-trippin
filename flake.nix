@@ -1,6 +1,15 @@
 {
   description = "Dotfiles + NixOS/Home-Manager + stow (root flake)";
 
+  nixConfig = {
+    substituters = [
+      "https://ncps.lan.eickhoff-it.net"
+      # Query the mirror of USTC first, and then the official cache.
+      "https://mirrors.ustc.edu.cn/nix-channels/store"
+      "https://cache.nixos.org"
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";

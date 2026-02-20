@@ -255,11 +255,15 @@ in {
       stow
       usbutils
       lm_sensors
+      inetutils
+      procs
 
       git
       htop
       keepassxc
       libreoffice
+      hunspell
+      hunspellDicts.de_DE
       nextcloud-client
 
       lua-language-server
@@ -446,6 +450,12 @@ in {
           {
             name = "gitlab-token";
             path = "/home/christian/.gitlab-token";
+            mode = "0400";
+            symlink = false;
+          }
+          {
+            name = "keepass-keyfile";
+            path = "/home/christian/.keepass/eickhoff.key";
             mode = "0400";
             symlink = false;
           }

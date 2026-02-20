@@ -21,6 +21,28 @@ return {
         mason = false,
         wrap = true,
       },
+      ltex = {
+        filetypes = { "asciidoctor" },
+        settings = {
+          ltex = {
+            language = "de-DE",
+            dictionary = {
+              ["de-DE"] = {
+                "AsciiDoc",
+                "Asciidoctor",
+                "LazyVim",
+                "Neovim",
+                "NixOS",
+              },
+            },
+            disabledRules = {
+              ["de-DE"] = {
+                "WHITESPACE_RULE",
+              },
+            },
+          },
+        },
+      },
       nil_ls = {
         -- Optional: spezifische Konfiguration für nil
         settings = {
@@ -35,7 +57,7 @@ return {
         settings = {
           yaml = {
             format = {
-              enable = false,   -- << Formatter von yamlls aus
+              enable = false, -- << Formatter von yamlls aus
             },
           },
         },
