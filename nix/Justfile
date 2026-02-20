@@ -108,7 +108,7 @@ build-devnix-local-secrets:
 
 [group('nixos')]
 build-magnix:
-  {{elevate}} nixos-rebuild switch --flake .#magnix
+  {{elevate}} nixos-rebuild switch --show-trace --flake .#magnix
 
 [group('nixos')]
 build-offnix:

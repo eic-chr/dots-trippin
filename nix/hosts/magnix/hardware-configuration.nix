@@ -11,7 +11,7 @@
     initrd.availableKernelModules = ["ahci" "xhci_pci" "nvme" "usb_storage" "usbhid" "sd_mod"];
     initrd.kernelModules = [];
     extraModulePackages = with config.boot.kernelPackages; [nct6687d];
-    kernelModules = ["nct6687" "kvm-amd"];
+    kernelModules = ["nct6687" "kvm-amd" "sr_mod"];
     kernelPackages = pkgs.linuxPackages_latest;
 
     loader = {

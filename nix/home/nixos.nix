@@ -52,6 +52,7 @@
       procps
       unstable.zed-editor
       chromium
+      element-desktop
       # Fun
       whatsapp-electron
       vesktop

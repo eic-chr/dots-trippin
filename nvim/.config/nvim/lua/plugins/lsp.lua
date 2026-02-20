@@ -21,6 +21,28 @@ return {
         mason = false,
         wrap = true,
       },
+      ltex = {
+        filetypes = { "asciidoctor" },
+        settings = {
+          ltex = {
+            language = "de-DE",
+            dictionary = {
+              ["de-DE"] = {
+                "AsciiDoc",
+                "Asciidoctor",
+                "LazyVim",
+                "Neovim",
+                "NixOS",
+              },
+            },
+            disabledRules = {
+              ["de-DE"] = {
+                "WHITESPACE_RULE",
+              },
+            },
+          },
+        },
+      },
       nil_ls = {
         -- Optional: spezifische Konfiguration für nil
         settings = {

@@ -37,6 +37,7 @@ in {
     overlays = [nur.overlays.default];
     config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
+        "makemkv"
         "broadcom-sta"
         "code"
         "facetimehd-firmware"
@@ -81,6 +82,7 @@ in {
         description = userConfigs.${user}.fullName or user;
         extraGroups =
           [
+            "cdrom"
             "dialout"
             "networkmanager"
             "audio"
@@ -252,15 +254,21 @@ in {
       stow
       usbutils
       lm_sensors
+      inetutils
+      procs
 
       git
       htop
       keepassxc
       libreoffice
+      hunspell
+      hunspellDicts.de_DE
       nextcloud-client
 
       lua-language-server
       gparted
+      mediawriter
+      statix
 
       # Netzwerk-Tools
       dig
@@ -292,7 +300,7 @@ in {
       # kdePackages.dolphin
       # kdePackages.gwenview
       # kdePackages.kate
-      # kdePackages.kcalc
+      kdePackages.kcalc
       # kdePackages.kdegraphics-thumbnailers
       # kdePackages.krfb
       # kdePackages.kio-extras
@@ -318,7 +326,7 @@ in {
       fira-code
       fira-code-symbols
       nerd-fonts.jetbrains-mono
-      nerd-font.fira-code
+      # nerd-font.fira-code
       fira-sans
     ];
 
@@ -438,6 +446,18 @@ in {
             mode = "0400";
             symlink = false;
           }
+          {
+            name = "gitlab-token";
+            path = "/home/christian/.gitlab-token";
+            mode = "0400";
+            symlink = false;
+          }
+          {
+            name = "keepass-keyfile";
+            path = "/home/christian/.keepass/eickhoff.key";
+            mode = "0400";
+            symlink = false;
+          }
           # {
           #   name = "aws-credentials";
           #   path = "/home/christian/.aws/credentials";
@@ -450,10 +470,24 @@ in {
       };
 
       mkOneUser = user: let
-        targets = userSecretTargets.${user} or [];
+        targets =
+          builtins.trace "=== in targets for ${user}"
+          userSecretTargets.${user} or [];
+        _ =
+          builtins.trace "Processing user: ${user} with ${
+            toString (builtins.length targets)
+          } targets"
+          null;
         mkOneTarget = t: let
-          pHost = "${secrets}/users/${user}/secrets/${hostname}/${t.name}.age";
-          pShared = "${secrets}/users/${user}/secrets/shared/${t.name}.age";
+          pHost =
+            builtins.trace "=== target name is ${t.name}"
+            "${secrets}/users/${user}/${hostname}/${t.name}.age";
+          pShared = "${secrets}/users/${user}/shared/${t.name}.age";
+          _ =
+            builtins.trace "  Checking ${t.name}: host=${
+              toString (builtins.pathExists pHost)
+            } shared=${toString (builtins.pathExists pShared)}"
+            null;
           src =
             if builtins.pathExists pHost
             then pHost
@@ -476,6 +510,10 @@ in {
         lib.concatMap mkOneTarget targets;
 
       entries = lib.concatLists (map mkOneUser users);
+      _ =
+        builtins.trace
+        "Total secret entries: ${toString (builtins.length entries)}"
+        null;
     in
       builtins.listToAttrs entries)
   ];

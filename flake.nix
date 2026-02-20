@@ -1,30 +1,33 @@
 {
   description = "Dotfiles + NixOS/Home-Manager + stow (root flake)";
 
+  nixConfig = {
+    substituters = [
+      "https://ncps.lan.eickhoff-it.net"
+      # Query the mirror of USTC first, and then the official cache.
+      "https://mirrors.ustc.edu.cn/nix-channels/store"
+      "https://cache.nixos.org"
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
 
     # Existing infra flake
-    #infra.url = "path:./nix";
+    infra.url = "path:./nix";
   };
 
   outputs = {
     self,
     nixpkgs,
     pre-commit-hooks,
+    infra,
     ...
   }: let
-    systems = [
-      "x86_64-linux"
-      "aarch64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-      "arch64-darwin"
-    ];
+    systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
-    infra = import ./nix;
   in {
     formatter = forAllSystems (system: let
       pkgs = import nixpkgs {inherit system;};

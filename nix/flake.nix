@@ -10,7 +10,9 @@
   # the nixConfig here only affects the flake itself, not the system configuration!
   nixConfig = {
     substituters = [
-      # "https://ncps.lan.eickhoff-it.net"
+      "https://ncps.lan.eickhoff-it.net"
+      # Query the mirror of USTC first, and then the official cache.
+      "https://mirrors.ustc.edu.cn/nix-channels/store"
       "https://cache.nixos.org"
     ];
 
@@ -293,83 +295,73 @@
     };
 
     # NixOS configurations
-    nixosConfigurations = {
-      "${systems.magnix.hostname}" = nixpkgs.lib.nixosSystem {
-        inherit (systems.magnix) system;
-        specialArgs = mkSpecialArgs systems.magnix;
-        modules = [
-          ./hosts/magnix/configuration.nix
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = mkSpecialArgs systems.magnix;
-              users = mkHomeManagerUsers systems.magnix;
-              sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
-            };
-          }
-        ];
-      };
-      # NixOS configurations
-      "${systems.devnix.hostname}" = nixpkgs.lib.nixosSystem {
-        inherit (systems.devnix) system;
-        specialArgs = mkSpecialArgs systems.devnix;
-        modules = [
-          ./hosts/devnix/configuration.nix
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = mkSpecialArgs systems.devnix;
-              users = mkHomeManagerUsers systems.devnix;
-              sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
-            };
-          }
-        ];
-      };
+    nixosConfigurations."${systems.magnix.hostname}" = nixpkgs.lib.nixosSystem {
+      system = systems.magnix.system;
+      specialArgs = mkSpecialArgs systems.magnix;
+      modules = [
+        ./hosts/magnix/configuration.nix
+        home-manager.nixosModules.home-manager
+        agenix.nixosModules.default
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.magnix;
+          home-manager.users = mkHomeManagerUsers systems.magnix;
+          home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
+        }
+      ];
+    };
+    # NixOS configurations
+    nixosConfigurations."${systems.devnix.hostname}" = nixpkgs.lib.nixosSystem {
+      system = systems.devnix.system;
+      specialArgs = mkSpecialArgs systems.devnix;
+      modules = [
+        ./hosts/devnix/configuration.nix
+        home-manager.nixosModules.home-manager
+        agenix.nixosModules.default
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.devnix;
+          home-manager.users = mkHomeManagerUsers systems.devnix;
+          home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
+        }
+      ];
+    };
 
-      "${systems.offnix.hostname}" = nixpkgs.lib.nixosSystem {
-        inherit (systems.offnix) system;
-        specialArgs = mkSpecialArgs systems.offnix;
-        modules = [
-          nixos-hardware.nixosModules."apple-macbook-pro-11-4"
-          ./hosts/offnix/configuration.nix
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = mkSpecialArgs systems.offnix;
-              users = mkHomeManagerUsers systems.offnix;
-              sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
-            };
-          }
-        ];
-      };
+    nixosConfigurations."${systems.offnix.hostname}" = nixpkgs.lib.nixosSystem {
+      system = systems.offnix.system;
+      specialArgs = mkSpecialArgs systems.offnix;
+      modules = [
+        nixos-hardware.nixosModules."apple-macbook-pro-11-4"
+        ./hosts/offnix/configuration.nix
+        home-manager.nixosModules.home-manager
+        agenix.nixosModules.default
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.offnix;
+          home-manager.users = mkHomeManagerUsers systems.offnix;
+          home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
+        }
+      ];
+    };
 
-      "${systems.playnix.hostname}" = nixpkgs.lib.nixosSystem {
-        inherit (systems.playnix) system;
-        specialArgs = mkSpecialArgs systems.playnix;
-        modules = [
-          ./hosts/playnix/configuration.nix
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = mkSpecialArgs systems.playnix;
-              users = mkHomeManagerUsers systems.playnix;
-              sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
-            };
-          }
-        ];
-      };
+    nixosConfigurations."${systems.playnix.hostname}" = nixpkgs.lib.nixosSystem {
+      system = systems.playnix.system;
+      specialArgs = mkSpecialArgs systems.playnix;
+      modules = [
+        ./hosts/playnix/configuration.nix
+        home-manager.nixosModules.home-manager
+        agenix.nixosModules.default
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = mkSpecialArgs systems.playnix;
+          home-manager.users = mkHomeManagerUsers systems.playnix;
+          home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
+        }
+      ];
     };
 
     # Formatters for all systems
