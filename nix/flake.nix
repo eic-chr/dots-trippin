@@ -28,7 +28,10 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     # Unstable für einzelne Pakete
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mac-app-util.url = "github:hraban/mac-app-util";
     # home-manager for user configuration management
     home-manager = {
@@ -107,7 +110,7 @@
     # User-spezifische Konfigurationen
     userConfigs = {
       ap4103 = {
-        email = "christian@ewolutions.de";
+        email = "christian.eickhoff@huk-coburg.de";
         fullName = "Christian Eickhoff";
         homeConfig = ./home/ap4103.nix;
         profile = "developer";

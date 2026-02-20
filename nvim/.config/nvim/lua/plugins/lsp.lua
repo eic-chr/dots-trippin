@@ -34,6 +34,7 @@ return {
       yamlls = {
         settings = {
           yaml = {
+            validate = true,
             format = {
               enable = false, -- << Formatter von yamlls aus
             },
