@@ -29,7 +29,6 @@
     cargo
     lazygit # Git-UI
     vale # Docs Linter
-    ltex-ls # Rechtschreibung
     nil # Nix LSP
     nixfmt-classic # Nix-Formatter
     nodejs
@@ -56,7 +55,7 @@
     # Productivity
     atuin # Shell-History
     languagetool # Sprachprüfung
-    ltex-ls # LSP für LanguageTool
+    ltex-ls-plus # LSP für LanguageTool
     zk # Zettelkasten
 
     # Terminal (falls Sie es nicht systemweit wollen)
