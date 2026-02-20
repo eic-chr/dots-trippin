@@ -21,11 +21,39 @@ return {
         mason = false,
         wrap = true,
       },
-      ltex = {
-        filetypes = { "asciidoctor" },
+      ltex_plus = {
+        mason = false,
+        filetypes = { "markdown", "tex", "asciidoc" },
+        -- on_attach = function(client, bufnr)
+        --   client.notify("workspace/didChangeConfiguration", {
+        --     settings = client.config.settings,
+        --   })
+        -- end,
         settings = {
           ltex = {
             language = "de-DE",
+            enabled = { "asciidoc" },
+            checkFrequency = "edit",
+            -- ignoreMarkup = {
+            --   asciidoc = {
+            --     -- Source-Blöcke
+            --     "(?s)\\[source.*?\\]\\n----.*?----",
+            --     -- Listing-Blöcke
+            --     "(?s)----.*?----",
+            --     -- Inline-Code
+            --     "`[^`]+`",
+            --     -- Block-Makros
+            --     "^include::.*?\\[\\]$",
+            --     "^image::.*?\\[.*?\\]$",
+            --     -- Inline-Makros
+            --     "link:[^\\[]+\\[[^\\]]*\\]",
+            --     "xref:[^\\[]+\\[[^\\]]*\\]",
+            --     -- Attribute
+            --     "\\{[a-zA-Z_][a-zA-Z0-9_-]*\\}",
+            --     -- Admonition-Label
+            --     "^(NOTE|TIP|WARNING|IMPORTANT|CAUTION):$",
+            --   },
+            -- },
             dictionary = {
               ["de-DE"] = {
                 "AsciiDoc",

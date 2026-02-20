@@ -6,3 +6,4 @@ tmp/
 result
 .direnv
 nix/assets
+/.pre-commit-config.yaml

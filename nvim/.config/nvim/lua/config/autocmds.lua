@@ -280,3 +280,10 @@ if vim.fn.isdirectory(umg_root) == 1 then
     end,
   })
 end
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = { "*.adoc", "*.asciidoc", "*.asciidoctor" },
+  callback = function()
+    vim.bo.filetype = "asciidoc"
+  end,
+})
