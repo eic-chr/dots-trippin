@@ -12,7 +12,7 @@ return {
       dir_path = cwd .. "/images"
     else
       dir_path = cwd .. "/images"
-      vim.fn.mkdir(dir_path, "p")
+      -- vim.fn.mkdir(dir_path, "p")
     end
 
     return {

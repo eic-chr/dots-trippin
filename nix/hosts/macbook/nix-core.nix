@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+_: {
   nix = {
     # Determinate uses its own daemon to manage the Nix installation that
     # conflicts with nix-darwin's native Nix management.
@@ -10,7 +6,7 @@
 
     # Kommentieren Sie alles andere aus oder entfernen Sie es:
     # package = pkgs.nix;
-    # settings = { ... };
+    settings = {experimental-features = ["nix-command" "flakes"];};
     # gc = { ... };
   };
 }

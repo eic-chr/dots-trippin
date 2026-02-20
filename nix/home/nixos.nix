@@ -52,6 +52,10 @@
       procps
       unstable.zed-editor
       chromium
+      # Fun
+      whatsapp-electron
+      vesktop
+      rustdesk
     ];
 
     # Fix ~/.smb_crd permissions
