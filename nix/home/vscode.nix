@@ -22,6 +22,7 @@ in {
       extensions = with pkgs.vscode-extensions; [
         # Vim Integration
         vscodevim.vim
+        ltex-plus.vscode-ltex-plus
 
         # Git
         eamodio.gitlens
@@ -58,6 +59,14 @@ in {
 
       userSettings =
         {
+          "ltex.ltex-ls.path" = "/etc/profiles/per-user/christian"; # Nix-Pfad
+          "ltex.java.path" = "${pkgs.jdk21}";
+          "ltex.language" = "de-DE";
+          "ltex.enabled" = ["asciidoc"];
+          "ltex.dictionary" = {
+            "de-DE" = ["AsciiDoc" "Asciidoctor" "LazyVim" "Neovim" "NixOS"];
+          };
+          "ltex.disabledRules" = {"de-DE" = ["WHITESPACE_RULE"];};
           # Vim Configuration
           "vim.easymotion" = true;
           "vim.incsearch" = true;
