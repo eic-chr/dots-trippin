@@ -3,7 +3,7 @@
 
   nixConfig = {
     substituters = [
-      "https://ncps.lan.eickhoff-it.net"
+      # "https://ncps.lan.eickhoff-it.net"
       # Query the mirror of USTC first, and then the official cache.
       "https://mirrors.ustc.edu.cn/nix-channels/store"
       "https://cache.nixos.org"

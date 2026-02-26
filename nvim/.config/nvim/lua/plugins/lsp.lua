@@ -16,6 +16,9 @@ return {
     servers = {
       -- tsserver will be automatically installed with mason and loaded with lspconfig
       ts_ls = {},
+      texlab = {
+        mason = false
+      },
       astro = {}, -- das ist der Astro LSP
       marksman = {
         mason = false,
@@ -23,37 +26,32 @@ return {
       },
       ltex_plus = {
         mason = false,
-        filetypes = { "markdown", "tex", "asciidoc" },
-        -- on_attach = function(client, bufnr)
-        --   client.notify("workspace/didChangeConfiguration", {
-        --     settings = client.config.settings,
-        --   })
-        -- end,
+        filetypes = {
+          "asciidoc",
+          "bib",
+          "context",
+          "gitcommit",
+          "html",
+          "markdown",
+          "org",
+          "pandoc",
+          "plaintex",
+          "quarto",
+          "mail",
+          "mdx",
+          "rmd",
+          "rnoweb",
+          "rst",
+          "tex",
+          "text",
+          "typst",
+          "xhtml",
+        },
         settings = {
           ltex = {
             language = "de-DE",
-            enabled = { "asciidoc" },
+            enabled = true,
             checkFrequency = "edit",
-            -- ignoreMarkup = {
-            --   asciidoc = {
-            --     -- Source-Blöcke
-            --     "(?s)\\[source.*?\\]\\n----.*?----",
-            --     -- Listing-Blöcke
-            --     "(?s)----.*?----",
-            --     -- Inline-Code
-            --     "`[^`]+`",
-            --     -- Block-Makros
-            --     "^include::.*?\\[\\]$",
-            --     "^image::.*?\\[.*?\\]$",
-            --     -- Inline-Makros
-            --     "link:[^\\[]+\\[[^\\]]*\\]",
-            --     "xref:[^\\[]+\\[[^\\]]*\\]",
-            --     -- Attribute
-            --     "\\{[a-zA-Z_][a-zA-Z0-9_-]*\\}",
-            --     -- Admonition-Label
-            --     "^(NOTE|TIP|WARNING|IMPORTANT|CAUTION):$",
-            --   },
-            -- },
             dictionary = {
               ["de-DE"] = {
                 "AsciiDoc",

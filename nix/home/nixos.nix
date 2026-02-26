@@ -418,6 +418,14 @@
     };
   };
   xdg.desktopEntries = {
+    codium = {
+      name = "VSCodium";
+      exec = "codium --use-gl=egl --enable-features=UseOzonePlatform --ozone-platform=wayland %F";
+      icon = "codium";
+      comment = "Code Editing. Redefined.";
+      categories = ["Utility" "TextEditor" "Development" "IDE"];
+      mimeType = ["text/plain" "inode/directory"];
+    };
     signal = {
       name = "Signal";
       # comment = "Meine angepasste Version von Signal";
