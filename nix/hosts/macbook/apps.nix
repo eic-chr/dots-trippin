@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   ##########################################################################
   #
   #  Install all apps and packages here.
@@ -10,7 +10,7 @@
   #
   ##########################################################################
 
-  imports = [./services/aerospace.nix];
+  imports = [ ./services/node-exporter.nix ];
   # Install packages from nix's official package repository.
   #
   # The packages installed here are available to all users, and are reproducible across machines, and are rollbackable.
@@ -24,13 +24,17 @@
     just
     tmux
     zed-editor
+    btop
+    vale
+    kubectx
 
     # System administration
     sshpass
 
-    (aspellWithDicts (dicts: with dicts; [de en en-computers]))
+    (aspellWithDicts (dicts: with dicts; [ de en en-computers ]))
   ];
-  services = {openssh = {enable = true;};};
+  services.aerospace.enable = false;
+  services = { openssh = { enable = true; }; };
   # TODO To make this work, homebrew need to be installed manually, see https://brew.sh
   #
   # The apps installed by homebrew are not managed by nix, and not reproducible!
@@ -47,9 +51,10 @@
       cleanup = "zap";
     };
 
-    taps = [];
+    taps = [ ];
 
     brews = [
+      "prometheus"
       #"mas" "watch" "httpie"
     ];
 

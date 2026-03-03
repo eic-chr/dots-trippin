@@ -1,14 +1,8 @@
 # VSCode Konfiguration mit Vim-Integration
-{
-  pkgs,
-  hasPlasma ? false,
-  ...
-}: let
+{ pkgs, hasPlasma ? false, ... }:
+let
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
-  modKey =
-    if isDarwin
-    then "cmd"
-    else "ctrl";
+  modKey = if isDarwin then "cmd" else "ctrl";
 in {
   programs.vscode = {
     enable = true;
@@ -38,6 +32,9 @@ in {
         # AsciiDoc
         asciidoctor.asciidoctor-vscode
 
+        # Plantuml
+        jebbs.plantuml
+
         # Themes & UI
         github.github-vscode-theme
         pkief.material-icon-theme
@@ -57,226 +54,220 @@ in {
         jnoortheen.nix-ide
       ];
 
-      userSettings =
-        {
-          "ltex.ltex-ls.path" = "/etc/profiles/per-user/christian"; # Nix-Pfad
-          "ltex.java.path" = "${pkgs.jdk21}";
-          "ltex.language" = "de-DE";
-          "ltex.enabled" = ["asciidoc"];
-          "ltex.dictionary" = {
-            "de-DE" = ["AsciiDoc" "Asciidoctor" "LazyVim" "Neovim" "NixOS"];
-          };
-          "ltex.disabledRules" = {"de-DE" = ["WHITESPACE_RULE"];};
-          # Vim Configuration
-          "vim.easymotion" = true;
-          "vim.incsearch" = true;
-          "vim.useSystemClipboard" = true;
-          "vim.useCtrlKeys" = true;
-          "vim.hlsearch" = true;
-          "vim.insertModeKeyBindings" = [
-            {
-              "before" = ["j" "j"];
-              "after" = ["<Esc>"];
-            }
-          ];
+      userSettings = {
+        "ltex.ltex-ls.path" = "/etc/profiles/per-user/ap4103"; # Nix-Pfad
+        "ltex.java.path" = "${pkgs.jdk21}";
+        "ltex.language" = "de-DE";
+        "ltex.enabled" = [ "asciidoc" ];
+        "ltex.dictionary" = {
+          "de-DE" = [ "AsciiDoc" "Asciidoctor" "LazyVim" "Neovim" "NixOS" ];
+        };
+        "ltex.disabledRules" = { "de-DE" = [ "WHITESPACE_RULE" ]; };
+        "plantuml.previewAutoUpdate" = false;
 
-          # Vim Leader Key Mappings (wie in Neovim)
-          "vim.leader" = "<space>";
-          "vim.normalModeKeyBindingsNonRecursive" = [
-            # File Operations
-            {
-              "before" = ["<leader>" "f" "f"];
-              "commands" = ["workbench.action.quickOpen"];
-            }
-            {
-              "before" = ["<leader>" "f" "g"];
-              "commands" = ["workbench.action.findInFiles"];
-            }
-            {
-              "before" = ["<leader>" "f" "s"];
-              "commands" = ["workbench.action.files.save"];
-            }
+        # Vim Configuration
+        "vim.easymotion" = true;
+        "vim.incsearch" = true;
+        "vim.useSystemClipboard" = true;
+        "vim.useCtrlKeys" = true;
+        "vim.hlsearch" = true;
+        "vim.insertModeKeyBindings" = [{
+          "before" = [ "j" "j" ];
+          "after" = [ "<Esc>" ];
+        }];
 
-            # Window Navigation
-            {
-              "before" = ["<C-h>"];
-              "commands" = ["workbench.action.focusLeftGroup"];
-            }
-            {
-              "before" = ["<C-l>"];
-              "commands" = ["workbench.action.focusRightGroup"];
-            }
-            {
-              "before" = ["<C-j>"];
-              "commands" = ["workbench.action.focusBelowGroup"];
-            }
-            {
-              "before" = ["<C-k>"];
-              "commands" = ["workbench.action.focusAboveGroup"];
-            }
+        # Vim Leader Key Mappings (wie in Neovim)
+        "vim.leader" = "<space>";
+        "vim.normalModeKeyBindingsNonRecursive" = [
+          # File Operations
+          {
+            "before" = [ "<leader>" "f" "f" ];
+            "commands" = [ "workbench.action.quickOpen" ];
+          }
+          {
+            "before" = [ "<leader>" "f" "g" ];
+            "commands" = [ "workbench.action.findInFiles" ];
+          }
+          {
+            "before" = [ "<leader>" "f" "s" ];
+            "commands" = [ "workbench.action.files.save" ];
+          }
 
-            # Buffer/Tab Management
-            {
-              "before" = ["<leader>" "b" "d"];
-              "commands" = ["workbench.action.closeActiveEditor"];
-            }
-            {
-              "before" = ["<leader>" "b" "n"];
-              "commands" = ["workbench.action.nextEditor"];
-            }
-            {
-              "before" = ["<leader>" "b" "p"];
-              "commands" = ["workbench.action.previousEditor"];
-            }
+          # Window Navigation
+          {
+            "before" = [ "<C-h>" ];
+            "commands" = [ "workbench.action.focusLeftGroup" ];
+          }
+          {
+            "before" = [ "<C-l>" ];
+            "commands" = [ "workbench.action.focusRightGroup" ];
+          }
+          {
+            "before" = [ "<C-j>" ];
+            "commands" = [ "workbench.action.focusBelowGroup" ];
+          }
+          {
+            "before" = [ "<C-k>" ];
+            "commands" = [ "workbench.action.focusAboveGroup" ];
+          }
 
-            # Git Operations
-            {
-              "before" = ["<leader>" "g" "s"];
-              "commands" = ["workbench.view.scm"];
-            }
-            {
-              "before" = ["<leader>" "g" "b"];
-              "commands" = ["gitlens.toggleFileBlame"];
-            }
+          # Buffer/Tab Management
+          {
+            "before" = [ "<leader>" "b" "d" ];
+            "commands" = [ "workbench.action.closeActiveEditor" ];
+          }
+          {
+            "before" = [ "<leader>" "b" "n" ];
+            "commands" = [ "workbench.action.nextEditor" ];
+          }
+          {
+            "before" = [ "<leader>" "b" "p" ];
+            "commands" = [ "workbench.action.previousEditor" ];
+          }
 
-            # LSP/Language Server
-            {
-              "before" = ["g" "d"];
-              "commands" = ["editor.action.revealDefinition"];
-            }
-            {
-              "before" = ["g" "r"];
-              "commands" = ["editor.action.goToReferences"];
-            }
-            {
-              "before" = ["K"];
-              "commands" = ["editor.action.showHover"];
-            }
+          # Git Operations
+          {
+            "before" = [ "<leader>" "g" "s" ];
+            "commands" = [ "workbench.view.scm" ];
+          }
+          {
+            "before" = [ "<leader>" "g" "b" ];
+            "commands" = [ "gitlens.toggleFileBlame" ];
+          }
 
-            # Code Actions
-            {
-              "before" = ["<leader>" "c" "a"];
-              "commands" = ["editor.action.quickFix"];
-            }
-            {
-              "before" = ["<leader>" "r" "n"];
-              "commands" = ["editor.action.rename"];
-            }
+          # LSP/Language Server
+          {
+            "before" = [ "g" "d" ];
+            "commands" = [ "editor.action.revealDefinition" ];
+          }
+          {
+            "before" = [ "g" "r" ];
+            "commands" = [ "editor.action.goToReferences" ];
+          }
+          {
+            "before" = [ "K" ];
+            "commands" = [ "editor.action.showHover" ];
+          }
 
-            # File Explorer
-            {
-              "before" = ["<leader>" "e"];
-              "commands" = ["workbench.view.explorer"];
-            }
+          # Code Actions
+          {
+            "before" = [ "<leader>" "c" "a" ];
+            "commands" = [ "editor.action.quickFix" ];
+          }
+          {
+            "before" = [ "<leader>" "r" "n" ];
+            "commands" = [ "editor.action.rename" ];
+          }
 
-            # Terminal
-            {
-              "before" = ["<leader>" "t"];
-              "commands" = ["workbench.action.terminal.toggleTerminal"];
-            }
-
-            # Search and Replace
-            {
-              "before" = ["<leader>" "s" "r"];
-              "commands" = ["editor.action.startFindReplaceAction"];
-            }
-          ];
-
-          # Editor Settings
-          "editor.fontSize" = 14;
-          "editor.fontFamily" = "'MesloLGS NF', 'Fira Code', monospace";
-          "editor.fontLigatures" = true;
-          "editor.lineNumbers" = "relative";
-          "editor.cursorBlinking" = "solid";
-          "editor.scrollBeyondLastLine" = false;
-          "editor.wordWrap" = "bounded";
-          "editor.rulers" = [80 120];
-          "editor.minimap.enabled" = false;
-          "editor.tabSize" = 2;
-          "editor.insertSpaces" = true;
-          "editor.formatOnSave" = true;
-          "editor.formatOnPaste" = true;
-          "editor.codeActionsOnSave" = {
-            "source.fixAll.eslint" = "explicit";
-            "source.organizeImports" = "explicit";
-          };
-
-          # Workbench
-          "workbench.colorTheme" = "GitHub Dark Default";
-          "workbench.iconTheme" = "material-icon-theme";
-          "workbench.startupEditor" = "none";
-          "workbench.editor.showTabs" = "multiple";
-          "workbench.activityBar.location" = "top";
+          # File Explorer
+          {
+            "before" = [ "<leader>" "e" ];
+            "commands" = [ "workbench.view.explorer" ];
+          }
 
           # Terminal
-          "terminal.integrated.fontSize" = 14;
-          "terminal.integrated.fontFamily" = "'MesloLGS NF', monospace";
-          "terminal.integrated.defaultProfile.linux" = "zsh";
-          "terminal.integrated.profiles.linux" = {
-            "zsh" = {"path" = "${pkgs.zsh}/bin/zsh";};
-          };
-
-          # Git
-          "git.enableSmartCommit" = true;
-          "git.confirmSync" = false;
-          "git.autofetch" = true;
-
-          # GitLens
-          "gitlens.codeLens.enabled" = false;
-          "gitlens.currentLine.enabled" = false;
-          "gitlens.hovers.currentLine.over" = "line";
-          "gitlens.blame.format" = "\${author} • \${date} • \${message}";
-
-          # Language-specific settings
-          "eslint.workingDirectories" = ["client" "server"];
-          "prettier.requireConfig" = true;
-          "prettier.useEditorConfig" = false;
-
-          # Python
-          "python.defaultInterpreterPath" = "${pkgs.python3}/bin/python";
-          "python.formatting.provider" = "black";
-          "python.linting.enabled" = true;
-          "python.linting.pylintEnabled" = true;
-
-          # AsciiDoc
-          "asciidoc.preview.doubleClickToSwitchTab" = false;
-          "asciidoc.preview.scrollPreviewWithEditor" = true;
-          "asciidoc.preview.markEditorSelection" = true;
-
-          # File associations
-          "files.associations" = {
-            "*.nix" = "nix";
-            "justfile" = "makefile";
-            "Justfile" = "makefile";
-          };
-
-          # Explorer
-          "explorer.confirmDelete" = false;
-          "explorer.confirmDragAndDrop" = false;
-
-          # Search
-          "search.exclude" = {
-            "**/node_modules" = true;
-            "**/target" = true;
-            "**/.git" = true;
-            "**/dist" = true;
-            "**/build" = true;
-          };
-
-          # Platform-specific settings
-        }
-        // (
-          if hasPlasma
-          then {
-            # Linux-specific settings
-            "window.titleBarStyle" = "custom";
-            "window.menuBarVisibility" = "toggle";
+          {
+            "before" = [ "<leader>" "t" ];
+            "commands" = [ "workbench.action.terminal.toggleTerminal" ];
           }
-          else {
-            # macOS-specific settings
-            "window.titleBarStyle" = "custom";
+
+          # Search and Replace
+          {
+            "before" = [ "<leader>" "s" "r" ];
+            "commands" = [ "editor.action.startFindReplaceAction" ];
           }
-        );
+        ];
+
+        # Editor Settings
+        "editor.fontSize" = 14;
+        "editor.fontFamily" = "'MesloLGS NF', 'Fira Code', monospace";
+        "editor.fontLigatures" = true;
+        "editor.lineNumbers" = "relative";
+        "editor.cursorBlinking" = "solid";
+        "editor.scrollBeyondLastLine" = false;
+        "editor.wordWrap" = "bounded";
+        "editor.rulers" = [ 80 120 ];
+        "editor.minimap.enabled" = false;
+        "editor.tabSize" = 2;
+        "editor.insertSpaces" = true;
+        "editor.formatOnSave" = true;
+        "editor.formatOnPaste" = true;
+        "editor.codeActionsOnSave" = {
+          "source.fixAll.eslint" = "explicit";
+          "source.organizeImports" = "explicit";
+        };
+
+        # Workbench
+        "workbench.colorTheme" = "GitHub Dark Default";
+        "workbench.iconTheme" = "material-icon-theme";
+        "workbench.startupEditor" = "none";
+        "workbench.editor.showTabs" = "multiple";
+        "workbench.activityBar.location" = "top";
+
+        # Terminal
+        "terminal.integrated.fontSize" = 14;
+        "terminal.integrated.fontFamily" = "'MesloLGS NF', monospace";
+        "terminal.integrated.defaultProfile.linux" = "zsh";
+        "terminal.integrated.profiles.linux" = {
+          "zsh" = { "path" = "${pkgs.zsh}/bin/zsh"; };
+        };
+
+        # Git
+        "git.enableSmartCommit" = true;
+        "git.confirmSync" = false;
+        "git.autofetch" = true;
+
+        # GitLens
+        "gitlens.codeLens.enabled" = false;
+        "gitlens.currentLine.enabled" = false;
+        "gitlens.hovers.currentLine.over" = "line";
+        "gitlens.blame.format" = "\${author} • \${date} • \${message}";
+
+        # Language-specific settings
+        "eslint.workingDirectories" = [ "client" "server" ];
+        "prettier.requireConfig" = true;
+        "prettier.useEditorConfig" = false;
+
+        # Python
+        "python.defaultInterpreterPath" = "${pkgs.python3}/bin/python";
+        "python.formatting.provider" = "black";
+        "python.linting.enabled" = true;
+        "python.linting.pylintEnabled" = true;
+
+        # AsciiDoc
+        "asciidoc.preview.doubleClickToSwitchTab" = false;
+        "asciidoc.preview.scrollPreviewWithEditor" = true;
+        "asciidoc.preview.markEditorSelection" = true;
+
+        # File associations
+        "files.associations" = {
+          "*.nix" = "nix";
+          "justfile" = "makefile";
+          "Justfile" = "makefile";
+        };
+
+        # Explorer
+        "explorer.confirmDelete" = false;
+        "explorer.confirmDragAndDrop" = false;
+
+        # Search
+        "search.exclude" = {
+          "**/node_modules" = true;
+          "**/target" = true;
+          "**/.git" = true;
+          "**/dist" = true;
+          "**/build" = true;
+        };
+
+        # Platform-specific settings
+      } // (if hasPlasma then {
+        # Linux-specific settings
+        "window.titleBarStyle" = "custom";
+        "window.menuBarVisibility" = "toggle";
+      } else {
+        # macOS-specific settings
+        "window.titleBarStyle" = "custom";
+      });
 
       # Keybindings (zusätzlich zu Vim-Mappings)
       keybindings = [

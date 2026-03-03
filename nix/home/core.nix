@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     # Archives
     zip
@@ -63,7 +63,10 @@
 
   programs = {
     nix-index.enable = true;
-    direnv.enable = true;
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
     # modern vim
     neovim = {
       enable = true;

@@ -1,13 +1,8 @@
 # Home-Manager Konfiguration MacBook
-{
-  config,
-  lib,
-  pkgs,
-  currentUser,
-  ...
-}: let
+{ config, lib, pkgs, currentUser, ... }:
+let
   dotfilesDir = "${config.home.homeDirectory}/projects/ceickhoff/dots";
-  stowPackages = ["nvim"];
+  stowPackages = [ "nvim" ];
 in {
   # Importiere deine bestehenden Module
   imports = [
@@ -24,7 +19,7 @@ in {
     username = currentUser;
     homeDirectory = "/Users/${currentUser}";
     stateVersion = "25.11";
-    activation.stowDotfiles = config.lib.dag.entryAfter ["writeBoundary"] ''
+    activation.stowDotfiles = config.lib.dag.entryAfter [ "writeBoundary" ] ''
       cd ${dotfilesDir}
       ${pkgs.stow}/bin/stow -R -t ${config.home.homeDirectory} ${
         lib.concatStringsSep " " stowPackages
@@ -32,8 +27,8 @@ in {
     '';
 
     # Zusätzliche NixOS-spezifische Pakete
-    packages = [];
+    packages = [ ];
   };
 
-  services = {ssh-agent.enable = true;};
+  services = { ssh-agent.enable = true; };
 }
