@@ -17,7 +17,7 @@ return {
       -- tsserver will be automatically installed with mason and loaded with lspconfig
       ts_ls = {},
       texlab = {
-        mason = false
+        mason = false,
       },
       astro = {}, -- das ist der Astro LSP
       marksman = {
