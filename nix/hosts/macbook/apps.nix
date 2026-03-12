@@ -65,6 +65,7 @@
       "cryptomator"
       "chromium"
       "keepassxc"
+      "kdiff3"
       "nextcloud"
       # "raycast"
       "shottr"

@@ -50,10 +50,10 @@ return {
           map("n", "<leader>ai", "i__<Esc>ea__<Esc>", { desc = "Italic text" })
           map("n", "<leader>am", "i``<Esc>ea``<Esc>", { desc = "Monospace text" })
 
-          -- Visual mode formatting
-          map("v", "<leader>ab", 'c**<C-r>"**<Esc>', { desc = "Bold selection" })
-          map("v", "<leader>ai", 'c__<C-r>"__<Esc>', { desc = "Italic selection" })
-          map("v", "<leader>am", 'c``<C-r>"``<Esc>', { desc = "Monospace selection" })
+          -- -- Visual mode formatting
+          -- map("v", "<leader>ab", 'c**<C-r>"**<Esc>', { desc = "Bold selection" })
+          -- map("v", "<leader>ai", 'c__<C-r>"__<Esc>', { desc = "Italic selection" })
+          -- map("v", "<leader>am", 'c``<C-r>"``<Esc>', { desc = "Monospace selection" })
         end,
       })
     end,

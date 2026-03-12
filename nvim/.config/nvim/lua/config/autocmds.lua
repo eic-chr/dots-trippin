@@ -31,7 +31,6 @@ end
 --   end,
 --   group = autocomplete_group,
 -- })
-
 -- close some filetypes with <esc>
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
