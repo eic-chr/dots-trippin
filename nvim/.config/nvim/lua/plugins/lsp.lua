@@ -16,16 +16,42 @@ return {
     servers = {
       -- tsserver will be automatically installed with mason and loaded with lspconfig
       ts_ls = {},
+      texlab = {
+        mason = false,
+      },
       astro = {}, -- das ist der Astro LSP
       marksman = {
         mason = false,
         wrap = true,
       },
-      ltex = {
-        filetypes = { "asciidoctor" },
+      ltex_plus = {
+        mason = false,
+        filetypes = {
+          "asciidoc",
+          "bib",
+          "context",
+          "gitcommit",
+          "html",
+          "markdown",
+          "org",
+          "pandoc",
+          "plaintex",
+          "quarto",
+          "mail",
+          "mdx",
+          "rmd",
+          "rnoweb",
+          "rst",
+          "tex",
+          "text",
+          "typst",
+          "xhtml",
+        },
         settings = {
           ltex = {
             language = "de-DE",
+            enabled = false,
+            checkFrequency = "edit",
             dictionary = {
               ["de-DE"] = {
                 "AsciiDoc",

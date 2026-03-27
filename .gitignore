@@ -5,4 +5,4 @@ tmp/
 
 result
 .direnv
-nix/assets
+#nix/assets
