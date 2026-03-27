@@ -1,4 +1,6 @@
-{ pkgs, ... }: {
+{ pkgs, ... }: let
+      scode = pkgs.callPackage ./scode.nix {};
+in {
   home.packages = with pkgs; [
     # Archives
     zip
@@ -32,6 +34,7 @@
     nil # Nix LSP
     nixfmt-classic # Nix-Formatter
     nodejs
+    scode
     marksman # Markdown LSP
     python3 # Entwicklungsumgebung
     # python3Packages.pip
