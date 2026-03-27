@@ -1,5 +1,5 @@
 # Home-Manager Konfiguration MacBook
-{ config, lib, pkgs, currentUser, ... }:
+{ config, lib, pkgs, unstable, currentUser, ... }:
 let
   dotfilesDir = "${config.home.homeDirectory}/projects/ceickhoff/dots";
   stowPackages = [ "nvim" ];
@@ -8,6 +8,7 @@ in {
   imports = [
     ./core.nix
     ./git.nix
+    ./opencode.nix
     ./shell.nix
     ./starship.nix
     ./kitty.nix

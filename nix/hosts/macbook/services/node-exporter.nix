@@ -1,6 +1,6 @@
 { ... }: {
   services.prometheus.exporters.node = {
-    enable = true;
+    enable = false;
     port = 9100;
     enabledCollectors = [ "cpu" "meminfo" "diskstats" "filesystem" "loadavg" ];
   };

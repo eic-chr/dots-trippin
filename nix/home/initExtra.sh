@@ -88,6 +88,12 @@ fi
 bindkey -v
 export KEYTIMEOUT=1
 
+# nur auf macOS ausführen
+if [[ "$(uname)" == "Darwin" ]]; then
+  # export ANTHROPIC_API_KEY=$(security find-generic-password -a "$USER" -s "ANTHROPIC_API_KEY" -w 2>/dev/null)
+  export OPENAI_API_KEY=$(security find-generic-password -a "$USER" -s "OPENAI_API_KEY" -w 2>/dev/null)
+fi
+
 # Vi mode cursor shapes
 function zle-keymap-select {
   if [[ ${KEYMAP} == vicmd ]] ||

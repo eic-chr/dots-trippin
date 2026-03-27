@@ -2032,18 +2032,18 @@ end, { desc = "[P]Spelling language English" })
 --
 -- Keymap to switch spelling language to Spanish lamw25wmal
 vim.keymap.set("n", "<leader>msls", function()
-  vim.opt.spelllang = "es"
-  vim.cmd("echo 'Spell language set to Spanish'")
-end, { desc = "[P]Spelling language Spanish" })
+  vim.opt.spelllang = "de"
+  vim.cmd("echo 'Spell language set to German'")
+end, { desc = "[P]Spelling language German" })
 
 -- HACK: neovim spell multiple languages
 -- https://youtu.be/uLFAMYFmpkE
 --
 -- Keymap to switch spelling language to both spanish and english lamw25wmal
 vim.keymap.set("n", "<leader>mslb", function()
-  vim.opt.spelllang = "en,es"
-  vim.cmd("echo 'Spell language set to Spanish and English'")
-end, { desc = "[P]Spelling language Spanish and English" })
+  vim.opt.spelllang = "en,de"
+  vim.cmd("echo 'Spell language set to Germanand English'")
+end, { desc = "[P]Spelling language German and English" })
 
 -- HACK: neovim spell multiple languages
 -- https://youtu.be/uLFAMYFmpkE

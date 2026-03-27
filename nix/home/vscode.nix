@@ -6,7 +6,6 @@ let
 in {
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium;
 
     # Extensions
     # Entferne den problematischen marketplace-Block erstmal

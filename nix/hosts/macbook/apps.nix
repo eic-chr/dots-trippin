@@ -27,6 +27,12 @@
     btop
     vale
     kubectx
+    pngpaste
+    entr
+    devbox
+    devcontainer
+    k9s
+    speedtest-cli
 
     # System administration
     sshpass

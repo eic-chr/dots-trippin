@@ -1,4 +1,4 @@
--- lua/plugins/live-preview.lua
+-- Lua/plugins/live-preview.lua
 return {
   "brianhuster/live-preview.nvim",
   opts = {

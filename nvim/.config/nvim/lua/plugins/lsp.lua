@@ -50,7 +50,7 @@ return {
         settings = {
           ltex = {
             language = "de-DE",
-            enabled = true,
+            enabled = false,
             checkFrequency = "edit",
             dictionary = {
               ["de-DE"] = {
