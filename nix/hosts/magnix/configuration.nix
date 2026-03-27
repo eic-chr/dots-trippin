@@ -4,6 +4,7 @@
     ../common.nix
     ../hyprland.nix # system Hyprland setup
     ../shares.nix
+    ../virtualisation.nix
   ];
 
   services = {

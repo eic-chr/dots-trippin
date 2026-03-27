@@ -12,7 +12,7 @@
 in {
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium;
+    # package = pkgs.vscodium;
 
     # Extensions
     # Entferne den problematischen marketplace-Block erstmal
@@ -50,6 +50,7 @@ in {
         # Docker & Containers
         # ms-vscode-remote.remote-containers
         ms-azuretools.vscode-docker
+        ms-vscode-remote.remote-containers
 
         # Nix Support
         bbenoist.nix

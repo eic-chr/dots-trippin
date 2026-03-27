@@ -14,6 +14,7 @@
     tealdeer # tldr
     zoxide # cd-Ersatz
 
+    devcontainer
     # Multimedia
     imagemagick
     exiftool
@@ -51,6 +52,7 @@
     gawk
     zstd
     gnupg
+    keystore-explorer
 
     # Productivity
     atuin # Shell-History

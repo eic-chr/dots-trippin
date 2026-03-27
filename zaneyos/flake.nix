@@ -36,6 +36,7 @@
       url = "github:kamadorueda/alejandra";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    secrets.url = "git+ssh://git@gitlab.dev.ewolutions.de/eickhoff/nix-secrets.git?ref=feat/first";
   };
 
   outputs = {
@@ -44,6 +45,7 @@
     nixvim,
     nix-flatpak,
     alejandra,
+    secrets,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -59,7 +61,9 @@
           inherit inputs;
           inherit username;
           inherit host;
-          inherit profile; # keep using the let-bound profile for modules/scripts
+          inherit
+            profile
+            ; # keep using the let-bound profile for modules/scripts
         };
         modules = [
           ./modules/core/overlays.nix
