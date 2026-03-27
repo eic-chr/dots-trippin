@@ -6,9 +6,9 @@
 #
 
 if [ ! -f $HOME/.config/ml4w/settings/dock-disabled ]; then
-    killall nwg-dock-hyprland
-    sleep 0.5
-    nwg-dock-hyprland -i 32 -w 5 -mb 10 -x -s style.css -c "rofi -show window"
+	killall nwg-dock-hyprland
+	sleep 0.5
+	nwg-dock-hyprland -i 32 -w 5 -mb 10 -x -s style.css -c "rofi -show window"
 else
-    echo ":: Dock disabled"
+	echo ":: Dock disabled"
 fi

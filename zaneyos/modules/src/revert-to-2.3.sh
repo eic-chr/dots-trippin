@@ -26,15 +26,15 @@ echo ""
 # Check if the main upgrade script exists
 UPGRADE_SCRIPT="./upgrade-2.3-to-2.4.sh"
 if [ ! -f "$UPGRADE_SCRIPT" ]; then
-    echo -e "${RED}❌ Error: upgrade-2.3-to-2.4.sh not found in current directory${NC}"
-    echo -e "${CYAN}Please ensure you're in the ~/zaneyos directory${NC}"
-    exit 1
+	echo -e "${RED}❌ Error: upgrade-2.3-to-2.4.sh not found in current directory${NC}"
+	echo -e "${CYAN}Please ensure you're in the ~/zaneyos directory${NC}"
+	exit 1
 fi
 
 # Check if it's executable
 if [ ! -x "$UPGRADE_SCRIPT" ]; then
-    echo -e "${YELLOW}⚠️  Making upgrade script executable...${NC}"
-    chmod +x "$UPGRADE_SCRIPT"
+	echo -e "${YELLOW}⚠️  Making upgrade script executable...${NC}"
+	chmod +x "$UPGRADE_SCRIPT"
 fi
 
 # Ensure the upgrade script targets the stable 2.4 branch for consistency

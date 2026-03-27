@@ -1,4 +1,9 @@
-{pkgs, host, lib, ...}: let
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}: let
   vars = import ../../hosts/${host}/variables.nix;
 in {
   xdg = {

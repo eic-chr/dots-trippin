@@ -29,25 +29,25 @@ FILE_CRITICAL=/tmp/battery-critical
 
 # remove the files if the battery is no longer in that state
 if [ "$BATTERY_STATE" == "discharging" ]; then
-  rm -f $FILE_FULL
+	rm -f $FILE_FULL
 elif [ "$BATTERY_STATE" == "charging" ]; then
-  rm -f "$FILE_WARNING" "$FILE_CRITICAL"
+	rm -f "$FILE_WARNING" "$FILE_CRITICAL"
 fi
 
 # if the battery is full and is plugged in
 if [ "$BATTERY_LEVEL" -eq 100 ] && [ "$BATTERY_STATE" == "fully-charged" ] && [ ! -f $FILE_FULL ]; then
-  notify-send -a "state" "Battery Charged (${BATTERY_LEVEL}%)" "You might want to unplug your PC." -i "battery-full" -r 9991
-  touch $FILE_FULL
+	notify-send -a "state" "Battery Charged (${BATTERY_LEVEL}%)" "You might want to unplug your PC." -i "battery-full" -r 9991
+	touch $FILE_FULL
 
 # if the battery is low and is discharging
 elif [ "$BATTERY_LEVEL" -le $WARNING_LEVEL ] && [ "$BATTERY_STATE" == "discharging" ] && [ ! -f $FILE_WARNING ]; then
-  notify-send -a "state" "Battery Low (${BATTERY_LEVEL}%)" "You might want to plug in your PC." -u critical -i "battery-caution" -r 9991 -h string:fgcolor:\#fab387 -h string:frcolor:\#fab387
-  touch $FILE_WARNING
+	notify-send -a "state" "Battery Low (${BATTERY_LEVEL}%)" "You might want to plug in your PC." -u critical -i "battery-caution" -r 9991 -h string:fgcolor:\#fab387 -h string:frcolor:\#fab387
+	touch $FILE_WARNING
 
 # if the battery is critical and is discharging
 elif [ "$BATTERY_LEVEL" -le $CRITICAL_LEVEL ] && [ "$BATTERY_STATE" == "discharging" ] && [ ! -f $FILE_CRITICAL ]; then
-  notify-send -a "state" "Battery Critical (${BATTERY_LEVEL}%)" "Plug in your PC now." -u critical -i "battery-empty" -r 9991
-  touch $FILE_CRITICAL
+	notify-send -a "state" "Battery Critical (${BATTERY_LEVEL}%)" "Plug in your PC now." -u critical -i "battery-empty" -r 9991
+	touch $FILE_CRITICAL
 fi
 
 # systemd service

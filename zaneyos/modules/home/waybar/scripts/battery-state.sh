@@ -23,13 +23,13 @@ BATTERY_LEVEL=$(upower -i "$BAT_PATH" | awk '/percentage:/ {print $2}' | tr -d '
 # set the battery charging state and icon
 case "$BATTERY_STATE" in
 "charging")
-  BATTERY_CHARGING="Charging"
-  BATTERY_ICON="090-charging"
-  ;;
+	BATTERY_CHARGING="Charging"
+	BATTERY_ICON="090-charging"
+	;;
 "discharging")
-  BATTERY_CHARGING="Disharging"
-  BATTERY_ICON="090"
-  ;;
+	BATTERY_CHARGING="Disharging"
+	BATTERY_ICON="090"
+	;;
 esac
 
 # send the notification
