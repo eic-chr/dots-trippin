@@ -9,14 +9,14 @@ in {
     enableBashIntegration = true;
     enableFishIntegration = true;
     shellWrapperName = "yy";
-    settings = settings;
-    keymap = keymap;
-    theme = theme;
+    inherit settings;
+    inherit keymap;
+    inherit theme;
     plugins = {
-      lazygit = pkgs.yaziPlugins.lazygit;
-      full-border = pkgs.yaziPlugins.full-border;
-      git = pkgs.yaziPlugins.git;
-      smart-enter = pkgs.yaziPlugins.smart-enter;
+      inherit (pkgs.yaziPlugins) lazygit;
+      inherit (pkgs.yaziPlugins) full-border;
+      inherit (pkgs.yaziPlugins) git;
+      inherit (pkgs.yaziPlugins) smart-enter;
     };
 
     initLua = ''

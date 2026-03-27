@@ -33,6 +33,7 @@
       };
 
       shellAliases = {
+        codium = "codium --use-gl=egl --enable-features=UseOzonePlatform --ozone-platform=wayland";
         # Deine bestehenden...
         ll = "eza -l";
         la = "eza -la";

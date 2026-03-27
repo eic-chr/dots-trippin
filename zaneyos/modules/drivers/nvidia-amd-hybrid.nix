@@ -48,8 +48,8 @@ in {
         };
 
         # Wire from options
-        amdgpuBusId = cfg.amdgpuBusId;
-        nvidiaBusId = cfg.nvidiaBusId;
+        inherit (cfg) amdgpuBusId;
+        inherit (cfg) nvidiaBusId;
       };
     };
   };

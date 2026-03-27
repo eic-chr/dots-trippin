@@ -5,5 +5,9 @@ tmp/
 
 result
 .direnv
+<<<<<<< HEAD
 nix/assets
 .pre-commit-config.yaml
+=======
+#nix/assets
+>>>>>>> 4210b900e399fe447ccbcb5be1bd20d8ae1edfc5

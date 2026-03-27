@@ -1,4 +1,6 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  scode = pkgs.callPackage ./scode.nix {};
+in {
   home.packages = with pkgs; [
     # Archives
     zip
@@ -33,6 +35,7 @@
     nil # Nix LSP
     nixfmt-classic # Nix-Formatter
     nodejs
+    scode
     marksman # Markdown LSP
     python3 # Entwicklungsumgebung
     # python3Packages.pip
@@ -65,7 +68,10 @@
 
   programs = {
     nix-index.enable = true;
-    direnv.enable = true;
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
     # modern vim
     neovim = {
       enable = true;

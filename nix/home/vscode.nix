@@ -12,7 +12,6 @@
 in {
   programs.vscode = {
     enable = true;
-    # package = pkgs.vscodium;
 
     # Extensions
     # Entferne den problematischen marketplace-Block erstmal
@@ -22,6 +21,7 @@ in {
       extensions = with pkgs.vscode-extensions; [
         # Vim Integration
         vscodevim.vim
+        ltex-plus.vscode-ltex-plus
 
         # Git
         eamodio.gitlens
@@ -36,6 +36,9 @@ in {
 
         # AsciiDoc
         asciidoctor.asciidoctor-vscode
+
+        # Plantuml
+        jebbs.plantuml
 
         # Themes & UI
         github.github-vscode-theme
@@ -59,6 +62,16 @@ in {
 
       userSettings =
         {
+          "ltex.ltex-ls.path" = "/etc/profiles/per-user/ap4103"; # Nix-Pfad
+          "ltex.java.path" = "${pkgs.jdk21}";
+          "ltex.language" = "de-DE";
+          "ltex.enabled" = ["asciidoc"];
+          "ltex.dictionary" = {
+            "de-DE" = ["AsciiDoc" "Asciidoctor" "LazyVim" "Neovim" "NixOS"];
+          };
+          "ltex.disabledRules" = {"de-DE" = ["WHITESPACE_RULE"];};
+          "plantuml.previewAutoUpdate" = false;
+
           # Vim Configuration
           "vim.easymotion" = true;
           "vim.incsearch" = true;

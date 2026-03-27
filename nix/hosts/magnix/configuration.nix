@@ -25,16 +25,19 @@
       true; # Open ports in the firewall for Source Dedicated Server
   };
 
-  environment.systemPackages = with pkgs; [
-    solaar
-    liquidctl
-    prismlauncher
-    lutris
-    heroic
-    mangohud
-    protonup-qt
-    handbrake
-    makemkv
-    libdvdcss
-  ];
+  environment = {
+    sessionVariables.NIXOS_OZONE_WL = "1";
+    systemPackages = with pkgs; [
+      solaar
+      liquidctl
+      prismlauncher
+      lutris
+      heroic
+      mangohud
+      protonup-qt
+      handbrake
+      makemkv
+      libdvdcss
+    ];
+  };
 }

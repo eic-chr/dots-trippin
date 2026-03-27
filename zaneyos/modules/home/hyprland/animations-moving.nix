@@ -1,4 +1,4 @@
-{...}: {
+_: {
   wayland.windowManager.hyprland.settings = {
     # name "moving"
     # credit https://github.com/mylinuxforwork/dotfiles

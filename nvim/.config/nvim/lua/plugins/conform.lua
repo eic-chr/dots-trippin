@@ -13,6 +13,7 @@ return {
   end,
   opts = {
     formatters_by_ft = {
+      asciidoc = { "prettier" },
       javascript = { "prettier" },
       typescript = { "prettier" },
       javascriptreact = { "prettier" },

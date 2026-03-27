@@ -126,7 +126,7 @@ pkgs.writeShellScriptBin "qs-panels" ''
     | ${pkgs.gnused}/bin/sed 's/^\s\+//;s/\s\+$//' )
 
   # Fallback debug: write last log when empty selection
-  if [ -z "${sel:-}" ]; then
+  if [ -z "${"sel:-"}" ]; then
     mkdir -p "$HOME/.cache"
     { "$QML_BIN" "$qml" 2>&1 || true; } > "$HOME/.cache/qs-panels.lastlog" || true
   fi
@@ -143,7 +143,7 @@ pkgs.writeShellScriptBin "qs-panels" ''
     fi
   }
 
-  case "${sel:-}" in
+  case "${"sel:-"}" in
     noctalia) run_and_exit noctalia-run ;;
     dms)      run_and_exit dms-run ;;
     waybar)   run_and_exit waybar-run ;;

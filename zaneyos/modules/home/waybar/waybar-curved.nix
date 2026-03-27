@@ -47,7 +47,7 @@ in
           };
           "clock" = {
             format =
-              if clock24h == true
+              if clock24h
               then '' {:L%H:%M}''
               else '' {:L%I:%M %p}'';
             tooltip = true;

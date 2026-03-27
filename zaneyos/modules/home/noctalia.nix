@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  system = pkgs.stdenv.hostPlatform.system;
+  inherit (pkgs.stdenv.hostPlatform) system;
   noctaliaPkg = inputs.noctalia.packages.${system}.default;
   configDir = "${noctaliaPkg}/share/noctalia-shell";
 in {

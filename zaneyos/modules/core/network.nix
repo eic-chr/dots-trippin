@@ -8,7 +8,7 @@
 in {
   networking = {
     hostName = "${host}";
-    hostId = hostId;
+    inherit hostId;
     networkmanager.enable = true;
     timeServers = options.networking.timeServers.default ++ ["pool.ntp.org"];
     firewall = {

@@ -1,0 +1,2 @@
+[lints]
+disabled = ["repeated_keys"]

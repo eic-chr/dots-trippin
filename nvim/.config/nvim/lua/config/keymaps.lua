@@ -2032,18 +2032,18 @@ end, { desc = "[P]Spelling language English" })
 --
 -- Keymap to switch spelling language to Spanish lamw25wmal
 vim.keymap.set("n", "<leader>msls", function()
-  vim.opt.spelllang = "es"
-  vim.cmd("echo 'Spell language set to Spanish'")
-end, { desc = "[P]Spelling language Spanish" })
+  vim.opt.spelllang = "de"
+  vim.cmd("echo 'Spell language set to German'")
+end, { desc = "[P]Spelling language German" })
 
 -- HACK: neovim spell multiple languages
 -- https://youtu.be/uLFAMYFmpkE
 --
 -- Keymap to switch spelling language to both spanish and english lamw25wmal
 vim.keymap.set("n", "<leader>mslb", function()
-  vim.opt.spelllang = "en,es"
-  vim.cmd("echo 'Spell language set to Spanish and English'")
-end, { desc = "[P]Spelling language Spanish and English" })
+  vim.opt.spelllang = "en,de"
+  vim.cmd("echo 'Spell language set to Germanand English'")
+end, { desc = "[P]Spelling language German and English" })
 
 -- HACK: neovim spell multiple languages
 -- https://youtu.be/uLFAMYFmpkE
@@ -3162,11 +3162,11 @@ end
 -- https://youtu.be/W3hgsMoUcqo
 --
 -- Keymap to switch to the daily note or create it if it does not exist
-vim.keymap.set("n", "<leader>fd", function()
-  local current_line = vim.api.nvim_get_current_line()
-  local date_line = current_line:match("%[%[%d+%-%d+%-%d+%-%w+%]%]") or ("[[" .. os.date("%Y-%m-%d-%A") .. "]]")
-  switch_to_daily_note(date_line)
-end, { desc = "[P]Go to or create daily note" })
+-- vim.keymap.set("n", "<leader>fd", function()
+--   local current_line = vim.api.nvim_get_current_line()
+--   local date_line = current_line:match("%[%[%d+%-%d+%-%d+%-%w+%]%]") or ("[[" .. os.date("%Y-%m-%d-%A") .. "]]")
+--   switch_to_daily_note(date_line)
+-- end, { desc = "[P]Go to or create daily note" })
 
 -- These create the the markdown heading
 -- H1

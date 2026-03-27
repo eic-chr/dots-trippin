@@ -6,7 +6,11 @@ _: {
 
     # Kommentieren Sie alles andere aus oder entfernen Sie es:
     # package = pkgs.nix;
-    settings = {experimental-features = ["nix-command" "flakes"];};
+    settings = {
+      keep-outputs = true;
+      keep-derivations = true;
+      experimental-features = [ "nix-command" "flakes" ];
+    };
     # gc = { ... };
   };
 }

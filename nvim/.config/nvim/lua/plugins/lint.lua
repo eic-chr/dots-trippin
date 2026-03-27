@@ -4,6 +4,7 @@ return {
     linters_by_ft = {
       nix = { "statix" },
       asciidoc = { "vale" },
+      markdown = { "vale" },
     },
   },
 }
