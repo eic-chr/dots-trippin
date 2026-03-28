@@ -1,5 +1,5 @@
-{pkgs, ...}: let
-  scode = pkgs.callPackage ./scode.nix {};
+{ pkgs, ... }:
+let scode = pkgs.callPackage ../packages/scode.nix { };
 in {
   home.packages = with pkgs; [
     # Archives
