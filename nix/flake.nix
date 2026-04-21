@@ -22,6 +22,7 @@
     ];
     connect-timeout = 2;
     fallback = true;
+    allowUnfree = true;
   };
 
   inputs = {
@@ -41,7 +42,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # NUR for additional packages (Firefox addons)
-    nur = {url = "github:nix-community/NUR";};
+    nur = {
+      url = "github:nix-community/NUR";
+    };
     # plasma-manager for KDE Plasma configuration
     plasma-manager = {
       url = "github:pjones/plasma-manager";
@@ -50,7 +53,9 @@
     };
 
     # Hyprland (for plugin compatibility pinning)
-    hyprland = {url = "github:hyprwm/Hyprland";};
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+    };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
@@ -85,250 +90,262 @@
     };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    nixpkgs-unstable,
-    nixpkgs-darwin,
-    darwin,
-    mac-app-util,
-    home-manager,
-    plasma-manager,
-    nixos-hardware,
-    agenix,
-    secrets,
-    split-monitor-workspaces,
-    ...
-  }: let
-    # Host-zu-User Zuordnung
-    myvars = inputs.secrets.vars;
-    # System-specific configurations
-    systems = {
-      # macOS configuration
-      mac = {
-        system = "aarch64-darwin";
-        hostname = "MacBookRWRMF4N0G3";
-        nixpkgs = nixpkgs-darwin;
-        users = myvars.hostUsers.MacBookPro;
-        hasPlasma = false;
-      };
-
-      # NixOS VM configuration
-      devnix = {
-        system = "x86_64-linux";
-        hostname = "devnix";
-        inherit nixpkgs;
-        users = myvars.hostUsers.devnix;
-        hasPlasma = true;
-      };
-
-      # Laptop configuration with multiple users
-      offnix = {
-        system = "x86_64-linux";
-        hostname = "offnix";
-        inherit nixpkgs;
-        users = myvars.hostUsers.offnix;
-        hasPlasma = true;
-      };
-
-      magnix = {
-        system = "x86_64-linux";
-        hostname = "magnix";
-        inherit nixpkgs;
-        users = myvars.hostUsers.magnix;
-        hasPlasma = true;
-      };
-
-      # Gaming laptop configuration with multiple users
-      playnix = {
-        system = "x86_64-linux";
-        hostname = "playnix";
-        inherit nixpkgs;
-        users = myvars.hostUsers.playnix;
-        hasPlasma = true;
-      };
-    };
-
-    isLinuxSystem = system: builtins.match ".*-linux" system != null;
-
-    # Helper function to create specialArgs for each system
-    mkSpecialArgs = systemConfig: let
-      isLinux = isLinuxSystem systemConfig.system;
-
-      baseArgs =
-        inputs
-        // {
-          inherit (systemConfig) hostname hasPlasma users;
-          inherit (myvars) userConfigs hostUsers;
-
-          secrets = inputs.secrets.outPath;
-          # Für Kompatibilität mit bestehenden Modulen
-          username =
-            builtins.head systemConfig.users; # Erster User als Standard
-          unstable =
-            import inputs.nixpkgs-unstable {inherit (systemConfig) system;};
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      nixpkgs-darwin,
+      darwin,
+      mac-app-util,
+      home-manager,
+      plasma-manager,
+      nixos-hardware,
+      agenix,
+      secrets,
+      split-monitor-workspaces,
+      ...
+    }:
+    let
+      # Host-zu-User Zuordnung
+      myvars = inputs.secrets.vars;
+      # System-specific configurations
+      systems = {
+        # macOS configuration
+        mac = {
+          system = "aarch64-darwin";
+          hostname = "MacBookRWRMF4N0G3";
+          nixpkgs = nixpkgs-darwin;
+          users = myvars.hostUsers.MacBookPro;
+          hasPlasma = false;
         };
-      linuxArgs =
-        if isLinux
-        then {
-          # nixpkgs-unstable importieren und durchreichen
-          # Hyprland / plugins through specialArgs for HM modules
-          hyprlandInput = inputs.hyprland;
-          hyprlandPlugins = inputs.hyprland-plugins;
-          hyprlandPluginsPkgs =
-            inputs.hyprland-plugins.packages.${systemConfig.system};
-          splitMonitorWorkspaces = inputs.split-monitor-workspaces;
-          ml4wDots = inputs.ml4w-dotfiles;
-        }
-        else {};
+
+        # NixOS VM configuration
+        devnix = {
+          system = "x86_64-linux";
+          hostname = "devnix";
+          inherit nixpkgs;
+          users = myvars.hostUsers.devnix;
+          hasPlasma = true;
+        };
+
+        # Laptop configuration with multiple users
+        offnix = {
+          system = "x86_64-linux";
+          hostname = "offnix";
+          inherit nixpkgs;
+          users = myvars.hostUsers.offnix;
+          hasPlasma = true;
+        };
+
+        magnix = {
+          system = "x86_64-linux";
+          hostname = "magnix";
+          inherit nixpkgs;
+          users = myvars.hostUsers.magnix;
+          hasPlasma = true;
+        };
+
+        # Gaming laptop configuration with multiple users
+        playnix = {
+          system = "x86_64-linux";
+          hostname = "playnix";
+          inherit nixpkgs;
+          users = myvars.hostUsers.playnix;
+          hasPlasma = true;
+        };
+      };
+
+      isLinuxSystem = system: builtins.match ".*-linux" system != null;
+
+      # Helper function to create specialArgs for each system
+      mkSpecialArgs =
+        systemConfig:
+        let
+          isLinux = isLinuxSystem systemConfig.system;
+
+          baseArgs = inputs // {
+            inherit (systemConfig) hostname hasPlasma users;
+            inherit (myvars) userConfigs hostUsers;
+
+            secrets = inputs.secrets.outPath;
+            # Für Kompatibilität mit bestehenden Modulen
+            username = builtins.head systemConfig.users; # Erster User als Standard
+            unstable = import inputs.nixpkgs-unstable { inherit (systemConfig) system; };
+          };
+          linuxArgs =
+            if isLinux then
+              {
+                # nixpkgs-unstable importieren und durchreichen
+                # Hyprland / plugins through specialArgs for HM modules
+                hyprlandInput = inputs.hyprland;
+                hyprlandPlugins = inputs.hyprland-plugins;
+                hyprlandPluginsPkgs = inputs.hyprland-plugins.packages.${systemConfig.system};
+                splitMonitorWorkspaces = inputs.split-monitor-workspaces;
+                ml4wDots = inputs.ml4w-dotfiles;
+              }
+            else
+              { };
+        in
+        baseArgs // linuxArgs;
+
+      # Helper function to create home-manager user configurations
+      mkHomeManagerUsers =
+        systemConfig:
+        builtins.listToAttrs (
+          map (user: {
+            name = user;
+            value =
+              {
+                config,
+                lib,
+                pkgs,
+                unstable,
+                ...
+              }:
+              let
+                homeConfig = ./. + "/${myvars.userConfigs.${user}.homeConfig}";
+              in
+              {
+                imports = [
+                  (
+                    if builtins.hasAttr user myvars.userConfigs then
+                      builtins.trace "→ User-spezifische Home-Konfiguration wird geladen" homeConfig
+                    else
+                      builtins.trace "→ Fallback: ./home/nixos.nix wird geladen"
+                        # Fallback: verwende eine Standard-Konfiguration
+                        ./home/nixos.nix
+                  )
+                ];
+
+                # User-spezifische Variablen verfügbar machen
+                _module.args = {
+                  currentUser = user;
+                  userConfig = myvars.userConfigs.${user} or { };
+                  userEmail = myvars.userConfigs.${user}.email or "default@example.com";
+                  userFullName = myvars.userConfigs.${user}.fullName or user;
+                };
+              };
+          }) systemConfig.users
+        );
     in
-      baseArgs // linuxArgs;
+    {
+      # macOS configuration
+      darwinConfigurations."${systems.mac.hostname}" = darwin.lib.darwinSystem {
+        inherit (systems.mac) system;
+        specialArgs = mkSpecialArgs systems.mac;
+        modules = [
+          ./hosts/macbook/nix-core.nix
+          ./hosts/macbook/system.nix
+          ./hosts/macbook/apps.nix
+          ./hosts/macbook/host-users.nix
+          mac-app-util.darwinModules.default
+          home-manager.darwinModules.home-manager
+          (
+            {
+              pkgs,
+              config,
+              inputs,
+              unstable,
+              ...
+            }:
+            {
+              nixpkgs.config.allowUnfree = true;
 
-    # Helper function to create home-manager user configurations
-    mkHomeManagerUsers = systemConfig:
-      builtins.listToAttrs (map (user: {
-          name = user;
-          value = {
-            config,
-            lib,
-            pkgs,
-            unstable,
-            ...
-          }: let
-            homeConfig = ./. + "/${myvars.userConfigs.${user}.homeConfig}";
-          in {
-            imports = [
-              (
-                if builtins.hasAttr user myvars.userConfigs
-                then
-                  builtins.trace
-                  "→ User-spezifische Home-Konfiguration wird geladen"
-                  homeConfig
-                else
-                  builtins.trace "→ Fallback: ./home/nixos.nix wird geladen"
-                  # Fallback: verwende eine Standard-Konfiguration
-                  ./home/nixos.nix
-              )
-            ];
+              home-manager = {
+                sharedModules = [ mac-app-util.homeManagerModules.default ];
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users = mkHomeManagerUsers systems.mac;
+                extraSpecialArgs = mkSpecialArgs systems.mac;
+              };
+            }
+          )
+        ];
+      };
 
-            # User-spezifische Variablen verfügbar machen
-            _module.args = {
-              currentUser = user;
-              userConfig = myvars.userConfigs.${user} or {};
-              userEmail =
-                myvars.userConfigs.${user}.email or "default@example.com";
-              userFullName = myvars.userConfigs.${user}.fullName or user;
-            };
-          };
-        })
-        systemConfig.users);
-  in {
-    # macOS configuration
-    darwinConfigurations."${systems.mac.hostname}" = darwin.lib.darwinSystem {
-      inherit (systems.mac) system;
-      specialArgs = mkSpecialArgs systems.mac;
-      modules = [
-        ./hosts/macbook/nix-core.nix
-        ./hosts/macbook/system.nix
-        ./hosts/macbook/apps.nix
-        ./hosts/macbook/host-users.nix
-        mac-app-util.darwinModules.default
-        home-manager.darwinModules.home-manager
-        ({
-          pkgs,
-          config,
-          inputs,
-          unstable,
-          ...
-        }: {
-          home-manager = {
-            sharedModules = [mac-app-util.homeManagerModules.default];
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users = mkHomeManagerUsers systems.mac;
-            extraSpecialArgs = mkSpecialArgs systems.mac;
-          };
-        })
-      ];
+      # NixOS configurations
+      nixosConfigurations."${systems.magnix.hostname}" = nixpkgs.lib.nixosSystem {
+        inherit (systems.magnix) system;
+        specialArgs = mkSpecialArgs systems.magnix;
+        modules = [
+          ./hosts/magnix/configuration.nix
+          home-manager.nixosModules.home-manager
+          agenix.nixosModules.default
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = mkSpecialArgs systems.magnix;
+            home-manager.users = mkHomeManagerUsers systems.magnix;
+            home-manager.sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
+          }
+        ];
+      };
+      # NixOS configurations
+      nixosConfigurations."${systems.devnix.hostname}" = nixpkgs.lib.nixosSystem {
+        inherit (systems.devnix) system;
+        specialArgs = mkSpecialArgs systems.devnix;
+        modules = [
+          ./hosts/devnix/configuration.nix
+          home-manager.nixosModules.home-manager
+          agenix.nixosModules.default
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = mkSpecialArgs systems.devnix;
+            home-manager.users = mkHomeManagerUsers systems.devnix;
+            home-manager.sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
+          }
+        ];
+      };
+
+      nixosConfigurations."${systems.offnix.hostname}" = nixpkgs.lib.nixosSystem {
+        inherit (systems.offnix) system;
+        specialArgs = mkSpecialArgs systems.offnix;
+        modules = [
+          nixos-hardware.nixosModules."apple-macbook-pro-11-4"
+          ./hosts/offnix/configuration.nix
+          home-manager.nixosModules.home-manager
+          agenix.nixosModules.default
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = mkSpecialArgs systems.offnix;
+            home-manager.users = mkHomeManagerUsers systems.offnix;
+            home-manager.sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
+          }
+        ];
+      };
+
+      nixosConfigurations."${systems.playnix.hostname}" = nixpkgs.lib.nixosSystem {
+        inherit (systems.playnix) system;
+        specialArgs = mkSpecialArgs systems.playnix;
+        modules = [
+          ./hosts/playnix/configuration.nix
+          home-manager.nixosModules.home-manager
+          agenix.nixosModules.default
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = mkSpecialArgs systems.playnix;
+            home-manager.users = mkHomeManagerUsers systems.playnix;
+            home-manager.sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
+          }
+        ];
+      };
+
+      # Formatters for all systems
+      formatter = builtins.listToAttrs (
+        map (
+          systemName:
+          let
+            systemConfig = systems.${systemName};
+          in
+          {
+            name = systemConfig.system;
+            value = systemConfig.nixpkgs.legacyPackages.${systemConfig.system}.alejandra;
+          }
+        ) (builtins.attrNames systems)
+      );
     };
-
-    # NixOS configurations
-    nixosConfigurations."${systems.magnix.hostname}" = nixpkgs.lib.nixosSystem {
-      inherit (systems.magnix) system;
-      specialArgs = mkSpecialArgs systems.magnix;
-      modules = [
-        ./hosts/magnix/configuration.nix
-        home-manager.nixosModules.home-manager
-        agenix.nixosModules.default
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = mkSpecialArgs systems.magnix;
-          home-manager.users = mkHomeManagerUsers systems.magnix;
-          home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
-        }
-      ];
-    };
-    # NixOS configurations
-    nixosConfigurations."${systems.devnix.hostname}" = nixpkgs.lib.nixosSystem {
-      inherit (systems.devnix) system;
-      specialArgs = mkSpecialArgs systems.devnix;
-      modules = [
-        ./hosts/devnix/configuration.nix
-        home-manager.nixosModules.home-manager
-        agenix.nixosModules.default
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = mkSpecialArgs systems.devnix;
-          home-manager.users = mkHomeManagerUsers systems.devnix;
-          home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
-        }
-      ];
-    };
-
-    nixosConfigurations."${systems.offnix.hostname}" = nixpkgs.lib.nixosSystem {
-      inherit (systems.offnix) system;
-      specialArgs = mkSpecialArgs systems.offnix;
-      modules = [
-        nixos-hardware.nixosModules."apple-macbook-pro-11-4"
-        ./hosts/offnix/configuration.nix
-        home-manager.nixosModules.home-manager
-        agenix.nixosModules.default
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = mkSpecialArgs systems.offnix;
-          home-manager.users = mkHomeManagerUsers systems.offnix;
-          home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
-        }
-      ];
-    };
-
-    nixosConfigurations."${systems.playnix.hostname}" = nixpkgs.lib.nixosSystem {
-      inherit (systems.playnix) system;
-      specialArgs = mkSpecialArgs systems.playnix;
-      modules = [
-        ./hosts/playnix/configuration.nix
-        home-manager.nixosModules.home-manager
-        agenix.nixosModules.default
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = mkSpecialArgs systems.playnix;
-          home-manager.users = mkHomeManagerUsers systems.playnix;
-          home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager];
-        }
-      ];
-    };
-
-    # Formatters for all systems
-    formatter = builtins.listToAttrs (map (systemName: let
-      systemConfig = systems.${systemName};
-    in {
-      name = systemConfig.system;
-      value =
-        systemConfig.nixpkgs.legacyPackages.${systemConfig.system}.alejandra;
-    }) (builtins.attrNames systems));
-  };
 }
