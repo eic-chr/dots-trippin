@@ -1,6 +1,7 @@
 {
   pkgs,
   hasPlasma ? false,
+  config,
   ...
 }: {
   programs.kitty = {
@@ -135,7 +136,7 @@
       window_padding_width = "10";
 
       # EDITOR (dynamischer Pfad über Nix)
-      editor = "${pkgs.neovim}/bin/nvim"; # Nix managed neovim
+      editor = "${config.programs.nixvim.package}/bin/nvim"; # Nix managed neovim
 
       # ALLE STANDARD-SHORTCUTS LÖSCHEN
       clear_all_shortcuts = "yes";

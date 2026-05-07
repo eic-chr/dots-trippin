@@ -7,10 +7,12 @@ _: {
     # Kommentieren Sie alles andere aus oder entfernen Sie es:
     # package = pkgs.nix;
     settings = {
+      always-allow-substitutes = true;
+      builders-use-substitutes = true;
       allowUnfree = true;
       keep-outputs = true;
       keep-derivations = true;
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [ "nix-command" "flakes" ];
     };
     # gc = { ... };
   };

@@ -73,11 +73,11 @@ in {
       nix-direnv.enable = true;
     };
     # modern vim
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      vimAlias = true;
-    };
+    # neovim = {
+    #   enable = true;
+    #   defaultEditor = true;
+    #   vimAlias = true;
+    # };
 
     java = {
       enable = true;

@@ -1,20 +1,16 @@
 # Home-Manager Konfiguration MacBook
-{
-  config,
-  lib,
-  pkgs,
-  unstable,
-  currentUser,
-  ...
-}: let
+{ config, lib, pkgs, unstable, currentUser,nixvim, ... }:
+let
   dotfilesDir = "${config.home.homeDirectory}/projects/ceickhoff/dots";
-  stowPackages = ["nvim"];
+  stowPackages = [ ];
+  # nixvimPkg = config.programs.nixvim.package;
 in {
   # Importiere deine bestehenden Module
   imports = [
     ./core.nix
     ./git.nix
     ./opencode.nix
+    ./nixvim.nix
     ./shell.nix
     ./starship.nix
     ./kitty.nix
@@ -26,7 +22,7 @@ in {
     username = currentUser;
     homeDirectory = "/Users/${currentUser}";
     stateVersion = "25.11";
-    activation.stowDotfiles = config.lib.dag.entryAfter ["writeBoundary"] ''
+    activation.stowDotfiles = config.lib.dag.entryAfter [ "writeBoundary" ] ''
       cd ${dotfilesDir}
       ${pkgs.stow}/bin/stow -R -t ${config.home.homeDirectory} ${
         lib.concatStringsSep " " stowPackages
@@ -37,5 +33,5 @@ in {
     packages = [];
   };
 
-  services = {ssh-agent.enable = true;};
+  services = { ssh-agent.enable = true; };
 }
